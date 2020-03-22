@@ -1,5 +1,4 @@
 import IGame from "../interfaces/IGame";
-import Deck from "./Deck";
 import Round from "./Round";
 
 /** Game:
@@ -9,7 +8,6 @@ import Round from "./Round";
  */
 export default class Game {
   private gameState: IGame;
-  private deck: Deck;
   private currentRound: Round;
 
   constructor() {
@@ -18,8 +16,10 @@ export default class Game {
       currentDealer: -1,
       players: []
     };
-    this.deck = new Deck();
-    this.currentRound = new Round();
+    this.currentRound = new Round({
+      players: this.gameState.players,
+      currentDealer: this.gameState.currentDealer
+    });
   }
 
   start() {
@@ -29,6 +29,24 @@ export default class Game {
     this.gameState.currentDealer = Math.floor(
       Math.random() * this.gameState.players.length
     );
+
+    console.log("Adding 3 players");
+    this.addPlayer();
+    this.addPlayer();
+    this.addPlayer();
+    this.print();
+    console.log("Dealing out cards");
+    this.currentRound.deal();
+    this.print();
+    console.log("The flop");
+    this.currentRound.draw();
+    this.print();
+    console.log("The turn");
+    this.currentRound.draw();
+    this.print();
+    console.log("The river");
+    this.currentRound.draw();
+    this.print();
   }
 
   addPlayer() {
@@ -38,31 +56,8 @@ export default class Game {
     // set socket identifier, respond to player with what their ID is (maybe set a cookie?)
   }
 
-  // Deals two cards to each player in the game
-  deal() {
-    for (let i = 0; i < 2; i++) {
-      this.gameState.players.map(player =>
-        player.pocket.push(this.deck.draw())
-      );
-    }
-  }
-
-  // Draws either 3 cards or 1 card depending on the betting round
-  draw() {
-    const board = this.gameState.board;
-    if (board.length == 0) {
-      for (let i = 0; i < 3; i++) {
-        board.push(this.deck.draw());
-      }
-    } else {
-      board.push(this.deck.draw());
-    }
-  }
-
   print() {
-    console.log(this.gameState.players);
-    console.log(this.gameState.board);
+    console.log(this.gameState);
+    console.log(this.currentRound);
   }
 }
-
-//module.exports = Game;
