@@ -11,12 +11,7 @@ const app = express();
 const g = new Game();
 const port = 3000;
 
-g.addPlayer();
-g.addPlayer();
-g.addPlayer();
-g.print();
-g.deal();
-g.print();
+g.start();
 
 app.get("/", (req, res) => res.send("Hello World"));
 
