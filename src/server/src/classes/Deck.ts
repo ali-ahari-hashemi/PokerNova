@@ -1,8 +1,8 @@
 export class Deck {
-  deck: number[];
+  private deck: number[] = [];
 
   constructor() {
-    this.deck = Array.from(new Array(52), (x, i) => i);
+    this.reset();
     this.shuffle();
   }
 
@@ -10,8 +10,14 @@ export class Deck {
     console.log(this.deck);
   }
 
-  // Stack Shuffle
+  // Initialize values in deck, 0 - 51
+  private reset(): void {
+    this.deck = Array.from(new Array(52), (x, i) => i);
+  }
+
+  // Reset deck and perform Stack Shuffle
   shuffle(): void {
+    this.reset();
     let count = this.deck.length;
     while (count) {
       this.deck.push(this.deck.splice(Math.floor(Math.random() * count), 1)[0]);
@@ -19,6 +25,7 @@ export class Deck {
     }
   }
 
+  // Pop card at top of deck
   draw(): number {
     return this.deck.pop() as number;
   }
