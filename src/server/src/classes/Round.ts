@@ -1,6 +1,7 @@
 import { IRound } from "../interfaces/IRound";
 import { IPlayer } from "../interfaces/IPlayer";
 import Deck from "./Deck";
+import CardHelpers from "../utilities/CardHelpers";
 
 interface IParams {
   currentDealer: number;
@@ -49,6 +50,16 @@ export default class Round {
   }
 
   print(): void {
-    console.log(this.round);
+    console.log(this.round.board);
+    for (let player of this.players) {
+      console.log(
+        player.id +
+          ": " +
+          player.pocket +
+          " (" +
+          CardHelpers.getHand(this.round.board.concat(player.pocket)) +
+          ")"
+      );
+    }
   }
 }

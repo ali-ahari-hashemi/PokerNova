@@ -57,7 +57,6 @@ export default class Game {
   }
 
   print() {
-    console.log(this.gameState);
-    console.log(this.currentRound);
+    this.currentRound.print();
   }
 }
