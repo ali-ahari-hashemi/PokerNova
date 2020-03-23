@@ -4,5 +4,6 @@ export interface IPlayer {
   name?: string;
   currentBet?: number;
   chipCount?: number;
+  isActiveInRound?: boolean;
   pocket: string[];
 }

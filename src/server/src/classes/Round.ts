@@ -1,7 +1,11 @@
 import { IRound } from "../interfaces/IRound";
 import { IPlayer } from "../interfaces/IPlayer";
 import Deck from "./Deck";
-import CardHelpers from "../utilities/CardHelpers";
+import {
+  CardHelpers,
+  IHandWinners,
+  IPlayerCards
+} from "../utilities/CardHelpers";
 
 interface IParams {
   currentDealer: number;
@@ -57,9 +61,29 @@ export default class Round {
           ": " +
           player.pocket +
           " (" +
-          CardHelpers.getHand(this.round.board.concat(player.pocket)) +
+          CardHelpers.determineHandName(
+            this.round.board.concat(player.pocket)
+          ) +
           ")"
       );
     }
+  }
+
+  determineWinners(): IHandWinners {
+    let playerCards: IPlayerCards[] = [];
+
+    this.players
+      .filter(player => {
+        return true;
+        // player.isActiveInRound;
+      })
+      .forEach(activePlayer => {
+        playerCards.push({
+          id: activePlayer.id,
+          cards: activePlayer.pocket.concat(this.round.board)
+        });
+      });
+
+    return CardHelpers.determineWinners(playerCards);
   }
 }

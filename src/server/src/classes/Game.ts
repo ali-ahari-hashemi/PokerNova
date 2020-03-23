@@ -34,19 +34,19 @@ export default class Game {
     this.addPlayer();
     this.addPlayer();
     this.addPlayer();
-    this.print();
     console.log("Dealing out cards");
     this.currentRound.deal();
-    this.print();
+    this.currentRound.print();
     console.log("The flop");
     this.currentRound.draw();
-    this.print();
+    this.currentRound.print();
     console.log("The turn");
     this.currentRound.draw();
-    this.print();
+    this.currentRound.print();
     console.log("The river");
     this.currentRound.draw();
-    this.print();
+    this.currentRound.print();
+    console.log(this.currentRound.determineWinners());
   }
 
   addPlayer() {
@@ -54,9 +54,5 @@ export default class Game {
     players.length < 9 &&
       players.push({ id: this.gameState.players.length, pocket: [] });
     // set socket identifier, respond to player with what their ID is (maybe set a cookie?)
-  }
-
-  print() {
-    this.currentRound.print();
   }
 }
