@@ -1,0 +1,39 @@
+.Card {
+  height: 100px;
+  width: 70px;
+  background-color: #FFFFFF;
+  border-radius: 5px;
+  display: inline-block;
+  box-shadow: 2px 2px 4px 0 rgba(95,94,94,0.50);
+}
+
+.CardRankContainer {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.CardSuitContainer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.CardRank {
+  font-size: 35px;
+  margin-left: 8px;
+  margin-top: 2px;
+}
+
+.CardSuit {
+  height: 40px;
+  margin-right: 6px;
+  margin-bottom: 8px;
+}
+
+.red {
+  color: #F45151;
+}
+
+.black {
+  color: #504F56;
+}
