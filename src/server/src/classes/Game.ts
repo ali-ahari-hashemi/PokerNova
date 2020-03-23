@@ -17,36 +17,29 @@ export default class Game {
       players: []
     };
     this.currentRound = new Round({
-      players: this.gameState.players,
-      currentDealer: this.gameState.currentDealer
+      players: [],
+      currentDealer: -1
     });
   }
 
   start() {
     this.gameState.isActive = true;
+    this.addPlayer();
+    this.addPlayer();
+    this.addPlayer();
+    this.addPlayer();
 
     // Pick random dealer out of current players
     this.gameState.currentDealer = Math.floor(
-      Math.random() * this.gameState.players.length
+      Math.random() * Math.floor(this.gameState.players.length)
     );
 
-    console.log("Adding 3 players");
-    this.addPlayer();
-    this.addPlayer();
-    this.addPlayer();
+    this.currentRound = new Round({
+      players: this.gameState.players,
+      currentDealer: this.gameState.currentDealer
+    });
     this.print();
-    console.log("Dealing out cards");
-    this.currentRound.deal();
-    this.print();
-    console.log("The flop");
-    this.currentRound.draw();
-    this.print();
-    console.log("The turn");
-    this.currentRound.draw();
-    this.print();
-    console.log("The river");
-    this.currentRound.draw();
-    this.print();
+    this.currentRound.start();
   }
 
   addPlayer() {
@@ -58,6 +51,5 @@ export default class Game {
 
   print() {
     console.log(this.gameState);
-    console.log(this.currentRound);
   }
 }

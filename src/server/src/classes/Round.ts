@@ -29,6 +29,29 @@ export default class Round {
     this.currentDealer = params.currentDealer;
   }
 
+  start(): void {
+    this.deal();
+    let { currentPlayer } = this.round;
+    for (let i = 0; i < 4; i++) {
+      const offset = i == 0 ? 3 : 1;
+      const stoppingPoint = (this.currentDealer + offset) % this.players.length;
+      currentPlayer = stoppingPoint;
+
+      if (i !== 0) {
+        this.draw();
+      }
+      this.print();
+      let bettingStarted = false;
+      while (currentPlayer !== stoppingPoint || !bettingStarted) {
+        bettingStarted = true;
+
+        // TODO: add action for player here
+
+        currentPlayer = (currentPlayer + 1) % this.players.length;
+      }
+    }
+  }
+
   // Deals two cards to each player in the game
   deal(): void {
     for (let i = 0; i < 2; i++) {
