@@ -1,4 +1,4 @@
-var Hand = require("pokersolver").Hand;
+var Hand = require('pokersolver').Hand;
 
 export interface IPlayerCards {
   id: number;
@@ -17,7 +17,7 @@ export class CardHelpers {
       let hand = Hand.solve(cards);
       return hand.name;
     }
-    return "N/A";
+    return 'N/A';
   }
   // Given multiple sets of cards associated with player id,
   // returns the id(s) of the player(s) with the winning hand
@@ -34,11 +34,11 @@ export class CardHelpers {
     // so transform out a list representation of winning hand that matches our format
     let winningHandCards = winningHands[0]
       .toString()
-      .split(", ")
+      .split(', ')
       .map((card: string) => {
         // Convert "10" to "T" because for some reason they decided it would be a good idea
         // to represent the 10 card inconsistently .
-        return card.startsWith("10") ? "T" + card[2] : card;
+        return card.startsWith('10') ? 'T' + card[2] : card;
       });
 
     // Determine ids of winning hand based on which players' cards contain the winning hand
@@ -55,7 +55,7 @@ export class CardHelpers {
 
     return {
       ids: winningIds,
-      desc: winningHands[0].descr
+      desc: winningHands[0].descr,
     };
   }
 }

@@ -1,7 +1,7 @@
-import { ActionType } from "../constants";
-import { IAction } from "../interfaces/IAction";
-import { IPlayer } from "../interfaces/IPlayer";
-import { IRound } from "../interfaces/IRound";
+import { ActionType } from '../constants';
+import { IAction } from '../interfaces/IAction';
+import { IPlayer } from '../interfaces/IPlayer';
+import { IRound } from '../interfaces/IRound';
 
 /** Action:
  *  - Performs any poker action
