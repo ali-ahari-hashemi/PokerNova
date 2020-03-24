@@ -31,7 +31,7 @@ export default class Game {
 
     // Pick random dealer out of current players
     this.gameState.currentDealer = Math.floor(
-      Math.random() * Math.floor(this.gameState.players.length)
+      Math.random() * this.gameState.players.length
     );
 
     this.currentRound = new Round({

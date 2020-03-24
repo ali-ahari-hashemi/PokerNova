@@ -1,4 +1,4 @@
-import { ActionType } from "../enums";
+import { ActionType } from "../constants";
 import { IPlayer } from "../interfaces/IPlayer";
 
 export const getValidActionTypes = (
@@ -10,7 +10,10 @@ export const getValidActionTypes = (
 
   player.currentBet == highestBet && validActions.push(ActionType.check);
   callAmount !== 0 && player.chipCount > callAmount && validActions.push(ActionType.call);
-  player.chipCount > callAmount && validActions.push(ActionType.raise);
+  highestBet == 0 && player.chipCount > 0 && validActions.push(ActionType.bet);
+  highestBet !== 0 &&
+    player.chipCount > callAmount &&
+    validActions.push(ActionType.raise);
 
   return validActions;
 };

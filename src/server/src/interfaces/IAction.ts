@@ -1,4 +1,4 @@
-import { ActionType } from "../enums";
+import { ActionType } from "../constants";
 
 export interface IAction {
   actionType: ActionType;

@@ -3,7 +3,7 @@ import { IPlayer } from "../interfaces/IPlayer";
 import Deck from "./Deck";
 import { getValidActionTypes } from "../utils/getValidActionTypes";
 import { Action } from "./Action";
-import { ActionType } from "../enums";
+import { ActionType } from "../constants";
 import { CardHelpers, IHandWinners, IPlayerCards } from "../utilities/CardHelpers";
 
 interface IParams {
@@ -62,8 +62,8 @@ export default class Round {
 
         // Check if player is still in play (not folded and not all in)
         if (
-          this.round.playersFolded.indexOf(this.round.currentPlayer) == -1 &&
-          this.round.playersAllIn.indexOf(this.round.currentPlayer) == -1
+          !this.round.playersFolded.includes(this.round.currentPlayer) &&
+          !this.round.playersAllIn.includes(this.round.currentPlayer)
         ) {
           const validActionTypes = getValidActionTypes(
             this.players[this.round.currentPlayer],

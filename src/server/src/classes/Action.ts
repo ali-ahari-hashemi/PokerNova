@@ -1,4 +1,4 @@
-import { ActionType } from "../enums";
+import { ActionType } from "../constants";
 import { IAction } from "../interfaces/IAction";
 import { IPlayer } from "../interfaces/IPlayer";
 import { IRound } from "../interfaces/IRound";
@@ -36,6 +36,9 @@ export class Action {
       case ActionType.allIn:
         this.allIn();
         break;
+      case ActionType.bet:
+        this.bet();
+        break;
       default:
         this.fold();
         break;
@@ -55,7 +58,7 @@ export class Action {
   call() {
     const callAmount = this.round.highestBet - this.player.currentBet;
     console.log(`player ${this.player.id} calling amount: ${callAmount}`);
-    this.bet(callAmount);
+    this.placeBet(callAmount);
   }
 
   raise() {
@@ -67,17 +70,33 @@ export class Action {
       this.allIn();
     } else {
       console.log(`player ${this.player.id} raising amount: ${totalRaiseAmount}`);
-      this.bet(totalRaiseAmount);
+      this.placeBet(totalRaiseAmount);
     }
   }
 
   allIn() {
     console.log(`player ${this.player.id} going all in`);
-    this.bet(this.player.chipCount);
+    this.placeBet(this.player.chipCount);
     this.round.playersAllIn.push(this.player.id);
   }
 
-  private bet(betAmount: number) {
+  // First to bet (highest current bet == 0)
+  bet() {
+    const betAmount = this.action.betAmount as number;
+    if (betAmount > 0) {
+      if (betAmount < this.player.chipCount) {
+        this.round.highestBet = betAmount;
+        this.round.stoppingPoint = this.player.id;
+        console.log(`player ${this.player.id} betting ${betAmount}`);
+      } else {
+        this.allIn();
+      }
+    } else {
+      this.check();
+    }
+  }
+
+  private placeBet(betAmount: number) {
     this.round.pot += betAmount;
     this.player.chipCount -= betAmount;
     const playersCurrentTotalBet = this.player.currentBet + betAmount;
