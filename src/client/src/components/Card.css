@@ -1,39 +1,51 @@
 .Card {
-  height: 100px;
-  width: 70px;
-  background-color: #FFFFFF;
+  height: 80px;
+  width: 55px;
   border-radius: 5px;
-  display: inline-block;
+  margin: 4px;
+  display: flex;
+  flex-direction: column;
+}
+
+.PopulatedCard {
+  background-color: var(--main-white);
   box-shadow: 2px 2px 4px 0 rgba(95,94,94,0.50);
+}
+
+.EmptyCard {
+  border: 2px solid var(--main-white);
+  box-sizing: border-box;
 }
 
 .CardRankContainer {
   display: flex;
   justify-content: flex-start;
+  flex: 1;
 }
 
 .CardSuitContainer {
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
+  flex: 1;
 }
 
 .CardRank {
-  font-size: 35px;
+  font-size: 30px;
   margin-left: 8px;
   margin-top: 2px;
 }
 
 .CardSuit {
-  height: 40px;
-  margin-right: 6px;
+  height: 28px;
+  margin-right: 4px;
   margin-bottom: 8px;
 }
 
 .red {
-  color: #F45151;
+  color: var(--red-card-color);
 }
 
 .black {
-  color: #504F56;
+  color: var(--black-card-color);
 }

@@ -1,0 +1,151 @@
+.Game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.AppLogo {
+  position: absolute;
+  font-weight: 600;
+  top: 40px;
+  left: 40px;
+}
+
+/* Header stuff */
+
+.Header {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-top: 20px;
+  margin-bottom: 40px;
+}
+
+.HeaderStatus {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.HeaderStatusText {
+  font-weight: 200;
+}
+
+.TimerContainer {
+  margin-left: 15px;
+}
+
+.TimerText {
+  font-weight: 400;
+  font-size: 25px;
+  margin-bottom: 2px;/* Alignment looked weird, this is an unexpected adjustment */
+  margin-right: 8px;
+}
+
+/* Game table stuff */
+
+.GameTable {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 200px;
+  width: 450px;
+  border: 3px solid var(--main-white);
+  border-radius: 80px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+.CommunityCardsText {
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.CommunityCardsContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.PotTotalText {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 20px;
+}
+
+/* User content stuff*/
+
+.UserContent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.UserContentStatusContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
+
+.UserCardsContainer {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+}
+
+.UserContentOptionsContainer {
+  background-color: var(--main-highlight-color);
+  min-width: 220px;
+}
+
+.UserContentOptionsHeader {
+  border-bottom: 4px solid var(--main-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 15px 20px;
+}
+
+.UserContentOptionsTitle {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.UserContentOptionsContent {
+  padding: 20px;
+}
+
+.BetContainer {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+
+.PlayOption {
+  background-color: var(--main-color);
+  padding: 8px 0px;
+  font-size: 12px;
+  font-weight: 500;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+}
+
+.PlayOption:hover {
+  cursor: pointer;
+  background-color: var(--main-white);
+  color: var(--main-color);
+}
+
+.PlayOptionFull {
+  margin-top: 12px;
+}
+
+.BetButton {
+  flex: 2;
+  margin-right: 12px;
+}
