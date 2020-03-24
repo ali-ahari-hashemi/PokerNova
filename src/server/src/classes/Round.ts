@@ -87,9 +87,8 @@ export default class Round {
       } while (this.round.currentPlayer !== this.round.stoppingPoint);
     }
 
-    // Following is breaking and im not sure why, gotta look into it
-    // const winners = this.determineWinners();
-    // console.log("WINNERS: ", winners);
+    const winners = this.determineWinners();
+    console.log("WINNERS: ", winners);
   }
 
   // Deals two cards to each player
@@ -174,7 +173,7 @@ export default class Round {
 
     this.players
       .filter(player => {
-        player.isActiveInRound;
+        return player.isActiveInRound;
       })
       .forEach(activePlayer => {
         playerCards.push({
