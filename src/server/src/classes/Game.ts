@@ -38,14 +38,19 @@ export default class Game {
       players: this.gameState.players,
       currentDealer: this.gameState.currentDealer
     });
-    this.print();
     this.currentRound.start();
   }
 
   addPlayer() {
     const players = this.gameState.players;
     players.length < 9 &&
-      players.push({ id: this.gameState.players.length, pocket: [] });
+      players.push({
+        id: this.gameState.players.length,
+        name: "name",
+        currentBet: 0,
+        chipCount: 200,
+        pocket: []
+      });
     // set socket identifier, respond to player with what their ID is (maybe set a cookie?)
   }
 
