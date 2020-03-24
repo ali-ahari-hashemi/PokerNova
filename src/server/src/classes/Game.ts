@@ -1,5 +1,6 @@
 import IGame from '../interfaces/IGame';
 import Round from './Round';
+import { IPlayer } from '../interfaces/IPlayer';
 
 /** Game:
  *  - Holds gameState
@@ -24,14 +25,6 @@ export default class Game {
 
   async start() {
     this.gameState.isActive = true;
-
-    // TODO: Manage adding players via socket connections
-    this.addPlayer();
-    this.addPlayer();
-    this.addPlayer();
-    this.addPlayer();
-
-    // Pick random dealer out of current players
     this.gameState.currentDealer = Math.floor(Math.random() * this.gameState.players.length);
 
     while (this.gameState.isActive) {
@@ -49,18 +42,9 @@ export default class Game {
     }
   }
 
-  addPlayer() {
+  addPlayer(player: IPlayer) {
     const players = this.gameState.players;
-    players.length < 9 &&
-      players.push({
-        id: this.gameState.players.length,
-        name: 'name',
-        currentBet: 0,
-        chipCount: 200,
-        pocket: [],
-        isActiveInRound: true,
-      });
-    // set socket identifier, respond to player with what their ID is (maybe set a cookie?)
+    players.length < 9 && players.push(player);
   }
 
   // Checks if the game has at least 2 players with chips

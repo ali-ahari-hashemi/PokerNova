@@ -6,7 +6,8 @@
     "start": "node dist/app.js",
     "dev": "nodemon src/app.ts",
     "build": "tsc -p .",
-    "test": "mocha -r ts-node/register src/tests/*.ts"
+    "test": "mocha -r ts-node/register src/tests/*.ts",
+    "simulate": "ts-node src/tests/simulateGame.ts"
   },
   "author": "",
   "license": "ISC",

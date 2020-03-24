@@ -185,7 +185,7 @@ export default class Round {
 
   private payout(winners: IHandWinners): void {
     const winningPlayerIds = winners.ids;
-    const potDivided = this.round.pot / winningPlayerIds.length;
+    const potDivided = (1.0 * this.round.pot) / winningPlayerIds.length;
     winningPlayerIds.map(id => {
       this.players[id].chipCount += potDivided;
     });
