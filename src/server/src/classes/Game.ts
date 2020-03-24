@@ -22,8 +22,10 @@ export default class Game {
     });
   }
 
-  start() {
+  async start() {
     this.gameState.isActive = true;
+
+    // TODO: Manage adding players via socket connections
     this.addPlayer();
     this.addPlayer();
     this.addPlayer();
@@ -32,11 +34,19 @@ export default class Game {
     // Pick random dealer out of current players
     this.gameState.currentDealer = Math.floor(Math.random() * this.gameState.players.length);
 
-    this.currentRound = new Round({
-      players: this.gameState.players,
-      currentDealer: this.gameState.currentDealer,
-    });
-    this.currentRound.start();
+    while (this.gameState.isActive) {
+      console.log('================= NEW ROUND ===============');
+      console.log(`Dealer: ${this.gameState.currentDealer}`);
+      console.log(this.gameState.players);
+      console.log('\n\n\n\n');
+      this.currentRound = new Round({
+        players: this.gameState.players,
+        currentDealer: this.gameState.currentDealer,
+      });
+      await this.currentRound.start();
+
+      this.gameState.isActive = this.isActiveGame();
+    }
   }
 
   addPlayer() {
@@ -51,5 +61,14 @@ export default class Game {
         isActiveInRound: true,
       });
     // set socket identifier, respond to player with what their ID is (maybe set a cookie?)
+  }
+
+  // Checks if the game has at least 2 players with chips
+  isActiveGame(): boolean {
+    let count = 0;
+    this.gameState.players.map(player => {
+      player.chipCount > 0 && count++;
+    });
+    return count > 1;
   }
 }
