@@ -1,5 +1,7 @@
+import { ranks, suits } from "../constants";
+
 export class Deck {
-  private deck: number[] = [];
+  private deck: string[] = [];
 
   constructor() {
     this.reset();
@@ -10,9 +12,15 @@ export class Deck {
     console.log(this.deck);
   }
 
-  // Initialize values in deck, 0 - 51
+  // Initialize values in deck
   private reset(): void {
-    this.deck = Array.from(new Array(52), (x, i) => i);
+    let tempDeck: string[] = [];
+    for (let suit of suits) {
+      for (let rank of ranks) {
+        tempDeck.push(rank + suit);
+      }
+    }
+    this.deck = tempDeck;
   }
 
   // Reset deck and perform Stack Shuffle
@@ -26,8 +34,8 @@ export class Deck {
   }
 
   // Pop card at top of deck
-  draw(): number {
-    return this.deck.pop() as number;
+  draw(): string {
+    return this.deck.pop() as string;
   }
 }
 

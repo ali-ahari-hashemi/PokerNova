@@ -49,12 +49,9 @@ export default class Game {
         name: "name",
         currentBet: 0,
         chipCount: 200,
-        pocket: []
+        pocket: [],
+        isActiveInRound: true
       });
     // set socket identifier, respond to player with what their ID is (maybe set a cookie?)
-  }
-
-  print() {
-    console.log(this.gameState);
   }
 }

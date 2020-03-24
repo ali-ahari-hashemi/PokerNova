@@ -45,6 +45,7 @@ export class Action {
   fold() {
     console.log(`player ${this.player.id} folding`);
     this.round.playersFolded.push(this.player.id);
+    this.player.isActiveInRound = false;
   }
 
   check() {

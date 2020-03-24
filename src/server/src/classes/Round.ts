@@ -4,6 +4,7 @@ import Deck from "./Deck";
 import { getValidActionTypes } from "../utils/getValidActionTypes";
 import { Action } from "./Action";
 import { ActionType } from "../enums";
+import { CardHelpers, IHandWinners, IPlayerCards } from "../utilities/CardHelpers";
 
 interface IParams {
   currentDealer: number;
@@ -50,9 +51,15 @@ export default class Round {
         this.draw();
       }
 
-      console.log("=============== NEW ROUND ================= \n \n \n \n");
+      console.log("=============== NEW ROUND =================");
+      this.print();
+      console.log("\n\n\n\n");
 
       do {
+        if (!this.shouldContinue()) {
+          break;
+        }
+
         // Check if player is still in play (not folded and not all in)
         if (
           this.round.playersFolded.indexOf(this.round.currentPlayer) == -1 &&
@@ -75,16 +82,14 @@ export default class Round {
         }
 
         this.print();
-        if (!this.shouldContinue()) {
-          break;
-        }
+
         this.round.currentPlayer = (this.round.currentPlayer + 1) % this.players.length;
       } while (this.round.currentPlayer !== this.round.stoppingPoint);
-
-      if (!this.shouldContinue()) {
-        break;
-      }
     }
+
+    // Following is breaking and im not sure why, gotta look into it
+    // const winners = this.determineWinners();
+    // console.log("WINNERS: ", winners);
   }
 
   // Deals two cards to each player
@@ -121,6 +126,14 @@ export default class Round {
       playersFolded: this.round.playersFolded,
       playersAllIn: this.round.playersAllIn
     });
+
+    for (let player of this.players) {
+      console.log(
+        `player ${player.id}: ${player.pocket} (${CardHelpers.determineHandName(
+          this.round.board.concat(player.pocket)
+        )})`
+      );
+    }
   }
 
   // This function returns true if there are more than 2 players in play and at least one of them is not all in
@@ -154,5 +167,22 @@ export default class Round {
     )) as string[];
 
     return ans;
+  }
+
+  determineWinners(): IHandWinners {
+    let playerCards: IPlayerCards[] = [];
+
+    this.players
+      .filter(player => {
+        player.isActiveInRound;
+      })
+      .forEach(activePlayer => {
+        playerCards.push({
+          id: activePlayer.id,
+          cards: activePlayer.pocket.concat(this.round.board)
+        });
+      });
+
+    return CardHelpers.determineWinners(playerCards);
   }
 }
