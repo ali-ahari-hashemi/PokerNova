@@ -88,7 +88,9 @@ export default class Round {
     }
 
     const winners = this.determineWinners();
+    this.payout(winners);
     console.log("WINNERS: ", winners);
+    console.log(this.players);
   }
 
   // Deals two cards to each player
@@ -183,5 +185,13 @@ export default class Round {
       });
 
     return CardHelpers.determineWinners(playerCards);
+  }
+
+  private payout(winners: IHandWinners): void {
+    const winningPlayerIds = winners.ids;
+    const potDivided = this.round.pot / winningPlayerIds.length;
+    winningPlayerIds.map(id => {
+      this.players[id].chipCount += potDivided;
+    });
   }
 }
