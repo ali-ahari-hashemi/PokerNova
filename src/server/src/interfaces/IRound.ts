@@ -5,5 +5,8 @@ export interface IRound {
   pot: number;
   highestBet: number;
   currentPlayer: number;
+  stoppingPoint: number;
   deck: Deck;
+  playersFolded: number[];
+  playersAllIn: number[];
 }

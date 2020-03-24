@@ -17,42 +17,41 @@ export default class Game {
       players: []
     };
     this.currentRound = new Round({
-      players: this.gameState.players,
-      currentDealer: this.gameState.currentDealer
+      players: [],
+      currentDealer: -1
     });
   }
 
   start() {
     this.gameState.isActive = true;
+    this.addPlayer();
+    this.addPlayer();
+    this.addPlayer();
+    this.addPlayer();
 
     // Pick random dealer out of current players
     this.gameState.currentDealer = Math.floor(
       Math.random() * this.gameState.players.length
     );
 
-    console.log("Adding 3 players");
-    this.addPlayer();
-    this.addPlayer();
-    this.addPlayer();
-    console.log("Dealing out cards");
-    this.currentRound.deal();
-    this.currentRound.print();
-    console.log("The flop");
-    this.currentRound.draw();
-    this.currentRound.print();
-    console.log("The turn");
-    this.currentRound.draw();
-    this.currentRound.print();
-    console.log("The river");
-    this.currentRound.draw();
-    this.currentRound.print();
-    console.log(this.currentRound.determineWinners());
+    this.currentRound = new Round({
+      players: this.gameState.players,
+      currentDealer: this.gameState.currentDealer
+    });
+    this.currentRound.start();
   }
 
   addPlayer() {
     const players = this.gameState.players;
     players.length < 9 &&
-      players.push({ id: this.gameState.players.length, pocket: [] });
+      players.push({
+        id: this.gameState.players.length,
+        name: "name",
+        currentBet: 0,
+        chipCount: 200,
+        pocket: [],
+        isActiveInRound: true
+      });
     // set socket identifier, respond to player with what their ID is (maybe set a cookie?)
   }
 }
