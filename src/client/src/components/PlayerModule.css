@@ -1,0 +1,53 @@
+.PlayerModule {
+  width: 130px;
+  overflow: hidden;
+  background-color: var(--main-highlight-color);
+  border-radius: 100px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 10px 20px 10px 15px; /* Need a little extra on the right cuz of rounded borders */
+}
+
+.PlayerModuleActive {
+  border: 2px solid var(--main-white);
+}
+
+.PlayerModuleTotalContainer {
+  background-color: var(--main-white);
+  border-radius: 100px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 10px;
+}
+
+.PlayerModuleTotalText {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--main-highlight-color);
+}
+
+.PlayerModuleDetailsContainer {
+  margin-left: 10px;
+  overflow: hidden;
+}
+
+.PlayerModulePlayerText {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.PlayerModuleStatusText {
+  font-size: 11px;
+  font-weight: 100;
+}
+
+.OneLine {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}

@@ -1,10 +1,18 @@
+:root {
+  --black-card-color: #504F56;
+  --red-card-color: #F45151;
+  --main-white: #FFFFFF;
+  --main-color: #79A6B5;
+  --main-highlight-color: #021626;
+}
+
 body {
   margin: 0;
   font-family: sans-serif;
-  background-color: blueviolet;
+  background-color: var(--main-color);
   font-family: 'Montserrat', sans-serif;
   font-weight: 400;
-  color: #FFFFFF;
+  color: var(--main-white);
 }
 
 p {
