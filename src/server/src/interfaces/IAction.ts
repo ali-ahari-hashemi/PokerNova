@@ -1,4 +1,4 @@
-import { ActionType } from "../constants";
+import { ActionType } from '../constants';
 
 export interface IAction {
   actionType: ActionType;
