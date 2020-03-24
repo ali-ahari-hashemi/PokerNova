@@ -1,4 +1,4 @@
-import { ranks, suits } from "../constants";
+import { ranks, suits } from '../constants';
 
 export class Deck {
   private deck: string[] = [];

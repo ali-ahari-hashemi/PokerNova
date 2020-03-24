@@ -1,5 +1,5 @@
-import IGame from "../interfaces/IGame";
-import Round from "./Round";
+import IGame from '../interfaces/IGame';
+import Round from './Round';
 
 /** Game:
  *  - Holds gameState
@@ -14,11 +14,11 @@ export default class Game {
     this.gameState = {
       isActive: false,
       currentDealer: -1,
-      players: []
+      players: [],
     };
     this.currentRound = new Round({
       players: [],
-      currentDealer: -1
+      currentDealer: -1,
     });
   }
 
@@ -30,13 +30,11 @@ export default class Game {
     this.addPlayer();
 
     // Pick random dealer out of current players
-    this.gameState.currentDealer = Math.floor(
-      Math.random() * this.gameState.players.length
-    );
+    this.gameState.currentDealer = Math.floor(Math.random() * this.gameState.players.length);
 
     this.currentRound = new Round({
       players: this.gameState.players,
-      currentDealer: this.gameState.currentDealer
+      currentDealer: this.gameState.currentDealer,
     });
     this.currentRound.start();
   }
@@ -46,11 +44,11 @@ export default class Game {
     players.length < 9 &&
       players.push({
         id: this.gameState.players.length,
-        name: "name",
+        name: 'name',
         currentBet: 0,
         chipCount: 200,
         pocket: [],
-        isActiveInRound: true
+        isActiveInRound: true,
       });
     // set socket identifier, respond to player with what their ID is (maybe set a cookie?)
   }

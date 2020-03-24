@@ -1,4 +1,4 @@
-import Deck from "../classes/Deck";
+import Deck from '../classes/Deck';
 
 export interface IRound {
   board: string[];

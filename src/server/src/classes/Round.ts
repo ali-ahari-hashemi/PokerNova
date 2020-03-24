@@ -1,10 +1,10 @@
-import { IRound } from "../interfaces/IRound";
-import { IPlayer } from "../interfaces/IPlayer";
-import Deck from "./Deck";
-import { getValidActionTypes } from "../utils/getValidActionTypes";
-import { Action } from "./Action";
-import { ActionType } from "../constants";
-import { CardHelpers, IHandWinners, IPlayerCards } from "../utilities/CardHelpers";
+import { IRound } from '../interfaces/IRound';
+import { IPlayer } from '../interfaces/IPlayer';
+import Deck from './Deck';
+import { getValidActionTypes } from '../utils/getValidActionTypes';
+import { Action } from './Action';
+import { ActionType } from '../constants';
+import { CardHelpers, IHandWinners, IPlayerCards } from '../utilities/CardHelpers';
 
 interface IParams {
   currentDealer: number;
@@ -31,14 +31,14 @@ export default class Round {
       stoppingPoint: -1,
       deck: new Deck(),
       playersFolded: [],
-      playersAllIn: []
+      playersAllIn: [],
     };
     this.players = params.players;
     this.currentDealer = params.currentDealer;
   }
 
   async start(): Promise<void> {
-    console.log("dealer", this.currentDealer);
+    console.log('dealer', this.currentDealer);
     this.deal();
 
     for (let i = 0; i < 4; i++) {
@@ -51,9 +51,9 @@ export default class Round {
         this.draw();
       }
 
-      console.log("=============== NEW ROUND =================");
+      console.log('=============== NEW ROUND =================');
       this.print();
-      console.log("\n\n\n\n");
+      console.log('\n\n\n\n');
 
       do {
         if (!this.shouldContinue()) {
@@ -74,7 +74,7 @@ export default class Round {
           new Action(
             {
               actionType: ans[0] as ActionType,
-              betAmount: parseInt(ans[1])
+              betAmount: parseInt(ans[1]),
             },
             this.players[this.round.currentPlayer],
             this.round
@@ -88,7 +88,7 @@ export default class Round {
     }
 
     const winners = this.determineWinners();
-    console.log("WINNERS: ", winners);
+    console.log('WINNERS: ', winners);
   }
 
   // Deals two cards to each player
@@ -123,7 +123,7 @@ export default class Round {
       highestBet: this.round.highestBet,
       stoppingPoint: this.round.stoppingPoint,
       playersFolded: this.round.playersFolded,
-      playersAllIn: this.round.playersAllIn
+      playersAllIn: this.round.playersAllIn,
     });
 
     for (let player of this.players) {
@@ -143,24 +143,22 @@ export default class Round {
 
   // This is a temporary function used to get input from the user through the console. Used for development purposes and testing
   private async getActionTypeFromUser(validActionTypes: ActionType[]): Promise<string[]> {
-    const readline = require("readline");
+    const readline = require('readline');
     function askQuestion(query: string) {
       const rl = readline.createInterface({
         input: process.stdin,
-        output: process.stdout
+        output: process.stdout,
       });
 
       return new Promise(resolve =>
         rl.question(query, (ans: string) => {
           rl.close();
-          resolve(ans.split(" "));
+          resolve(ans.split(' '));
         })
       );
     }
 
-    console.log(
-      `valid action types for player ${this.round.currentPlayer}: ${validActionTypes}`
-    );
+    console.log(`valid action types for player ${this.round.currentPlayer}: ${validActionTypes}`);
     const ans = (await askQuestion(
       `Player ${this.round.currentPlayer}, What action would you like to take? (for raise, must be in the form "raise amount") `
     )) as string[];
@@ -178,7 +176,7 @@ export default class Round {
       .forEach(activePlayer => {
         playerCards.push({
           id: activePlayer.id,
-          cards: activePlayer.pocket.concat(this.round.board)
+          cards: activePlayer.pocket.concat(this.round.board),
         });
       });
 

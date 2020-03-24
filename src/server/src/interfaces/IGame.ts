@@ -1,4 +1,4 @@
-import { IPlayer } from "./IPlayer";
+import { IPlayer } from './IPlayer';
 
 export default interface IGame {
   isActive: boolean;
