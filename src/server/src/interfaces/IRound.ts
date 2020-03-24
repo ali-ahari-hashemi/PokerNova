@@ -1,7 +1,7 @@
 import Deck from "../classes/Deck";
 
 export interface IRound {
-  board: number[];
+  board: string[];
   pot: number;
   highestBet: number;
   currentPlayer: number;
