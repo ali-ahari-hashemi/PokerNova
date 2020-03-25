@@ -38,7 +38,6 @@ export default class Round {
   }
 
   async start(): Promise<void> {
-    console.log('dealer', this.currentDealer);
     this.deal();
 
     for (let i = 0; i < 4; i++) {
@@ -51,7 +50,7 @@ export default class Round {
         this.draw();
       }
 
-      console.log('=============== NEW ROUND =================');
+      console.log('=============== BETTING ROUND =================');
       this.print();
       console.log('\n\n\n\n');
 
@@ -74,7 +73,7 @@ export default class Round {
           new Action(
             {
               actionType: ans[0] as ActionType,
-              betAmount: parseInt(ans[1]),
+              betAmount: parseFloat(ans[1]),
             },
             this.players[this.round.currentPlayer],
             this.round
@@ -88,6 +87,7 @@ export default class Round {
     }
 
     const winners = this.determineWinners();
+    this.payout(winners);
     console.log('WINNERS: ', winners);
   }
 
@@ -181,5 +181,13 @@ export default class Round {
       });
 
     return CardHelpers.determineWinners(playerCards);
+  }
+
+  private payout(winners: IHandWinners): void {
+    const winningPlayerIds = winners.ids;
+    const potDivided = (1.0 * this.round.pot) / winningPlayerIds.length;
+    winningPlayerIds.map(id => {
+      this.players[id].chipCount += potDivided;
+    });
   }
 }
