@@ -55,8 +55,8 @@ export class Action {
     const betAmount = this.action.betAmount as number;
     const callAmount = this.round.highestBet - this.player.currentBet;
 
-    // Player attempts to bet more than they have in their balance - fail
-    if (betAmount > this.player.chipCount) {
+    // Player attempts to bet an invalid amount - fail
+    if (betAmount <= 0 || betAmount > this.player.chipCount) {
       return false;
 
       // Player attempts to bet their entire balance - pass, player goes all in
@@ -65,10 +65,6 @@ export class Action {
 
       // Player attempts to bet less than the amount needed to call - fail
     } else if (betAmount < callAmount) {
-      return false;
-
-      // Player attempts to bet a non-positive amount - fail
-    } else if (betAmount <= 0) {
       return false;
 
       // Player attempts to bet a valid amount - pass, process bet
