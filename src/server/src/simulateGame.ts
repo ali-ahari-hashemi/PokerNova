@@ -1,14 +1,6 @@
-import Game from '../classes/Game';
-import { IPlayer } from '../interfaces/IPlayer';
-
-const defaultPlayer: IPlayer = {
-  id: 0,
-  name: 'name',
-  currentBet: 0,
-  chipCount: 200,
-  pocket: [],
-  isActiveInRound: true,
-};
+import Game from './classes/Game';
+import { defaultPlayer } from './tests/_mockData';
+import { IPlayer } from './interfaces/IPlayer';
 
 const game = new Game();
 game.addPlayer({ ...defaultPlayer, id: 0, name: 'Ali' });

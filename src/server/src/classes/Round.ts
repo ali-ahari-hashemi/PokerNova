@@ -37,7 +37,7 @@ export default class Round {
     this.currentDealer = params.currentDealer;
   }
 
-  async start(): Promise<void> {
+  async start(): Promise<IPlayer[]> {
     this.deal();
 
     for (let i = 0; i < 4; i++) {
@@ -70,14 +70,14 @@ export default class Round {
           );
 
           const ans = await this.getActionTypeFromUser(validActionTypes);
-          new Action(
-            {
+          new Action({
+            action: {
               actionType: ans[0] as ActionType,
               betAmount: parseFloat(ans[1]),
             },
-            this.players[this.round.currentPlayer],
-            this.round
-          ).performAction();
+            player: this.players[this.round.currentPlayer],
+            round: this.round,
+          }).performAction();
         }
 
         this.print();
@@ -89,6 +89,8 @@ export default class Round {
     const winners = this.determineWinners();
     this.payout(winners);
     console.log('WINNERS: ', winners);
+
+    return this.players;
   }
 
   // Deals two cards to each player
