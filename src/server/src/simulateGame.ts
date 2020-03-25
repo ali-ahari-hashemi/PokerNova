@@ -2,7 +2,7 @@ import Game from './classes/Game';
 import { defaultPlayer } from './tests/_mockData';
 import cloneDeep from 'lodash.clonedeep';
 
-const game = new Game();
+const game = new Game('testID');
 game.addPlayer({ ...cloneDeep(defaultPlayer), id: 0, name: 'Ali' });
 game.addPlayer({ ...cloneDeep(defaultPlayer), id: 1, name: 'Austin' });
 game.addPlayer({ ...cloneDeep(defaultPlayer), id: 2, name: 'Jacob' });

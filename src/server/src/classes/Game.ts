@@ -11,8 +11,9 @@ export default class Game {
   private gameState: IGame;
   private currentRound: Round;
 
-  constructor() {
+  constructor(id: string) {
     this.gameState = {
+      id,
       isActive: false,
       currentDealer: -1,
       players: [],
