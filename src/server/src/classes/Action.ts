@@ -54,7 +54,17 @@ export class Action {
     const betAmount = this.action.betAmount as number;
     const callAmount = this.round.highestBet - this.player.currentBet;
 
-    const mainCases = (): boolean => {
+    if (betAmount > this.player.chipCount) {
+      return false;
+    } else if (betAmount == this.player.chipCount) {
+      return this.allIn();
+    } else if (betAmount < callAmount) {
+      return false;
+    } else if (betAmount < 0) {
+      return false;
+    } else if (betAmount == 0) {
+      return this.check();
+    } else if (betAmount > 0) {
       if (betAmount == callAmount) {
         return this.call();
       } else {
@@ -66,24 +76,8 @@ export class Action {
           return this.raise();
         }
       }
-    };
-
-    // A bit hackey but actually works really well for our needs
-    switch (true) {
-      case betAmount > this.player.chipCount:
-        return false;
-      case betAmount == this.player.chipCount:
-        return this.allIn();
-      case betAmount < callAmount:
-        return false;
-      case betAmount < 0:
-        return false;
-      case betAmount == 0:
-        return this.check();
-      case betAmount > 0:
-        return mainCases();
-      default:
-        return false;
+    } else {
+      return false;
     }
   }
 
