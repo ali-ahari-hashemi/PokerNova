@@ -37,8 +37,7 @@ export default class Round {
     this.currentDealer = params.currentDealer;
   }
 
-  async start(): Promise<void> {
-    console.log('dealer', this.currentDealer);
+  async start(): Promise<IPlayer[]> {
     this.deal();
 
     for (let i = 0; i < 4; i++) {
@@ -51,7 +50,7 @@ export default class Round {
         this.draw();
       }
 
-      console.log('=============== NEW ROUND =================');
+      console.log('=============== BETTING ROUND =================');
       this.print();
       console.log('\n\n\n\n');
 
@@ -70,15 +69,19 @@ export default class Round {
             this.round.highestBet
           );
 
-          const ans = await this.getActionTypeFromUser(validActionTypes);
-          new Action(
-            {
-              actionType: ans[0] as ActionType,
-              betAmount: parseInt(ans[1]),
-            },
-            this.players[this.round.currentPlayer],
-            this.round
-          ).performAction();
+          let didSuccessfullyPerformAction = undefined;
+          do {
+            const ans = await this.getActionTypeFromUser(validActionTypes);
+            didSuccessfullyPerformAction = new Action({
+              action: {
+                actionType: ans[0] as ActionType,
+                betAmount: parseFloat(ans[1]),
+              },
+              player: this.players[this.round.currentPlayer],
+              round: this.round,
+            }).performAction();
+            !didSuccessfullyPerformAction && console.log('ERROR, invalid input. Please Try again!');
+          } while (!didSuccessfullyPerformAction);
         }
 
         this.print();
@@ -88,7 +91,10 @@ export default class Round {
     }
 
     const winners = this.determineWinners();
+    this.payout(winners);
     console.log('WINNERS: ', winners);
+
+    return this.players;
   }
 
   // Deals two cards to each player
@@ -158,9 +164,9 @@ export default class Round {
       );
     }
 
-    console.log(`valid action types for player ${this.round.currentPlayer}: ${validActionTypes}`);
+    console.log(`Valid action types for player ${this.round.currentPlayer}: ${validActionTypes}`);
     const ans = (await askQuestion(
-      `Player ${this.round.currentPlayer}, What action would you like to take? (for raise, must be in the form "raise amount") `
+      `Player ${this.round.currentPlayer}, what action would you like to take? (for bet, must be in the form "bet amount") `
     )) as string[];
 
     return ans;
@@ -181,5 +187,13 @@ export default class Round {
       });
 
     return CardHelpers.determineWinners(playerCards);
+  }
+
+  private payout(winners: IHandWinners): void {
+    const winningPlayerIds = winners.ids;
+    const potDivided = (1.0 * this.round.pot) / winningPlayerIds.length;
+    winningPlayerIds.map(id => {
+      this.players[id].chipCount += potDivided;
+    });
   }
 }
