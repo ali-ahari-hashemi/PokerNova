@@ -69,15 +69,19 @@ export default class Round {
             this.round.highestBet
           );
 
-          const ans = await this.getActionTypeFromUser(validActionTypes);
-          new Action({
-            action: {
-              actionType: ans[0] as ActionType,
-              betAmount: parseFloat(ans[1]),
-            },
-            player: this.players[this.round.currentPlayer],
-            round: this.round,
-          }).performAction();
+          let didSuccessfullyPerformAction = undefined;
+          do {
+            const ans = await this.getActionTypeFromUser(validActionTypes);
+            didSuccessfullyPerformAction = new Action({
+              action: {
+                actionType: ans[0] as ActionType,
+                betAmount: parseFloat(ans[1]),
+              },
+              player: this.players[this.round.currentPlayer],
+              round: this.round,
+            }).performAction();
+            !didSuccessfullyPerformAction && console.log('ERROR, invalid input. Please Try again!');
+          } while (!didSuccessfullyPerformAction);
         }
 
         this.print();
@@ -160,9 +164,9 @@ export default class Round {
       );
     }
 
-    console.log(`valid action types for player ${this.round.currentPlayer}: ${validActionTypes}`);
+    console.log(`Valid action types for player ${this.round.currentPlayer}: ${validActionTypes}`);
     const ans = (await askQuestion(
-      `Player ${this.round.currentPlayer}, What action would you like to take? (for raise, must be in the form "raise amount") `
+      `Player ${this.round.currentPlayer}, what action would you like to take? (for bet, must be in the form "bet amount") `
     )) as string[];
 
     return ans;
