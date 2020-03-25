@@ -47,7 +47,8 @@ export class Action {
 
   check(): boolean {
     console.log(`player ${this.player.id} checking`);
-    return true;
+    const callAmount = this.round.highestBet - this.player.currentBet;
+    return callAmount == 0;
   }
 
   bet(): boolean {
