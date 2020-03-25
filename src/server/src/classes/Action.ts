@@ -64,7 +64,7 @@ export class Action {
     } else if (betAmount < 0) {
       return false;
     } else if (betAmount == 0) {
-      return this.check();
+      return false;
     } else if (betAmount > 0) {
       if (betAmount == callAmount) {
         return this.call();
