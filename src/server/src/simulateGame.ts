@@ -1,10 +1,10 @@
 import Game from './classes/Game';
 import { defaultPlayer } from './tests/_mockData';
-import { IPlayer } from './interfaces/IPlayer';
+import cloneDeep from 'lodash.clonedeep';
 
 const game = new Game();
-game.addPlayer({ ...defaultPlayer, id: 0, name: 'Ali' });
-game.addPlayer({ ...defaultPlayer, id: 1, name: 'Austin' });
-game.addPlayer({ ...defaultPlayer, id: 2, name: 'Jacob' });
-game.addPlayer({ ...defaultPlayer, id: 3, name: 'Alex' });
+game.addPlayer({ ...cloneDeep(defaultPlayer), id: 0, name: 'Ali' });
+game.addPlayer({ ...cloneDeep(defaultPlayer), id: 1, name: 'Austin' });
+game.addPlayer({ ...cloneDeep(defaultPlayer), id: 2, name: 'Jacob' });
+game.addPlayer({ ...cloneDeep(defaultPlayer), id: 3, name: 'Alex' });
 game.start();
