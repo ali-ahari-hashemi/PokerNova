@@ -1,8 +1,6 @@
 import IGame from '../interfaces/IGame';
 import Round from './Round';
 import { IPlayer } from '../interfaces/IPlayer';
-import { Action } from './Action';
-import { IAction } from '../interfaces/IAction';
 
 interface IParams {
   id: string;
@@ -30,31 +28,21 @@ export default class Game {
     });
   }
 
-  async start() {
+  start() {
     this.gameState.isActive = true;
-    this.gameState.currentDealer = Math.floor(Math.random() * this.gameState.players.length);
-
-    while (this.gameState.isActive) {
-      console.log('================= NEW ROUND ===============');
-      console.log(`Dealer: ${this.gameState.currentDealer}`);
-      console.log(this.gameState.players);
-      console.log('\n\n\n\n');
-      this.currentRound = new Round({
-        players: this.gameState.players,
-        currentDealer: this.gameState.currentDealer,
-      });
-      await this.currentRound.start();
-
-      this.gameState.isActive = this.isActiveGame();
-    }
+    this.startRound();
+    this.currentRound.on('roundEnded', () => {
+      if (this.isValidGame()) {
+        console.log('TESTTTTT', this.gameState.players);
+        this.startRound();
+      } else {
+        this.end();
+      }
+    });
   }
 
-  startRound(): void {
-    this.currentRound = new Round({
-      players: this.gameState.players,
-      currentDealer: this.gameState.currentDealer,
-    });
-    this.currentRound.start();
+  end() {
+    this.gameState.isActive = false;
   }
 
   getRound(): Round {
@@ -64,15 +52,27 @@ export default class Game {
   addPlayer(player: IPlayer) {
     const players = this.gameState.players;
     players.length < 9 && players.push(player);
-    //console.log('Players', this.gameState.players);
   }
 
   // Checks if the game has at least 2 players with chips
-  isActiveGame(): boolean {
+  isValidGame(): boolean {
     let count = 0;
     this.gameState.players.map(player => {
       player.chipCount > 0 && count++;
     });
     return count > 1;
+  }
+
+  isActiveGame(): boolean {
+    return this.gameState.isActive;
+  }
+
+  private startRound(): void {
+    console.log('starting new round');
+    this.currentRound = new Round({
+      players: this.gameState.players,
+      currentDealer: this.gameState.currentDealer,
+    });
+    this.currentRound.start();
   }
 }

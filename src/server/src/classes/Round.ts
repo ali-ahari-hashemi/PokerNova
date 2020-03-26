@@ -5,6 +5,7 @@ import { Action } from './Action';
 import { BettingRound } from '../constants';
 import { CardHelpers, IHandWinners, IPlayerCards } from '../utilities/CardHelpers';
 import { IAction } from '../interfaces/IAction';
+import { EventEmitter } from 'events';
 
 interface IParams {
   currentDealer: number;
@@ -17,12 +18,13 @@ interface IParams {
  * -  Handles actions made by players within a round
  */
 
-export default class Round {
+export default class Round extends EventEmitter {
   private round: IRound;
   private players: IPlayer[];
   private currentDealer: number;
 
   constructor(params: IParams) {
+    super();
     this.round = {
       board: [],
       pot: 0,
@@ -63,7 +65,7 @@ export default class Round {
 
   end() {
     this.round.isActive = false;
-    console.log('Round ended');
+    this.emit('roundEnded');
   }
 
   getCurrentPlayer(): IPlayer {
@@ -111,6 +113,7 @@ export default class Round {
 
   // Deals two cards to each player
   private deal(): void {
+    this.players.map(player => (player.pocket = []));
     for (let i = 0; i < 2; i++) {
       this.players.map(player => player.pocket.push(this.round.deck.draw()));
     }
