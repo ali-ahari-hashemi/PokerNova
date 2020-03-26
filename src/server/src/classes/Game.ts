@@ -2,6 +2,10 @@ import IGame from '../interfaces/IGame';
 import Round from './Round';
 import { IPlayer } from '../interfaces/IPlayer';
 
+interface IParams {
+  id: string;
+}
+
 /** Game:
  *  - Holds gameState
  *  - Initializes gameState when players are joining and game is starting
@@ -11,8 +15,9 @@ export default class Game {
   private gameState: IGame;
   private currentRound: Round;
 
-  constructor() {
+  constructor(params: IParams) {
     this.gameState = {
+      id: params.id,
       isActive: false,
       currentDealer: -1,
       players: [],
@@ -45,6 +50,7 @@ export default class Game {
   addPlayer(player: IPlayer) {
     const players = this.gameState.players;
     players.length < 9 && players.push(player);
+    console.log('Players', this.gameState.players);
   }
 
   // Checks if the game has at least 2 players with chips

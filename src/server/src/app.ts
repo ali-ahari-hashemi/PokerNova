@@ -1,6 +1,14 @@
 import express from 'express';
+import bodyParser from 'body-parser';
+import http from 'http';
+import socketIO from 'socket.io';
 import Game from './classes/Game';
 import { v1 as uuid } from 'uuid';
+import { defaultPlayer } from './tests/_mockData';
+import cloneDeep from 'lodash.clonedeep';
+
+export type gameId = string;
+export type playerId = string;
 
 /**
  * Application:
@@ -9,35 +17,80 @@ import { v1 as uuid } from 'uuid';
  */
 
 const app = express();
+const server = new http.Server(app);
+const io = socketIO(server);
 const port = 5000;
 const games: Map<string, Game> = new Map();
+const playersToGameMapping: Map<playerId, gameId> = new Map();
 
-app.get('/', (req, res) => {
-  const gameId: string = uuid();
-  games.set(gameId, new Game());
-  res.send(
-    `Game created! You can access your holdem game and invite your friends using the following link: localhost:${port}/game/${gameId}`
-  );
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+);
+app.use(bodyParser.json());
 
-  console.log('active gameIds:');
-  games.forEach((value: Game, key) => {
-    console.log(key);
+// SOCKET STUFF
+
+io.on('connection', socket => {
+  const socketId: playerId = socket.id;
+  console.log(`New connection! socket id: ${socketId}`);
+
+  socket.on('joinGame', (gameId: gameId, seat: number) => {
+    console.log('inJoinGame');
+    console.log('gameid', gameId);
+    const game = games.get(gameId);
+    console.log('game', game);
+    if (game) {
+      playersToGameMapping.set(socketId, gameId);
+      game.addPlayer({
+        ...cloneDeep(defaultPlayer),
+        id: seat,
+        socketId,
+      });
+    } else {
+      // TODO: some error handling here
+    }
   });
 });
 
-app.get('/game/:gameId', (req, res) => {
-  const gameId = req.params.gameId;
-  if (games.has(gameId)) {
-    res.send(`game id: ${gameId}`);
+// API ROUTES
 
-    //TODO: do game management stuff such as start, stop, etc...
-    // games.get(gameId).start();
+app.get('/', (req, res) => {
+  res.send('PokerNova Coming Soon...');
+});
+
+app.get('/game/:id', (req, res) => {
+  const { id } = req.params;
+  if (games.has(id)) {
+    // TODO: send game front end code
+    res.send({
+      id,
+    });
   } else {
-    res.send('game does not exist, sorry :(');
+    res.status(404).send('game does not exist, sorry :(');
   }
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.post('/api/game/create', (req, res) => {
+  const { pin } = req.body;
+  const id: string = uuid();
+  games.set(id, new Game({ id }));
+  res.status(200).send({
+    id,
+    url: `localhost:${port}/game/${id}`,
+  });
+});
 
-const g = new Game();
-g.start();
+app.post('/api/game/start', (req, res) => {
+  const { id } = req.body;
+  if (games.has(id)) {
+    const game = games.get(id) as Game;
+    game.start();
+    res.status(200).send('Game successfully started!');
+  } else {
+    res.status(404).send('Game does not exist, sorry :(');
+  }
+});
+
+server.listen(port, () => console.log(`Example app listening on port ${port}!`));
