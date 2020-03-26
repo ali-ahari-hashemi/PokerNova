@@ -16,7 +16,7 @@ export const defaultRound: IRound = {
   pot: 0,
   highestBet: 0,
   currentPlayer: 0,
-  stoppingPoint: 1,
+  stoppingPoint: 2,
   deck: new Deck(),
   playersFolded: [],
   playersAllIn: [],
