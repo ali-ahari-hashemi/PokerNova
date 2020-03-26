@@ -90,7 +90,7 @@ export default class Round {
       } while (this.round.currentPlayer !== this.round.stoppingPoint);
     }
 
-    const winners = this.determineWinners();
+    const winners = Round.determineWinners(this.players, this.round.board);
     this.payout(winners);
     console.log('WINNERS: ', winners);
 
@@ -172,17 +172,17 @@ export default class Round {
     return ans;
   }
 
-  determineWinners(): IHandWinners {
+  static determineWinners(players: IPlayer[], board: string[]): IHandWinners {
     let playerCards: IPlayerCards[] = [];
 
-    this.players
+    players
       .filter(player => {
         return player.isActiveInRound;
       })
       .forEach(activePlayer => {
         playerCards.push({
           id: activePlayer.id,
-          cards: activePlayer.pocket.concat(this.round.board),
+          cards: activePlayer.pocket.concat(board),
         });
       });
 

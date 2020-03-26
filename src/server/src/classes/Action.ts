@@ -72,13 +72,9 @@ export class Action {
       if (betAmount == callAmount) {
         return this.call();
       } else {
-        if (callAmount <= 0) {
-          console.log(`player ${this.player.id} betting amount: ${betAmount}`);
-          this.placeBet(betAmount);
-          return true;
-        } else {
-          return this.raise();
-        }
+        console.log(`player ${this.player.id} betting amount: ${betAmount}`);
+        this.placeBet(betAmount);
+        return true;
       }
     } else {
       return false;
@@ -89,16 +85,6 @@ export class Action {
     const callAmount = this.round.highestBet - this.player.currentBet;
     console.log(`player ${this.player.id} calling amount: ${callAmount}`);
     this.placeBet(callAmount);
-    return true;
-  }
-
-  private raise(): boolean {
-    const callAmount = this.round.highestBet - this.player.currentBet; // 100
-    const betAmount = this.action.betAmount as number;
-    const totalRaiseAmount = betAmount - callAmount;
-
-    console.log(`player ${this.player.id} raising amount: ${totalRaiseAmount}`);
-    this.placeBet(betAmount);
     return true;
   }
 
