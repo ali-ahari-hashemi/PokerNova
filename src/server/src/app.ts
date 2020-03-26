@@ -1,8 +1,14 @@
 import express from 'express';
 import bodyParser from 'body-parser';
+import http from 'http';
+import socketIO from 'socket.io';
 import Game from './classes/Game';
 import { v1 as uuid } from 'uuid';
 import { defaultPlayer } from './tests/_mockData';
+import cloneDeep from 'lodash.clonedeep';
+
+export type gameId = string;
+export type playerId = string;
 
 /**
  * Application:
@@ -11,8 +17,11 @@ import { defaultPlayer } from './tests/_mockData';
  */
 
 const app = express();
+const server = new http.Server(app);
+const io = socketIO(server);
 const port = 5000;
 const games: Map<string, Game> = new Map();
+const playersToGameMapping: Map<playerId, gameId> = new Map();
 
 app.use(
   bodyParser.urlencoded({
@@ -20,6 +29,32 @@ app.use(
   })
 );
 app.use(bodyParser.json());
+
+// SOCKET STUFF
+
+io.on('connection', socket => {
+  const socketId: playerId = socket.id;
+  console.log(`New connection! socket id: ${socketId}`);
+
+  socket.on('joinGame', (gameId: gameId, seat: number) => {
+    console.log('inJoinGame');
+    console.log('gameid', gameId);
+    const game = games.get(gameId);
+    console.log('game', game);
+    if (game) {
+      playersToGameMapping.set(socketId, gameId);
+      game.addPlayer({
+        ...cloneDeep(defaultPlayer),
+        id: seat,
+        socketId,
+      });
+    } else {
+      // TODO: some error handling here
+    }
+  });
+});
+
+// API ROUTES
 
 app.get('/', (req, res) => {
   res.send('PokerNova Coming Soon...');
@@ -58,4 +93,4 @@ app.post('/api/game/start', (req, res) => {
   }
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+server.listen(port, () => console.log(`Example app listening on port ${port}!`));

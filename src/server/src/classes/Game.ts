@@ -46,6 +46,7 @@ export default class Game {
   addPlayer(player: IPlayer) {
     const players = this.gameState.players;
     players.length < 9 && players.push(player);
+    console.log('Players', this.gameState.players);
   }
 
   // Checks if the game has at least 2 players with chips

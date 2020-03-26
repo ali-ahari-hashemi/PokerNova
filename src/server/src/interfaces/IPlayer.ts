@@ -1,6 +1,6 @@
 export interface IPlayer {
   id: number;
-  socketID?: number;
+  socketId?: string;
   name?: string;
   currentBet: number;
   chipCount: number;
