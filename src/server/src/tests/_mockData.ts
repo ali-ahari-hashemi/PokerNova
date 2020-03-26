@@ -1,6 +1,7 @@
 import { IPlayer } from '../interfaces/IPlayer';
 import { IRound } from '../interfaces/IRound';
 import Deck from '../classes/Deck';
+import { BettingRound } from '../constants';
 
 export const defaultPlayer: IPlayer = {
   id: 0,
@@ -20,4 +21,6 @@ export const defaultRound: IRound = {
   deck: new Deck(),
   playersFolded: [],
   playersAllIn: [],
+  bettingRound: BettingRound.preFlop,
+  isActive: false,
 };

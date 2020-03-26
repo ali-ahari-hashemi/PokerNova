@@ -1,6 +1,8 @@
 import IGame from '../interfaces/IGame';
 import Round from './Round';
 import { IPlayer } from '../interfaces/IPlayer';
+import { Action } from './Action';
+import { IAction } from '../interfaces/IAction';
 
 interface IParams {
   id: string;
@@ -47,10 +49,22 @@ export default class Game {
     }
   }
 
+  startRound(): void {
+    this.currentRound = new Round({
+      players: this.gameState.players,
+      currentDealer: this.gameState.currentDealer,
+    });
+    this.currentRound.start();
+  }
+
+  getRound(): Round {
+    return this.currentRound;
+  }
+
   addPlayer(player: IPlayer) {
     const players = this.gameState.players;
     players.length < 9 && players.push(player);
-    console.log('Players', this.gameState.players);
+    //console.log('Players', this.gameState.players);
   }
 
   // Checks if the game has at least 2 players with chips

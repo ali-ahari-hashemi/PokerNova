@@ -1,10 +1,10 @@
 import { IRound } from '../interfaces/IRound';
 import { IPlayer } from '../interfaces/IPlayer';
 import Deck from './Deck';
-import { getValidActionTypes } from '../utils/getValidActionTypes';
 import { Action } from './Action';
-import { ActionType } from '../constants';
+import { BettingRound } from '../constants';
 import { CardHelpers, IHandWinners, IPlayerCards } from '../utilities/CardHelpers';
+import { IAction } from '../interfaces/IAction';
 
 interface IParams {
   currentDealer: number;
@@ -32,144 +32,10 @@ export default class Round {
       deck: new Deck(),
       playersFolded: [],
       playersAllIn: [],
+      isActive: false,
     };
     this.players = params.players;
     this.currentDealer = params.currentDealer;
-  }
-
-  async start(): Promise<IPlayer[]> {
-    this.deal();
-
-    for (let i = 0; i < 4; i++) {
-      const offset = i == 0 ? 3 : 1;
-      this.round.stoppingPoint = (this.currentDealer + offset) % this.players.length;
-      this.round.currentPlayer = this.round.stoppingPoint;
-      this.round.highestBet = 0;
-
-      if (i !== 0) {
-        this.draw();
-      }
-
-      console.log('=============== BETTING ROUND =================');
-      this.print();
-      console.log('\n\n\n\n');
-
-      do {
-        if (!this.shouldContinue()) {
-          break;
-        }
-
-        // Check if player is still in play (not folded and not all in)
-        if (
-          !this.round.playersFolded.includes(this.round.currentPlayer) &&
-          !this.round.playersAllIn.includes(this.round.currentPlayer)
-        ) {
-          const validActionTypes = getValidActionTypes(
-            this.players[this.round.currentPlayer],
-            this.round.highestBet
-          );
-
-          let didSuccessfullyPerformAction = undefined;
-          do {
-            const ans = await this.getActionTypeFromUser(validActionTypes);
-            didSuccessfullyPerformAction = new Action({
-              action: {
-                actionType: ans[0] as ActionType,
-                betAmount: parseFloat(ans[1]),
-              },
-              player: this.players[this.round.currentPlayer],
-              round: this.round,
-            }).performAction();
-            !didSuccessfullyPerformAction && console.log('ERROR, invalid input. Please Try again!');
-          } while (!didSuccessfullyPerformAction);
-        }
-
-        this.print();
-
-        this.round.currentPlayer = (this.round.currentPlayer + 1) % this.players.length;
-      } while (this.round.currentPlayer !== this.round.stoppingPoint);
-    }
-
-    const winners = Round.determineWinners(this.players, this.round.board);
-    this.payout(winners);
-    console.log('WINNERS: ', winners);
-
-    return this.players;
-  }
-
-  // Deals two cards to each player
-  deal(): void {
-    for (let i = 0; i < 2; i++) {
-      this.players.map(player => player.pocket.push(this.round.deck.draw()));
-    }
-  }
-
-  /**
-   * -  Draws cards from the top of the deck to the board
-   * -  Burns top card before drawing any cards
-   * -  Draws 3 cards for the flop, and 1 card for the turn and the river
-   */
-  draw(): void {
-    const board = this.round.board;
-    this.round.deck.draw(); // burn top card
-    if (board.length == 0) {
-      for (let i = 0; i < 3; i++) {
-        board.push(this.round.deck.draw());
-      }
-    } else {
-      board.push(this.round.deck.draw());
-    }
-  }
-
-  print(): void {
-    console.log({
-      board: this.round.board,
-      pot: this.round.pot,
-      currentPlayer: this.round.currentPlayer,
-      highestBet: this.round.highestBet,
-      stoppingPoint: this.round.stoppingPoint,
-      playersFolded: this.round.playersFolded,
-      playersAllIn: this.round.playersAllIn,
-    });
-
-    for (let player of this.players) {
-      console.log(
-        `player ${player.id}: ${player.pocket} (${CardHelpers.determineHandName(
-          this.round.board.concat(player.pocket)
-        )})`
-      );
-    }
-  }
-
-  // This function returns true if there are more than 2 players in play and at least one of them is not all in
-  private shouldContinue(): boolean {
-    const playersInPlay = this.players.length - this.round.playersFolded.length;
-    return playersInPlay > 1 && playersInPlay > this.round.playersAllIn.length;
-  }
-
-  // This is a temporary function used to get input from the user through the console. Used for development purposes and testing
-  private async getActionTypeFromUser(validActionTypes: ActionType[]): Promise<string[]> {
-    const readline = require('readline');
-    function askQuestion(query: string) {
-      const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout,
-      });
-
-      return new Promise(resolve =>
-        rl.question(query, (ans: string) => {
-          rl.close();
-          resolve(ans.split(' '));
-        })
-      );
-    }
-
-    console.log(`Valid action types for player ${this.round.currentPlayer}: ${validActionTypes}`);
-    const ans = (await askQuestion(
-      `Player ${this.round.currentPlayer}, what action would you like to take? (for bet, must be in the form "bet amount") `
-    )) as string[];
-
-    return ans;
   }
 
   static determineWinners(players: IPlayer[], board: string[]): IHandWinners {
@@ -189,11 +55,165 @@ export default class Round {
     return CardHelpers.determineWinners(playerCards);
   }
 
+  start() {
+    this.round.isActive = true;
+    this.deal();
+    this.startNewBettingRound();
+  }
+
+  end() {
+    this.round.isActive = false;
+    console.log('Round ended');
+  }
+
+  getCurrentPlayer(): IPlayer {
+    return this.players[this.round.currentPlayer];
+  }
+
+  // Function to increment one step in the round
+  increment() {
+    // First check if the roubnd is still valid
+    if (!this.shouldContinue()) {
+      // Draw rest of cards and calculate winner
+      while (this.round.board.length < 5) {
+        this.draw();
+      }
+      this.finishRound();
+    }
+
+    // Stopping point reached
+    else if (this.nextPlayer() == this.round.stoppingPoint) {
+      this.startNewBettingRound();
+    }
+
+    // Check if the next player is a valid player (did not flop or go all in yet)
+    else if (
+      this.round.playersFolded.includes(this.nextPlayer()) ||
+      this.round.playersAllIn.includes(this.nextPlayer())
+    ) {
+      // recursion ;)
+      this.increment();
+    }
+
+    // Still a valid round
+    else {
+      this.round.currentPlayer = this.nextPlayer();
+    }
+  }
+
+  performAction(action: IAction): boolean {
+    return new Action({
+      player: this.getCurrentPlayer(),
+      action,
+      round: this.round,
+    }).performAction();
+  }
+
+  // Deals two cards to each player
+  private deal(): void {
+    for (let i = 0; i < 2; i++) {
+      this.players.map(player => player.pocket.push(this.round.deck.draw()));
+    }
+  }
+
+  /**
+   * -  Draws cards from the top of the deck to the board
+   * -  Burns top card before drawing any cards
+   * -  Draws 3 cards for the flop, and 1 card for the turn and the river
+   */
+  private draw(): void {
+    const board = this.round.board;
+    this.round.deck.draw(); // burn top card
+    if (board.length == 0) {
+      for (let i = 0; i < 3; i++) {
+        board.push(this.round.deck.draw());
+      }
+    } else {
+      board.push(this.round.deck.draw());
+    }
+  }
+
+  // Determine winners, carry out payouts, and end the round
+  private finishRound() {
+    const winners = Round.determineWinners(this.players, this.round.board);
+    this.payout(winners);
+    this.end();
+
+    console.log({
+      board: this.round.board,
+      players: this.players.map(player => ({
+        id: player.id,
+        pocket: player.pocket.toString(),
+      })),
+      winners,
+    });
+  }
+
+  // Pre-flop, flop, turn, river
+  private startNewBettingRound() {
+    const didIncrement = this.incrementBettingRound();
+    if (didIncrement) {
+      console.log(`starting new betting round: ${this.round.bettingRound}`);
+      this.round.highestBet = 0;
+      const firstToBet =
+        this.round.bettingRound == BettingRound.preFlop ? this.getUTG() : this.getSB();
+      this.round.currentPlayer = firstToBet;
+      this.round.stoppingPoint = firstToBet;
+
+      if (this.round.bettingRound !== BettingRound.preFlop) {
+        this.draw();
+      }
+    } else {
+      this.finishRound();
+    }
+  }
+
+  // Set betting round to the next stage. Function returns false if betting round is currently the river, true otherwise
+  private incrementBettingRound(): boolean {
+    switch (this.round.bettingRound) {
+      case BettingRound.preFlop:
+        this.round.bettingRound = BettingRound.flop;
+        return true;
+      case BettingRound.flop:
+        this.round.bettingRound = BettingRound.turn;
+        return true;
+      case BettingRound.turn:
+        this.round.bettingRound = BettingRound.river;
+        return true;
+      case BettingRound.river:
+        return false;
+      default:
+        this.round.bettingRound = BettingRound.preFlop;
+        return true;
+    }
+  }
+
+  // Sets current player to the next player
+  private nextPlayer(): number {
+    return (this.round.currentPlayer + 1) % this.players.length;
+  }
+
   private payout(winners: IHandWinners): void {
     const winningPlayerIds = winners.ids;
     const potDivided = (1.0 * this.round.pot) / winningPlayerIds.length;
     winningPlayerIds.map(id => {
       this.players[id].chipCount += potDivided;
     });
+  }
+
+  // Gets the Under the Gun player id
+  private getUTG(): number {
+    return (this.currentDealer + 3) % this.players.length;
+  }
+
+  // Gets the Small Blind player id
+  private getSB(): number {
+    return (this.currentDealer + 1) % this.players.length;
+  }
+
+  // This function returns true if there are more than 2 players in play and at least one of them is not all in
+  private shouldContinue(): boolean {
+    const playersInPlay = this.players.length - this.round.playersFolded.length;
+    return playersInPlay > 1 && playersInPlay > this.round.playersAllIn.length;
   }
 }
