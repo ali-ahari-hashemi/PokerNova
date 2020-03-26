@@ -7,7 +7,7 @@
     "dev": "nodemon src/app.ts",
     "build": "tsc -p .",
     "test": "mocha -r ts-node/register src/tests/*.ts",
-    "simulate": "ts-node src/simulateGame.ts"
+    "simulate": "ts-node src/simulations/simulateGame.ts"
   },
   "author": "",
   "license": "ISC",

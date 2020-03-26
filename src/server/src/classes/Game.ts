@@ -2,6 +2,10 @@ import IGame from '../interfaces/IGame';
 import Round from './Round';
 import { IPlayer } from '../interfaces/IPlayer';
 
+interface IParams {
+  id: string;
+}
+
 /** Game:
  *  - Holds gameState
  *  - Initializes gameState when players are joining and game is starting
@@ -11,9 +15,9 @@ export default class Game {
   private gameState: IGame;
   private currentRound: Round;
 
-  constructor(id: string) {
+  constructor(params: IParams) {
     this.gameState = {
-      id,
+      id: params.id,
       isActive: false,
       currentDealer: -1,
       players: [],

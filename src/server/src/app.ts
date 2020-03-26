@@ -68,14 +68,14 @@ app.get('/game/:id', (req, res) => {
       id,
     });
   } else {
-    res.status(4040).send('game does not exist, sorry :(');
+    res.status(404).send('game does not exist, sorry :(');
   }
 });
 
 app.post('/api/game/create', (req, res) => {
   const { pin } = req.body;
   const id: string = uuid();
-  games.set(id, new Game(id));
+  games.set(id, new Game({ id }));
   res.status(200).send({
     id,
     url: `localhost:${port}/game/${id}`,
