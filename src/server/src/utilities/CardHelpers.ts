@@ -31,26 +31,32 @@ export class CardHelpers {
     const winningHands = Hand.winners(hands);
 
     // This lib doesn't provide an easy way to access who actually won,
-    // so transform out a list representation of winning hand that matches our format
-    let winningHandCards = winningHands[0]
-      .toString()
-      .split(', ')
-      .map((card: string) => {
-        // Convert "10" to "T" because for some reason they decided it would be a good idea
-        // to represent the 10 card inconsistently .
-        return card.startsWith('10') ? 'T' + card[2] : card;
-      });
+    // so transform out list representations of winning hands that matches our format
+    let winningHandsCards: string[][] = winningHands.map((hand: { toString: () => string }) => {
+      return hand
+        .toString()
+        .split(', ')
+        .map((card: string) => {
+          // Convert "10" to "T" because for some reason they decided it would be a good idea
+          // to represent the 10 card inconsistently .
+          return card.startsWith('10') ? 'T' + card[2] : card;
+        });
+    });
 
-    // Determine ids of winning hand based on which players' cards contain the winning hand
+    // Determine ids of winning hand based on which players' cards contain the winning hand:
+    // Iterate through each winning hand, match the players' set of cards which contains all the
+    // cards in the winning hand - pull out that player's ID
     let winningIds: number[] = [];
-    playerCards.forEach(playerCardSet => {
-      if (
-        winningHandCards.every((card: string) => {
-          return playerCardSet.cards.includes(card);
-        })
-      ) {
-        winningIds.push(playerCardSet.id);
-      }
+    winningHandsCards.forEach(winningHand => {
+      playerCards.forEach(playerCardSet => {
+        if (
+          winningHand.every((card: string) => {
+            return playerCardSet.cards.includes(card);
+          })
+        ) {
+          winningIds.push(playerCardSet.id);
+        }
+      });
     });
 
     return {
