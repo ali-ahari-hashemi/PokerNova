@@ -6,6 +6,8 @@ import Game from './classes/Game';
 import { v1 as uuid } from 'uuid';
 import { defaultPlayer } from './tests/_mockData';
 import cloneDeep from 'lodash.clonedeep';
+import { IAction } from './interfaces/IAction';
+import { IPerformActionAPI } from './interfaces/IAPI';
 
 export type gameId = string;
 export type playerId = string;
@@ -37,10 +39,7 @@ io.on('connection', socket => {
   console.log(`New connection! socket id: ${socketId}`);
 
   socket.on('joinGame', (gameId: gameId, seat: number) => {
-    console.log('inJoinGame');
-    console.log('gameid', gameId);
     const game = games.get(gameId);
-    console.log('game', game);
     if (game) {
       playersToGameMapping.set(socketId, gameId);
       game.addPlayer({
@@ -90,6 +89,18 @@ app.post('/api/game/start', (req, res) => {
     res.status(200).send('Game successfully started!');
   } else {
     res.status(404).send('Game does not exist, sorry :(');
+  }
+});
+
+app.post('/api/game/performAction', (req, res) => {
+  const data: IPerformActionAPI = req.body;
+  const game = games.get(data.gameId);
+  if (game && game.getRound().getCurrentPlayer().id == data.playerId) {
+    game.getRound().performAction(data.action);
+    game.getRound().increment();
+    res.status(200).send('Successfully performed action. Now its the next players turn!');
+  } else {
+    res.status(400).send('Error performing action. Please make sure gameId and playerId is valid');
   }
 });
 

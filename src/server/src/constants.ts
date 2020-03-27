@@ -6,3 +6,10 @@ export enum ActionType {
   check = 'check',
   bet = 'bet',
 }
+
+export enum BettingRound {
+  preFlop = 'preFlop',
+  flop = 'flop',
+  turn = 'turn',
+  river = 'river',
+}

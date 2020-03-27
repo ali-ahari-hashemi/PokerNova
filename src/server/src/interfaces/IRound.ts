@@ -1,4 +1,5 @@
 import Deck from '../classes/Deck';
+import { BettingRound } from '../constants';
 
 export interface IRound {
   board: string[];
@@ -9,4 +10,6 @@ export interface IRound {
   deck: Deck;
   playersFolded: number[];
   playersAllIn: number[];
+  bettingRound?: BettingRound; // undefined before the first round
+  isActive: boolean;
 }

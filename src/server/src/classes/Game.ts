@@ -28,37 +28,52 @@ export default class Game {
     });
   }
 
-  async start() {
-    this.gameState.isActive = true;
+  start() {
+    console.log(`Game ${this.gameState.id} has started! Enjoy losing all your money :)`);
     this.gameState.currentDealer = Math.floor(Math.random() * this.gameState.players.length);
+    this.gameState.isActive = true;
+    this.startRound();
+    this.currentRound.on('roundEnded', () => {
+      if (this.isValidGame()) {
+        this.startRound();
+      } else {
+        this.end();
+      }
+    });
+  }
 
-    while (this.gameState.isActive) {
-      console.log('================= NEW ROUND ===============');
-      console.log(`Dealer: ${this.gameState.currentDealer}`);
-      console.log(this.gameState.players);
-      console.log('\n\n\n\n');
-      this.currentRound = new Round({
-        players: this.gameState.players,
-        currentDealer: this.gameState.currentDealer,
-      });
-      await this.currentRound.start();
+  end() {
+    this.gameState.isActive = false;
+  }
 
-      this.gameState.isActive = this.isActiveGame();
-    }
+  getRound(): Round {
+    return this.currentRound;
   }
 
   addPlayer(player: IPlayer) {
     const players = this.gameState.players;
     players.length < 9 && players.push(player);
-    console.log('Players', this.gameState.players);
   }
 
   // Checks if the game has at least 2 players with chips
-  isActiveGame(): boolean {
+  isValidGame(): boolean {
     let count = 0;
     this.gameState.players.map(player => {
       player.chipCount > 0 && count++;
     });
     return count > 1;
+  }
+
+  isActiveGame(): boolean {
+    return this.gameState.isActive;
+  }
+
+  private startRound(): void {
+    console.log('starting new round');
+    this.currentRound = new Round({
+      players: this.gameState.players,
+      currentDealer: this.gameState.currentDealer,
+    });
+    this.currentRound.start();
   }
 }
