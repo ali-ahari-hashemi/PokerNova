@@ -4,6 +4,7 @@ import { IPlayer } from '../interfaces/IPlayer';
 
 interface IParams {
   id: string;
+  pin: string;
 }
 
 /** Game:
@@ -18,6 +19,7 @@ export default class Game {
   constructor(params: IParams) {
     this.gameState = {
       id: params.id,
+      pin: params.pin,
       isActive: false,
       currentDealer: -1,
       players: [],
@@ -66,6 +68,10 @@ export default class Game {
 
   isActiveGame(): boolean {
     return this.gameState.isActive;
+  }
+
+  getPin(): string {
+    return this.gameState.pin;
   }
 
   private startRound(): void {

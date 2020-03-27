@@ -6,11 +6,8 @@ import Game from './classes/Game';
 import { v1 as uuid } from 'uuid';
 import { defaultPlayer } from './tests/_mockData';
 import cloneDeep from 'lodash.clonedeep';
-import { IAction } from './interfaces/IAction';
-import { IPerformActionAPI } from './interfaces/IAPI';
-
-export type gameId = string;
-export type playerId = string;
+import { IPerformActionAPI, IJoinGameAPI, IStartGameAPI, ICreateGameAPI } from './interfaces/IAPI';
+import { playerId, gameId } from './constants';
 
 /**
  * Application:
@@ -38,7 +35,8 @@ io.on('connection', socket => {
   const socketId: playerId = socket.id;
   console.log(`New connection! socket id: ${socketId}`);
 
-  socket.on('joinGame', (gameId: gameId, seat: number) => {
+  socket.on('joinGame', (data: IJoinGameAPI) => {
+    const { gameId, seat } = data;
     const game = games.get(gameId);
     if (game) {
       playersToGameMapping.set(socketId, gameId);
@@ -72,9 +70,9 @@ app.get('/game/:id', (req, res) => {
 });
 
 app.post('/api/game/create', (req, res) => {
-  const { pin } = req.body;
+  const { pin }: ICreateGameAPI = req.body;
   const id: string = uuid();
-  games.set(id, new Game({ id }));
+  games.set(id, new Game({ id, pin }));
   res.status(200).send({
     id,
     url: `localhost:${port}/game/${id}`,
@@ -82,21 +80,25 @@ app.post('/api/game/create', (req, res) => {
 });
 
 app.post('/api/game/start', (req, res) => {
-  const { id } = req.body;
+  const { id, pin }: IStartGameAPI = req.body;
   if (games.has(id)) {
     const game = games.get(id) as Game;
-    game.start();
-    res.status(200).send('Game successfully started!');
+    if (game.getPin() == pin) {
+      game.start();
+      res.status(200).send('Game successfully started!');
+    } else {
+      res.status(404).send('Pin is invalid');
+    }
   } else {
     res.status(404).send('Game does not exist, sorry :(');
   }
 });
 
 app.post('/api/game/performAction', (req, res) => {
-  const data: IPerformActionAPI = req.body;
-  const game = games.get(data.gameId);
-  if (game && game.getRound().getCurrentPlayer().id == data.playerId) {
-    game.getRound().performAction(data.action);
+  const { gameId, playerId, action }: IPerformActionAPI = req.body;
+  const game = games.get(gameId);
+  if (game && game.getRound().getCurrentPlayer().id == playerId) {
+    game.getRound().performAction(action);
     game.getRound().increment();
     res.status(200).send('Successfully performed action. Now its the next players turn!');
   } else {
