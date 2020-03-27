@@ -58,6 +58,12 @@ export default class Round extends EventEmitter {
   }
 
   start() {
+    console.log({
+      players: this.players.map(player => ({
+        id: player.id,
+        pocket: player.pocket.toString(),
+      })),
+    });
     this.round.isActive = true;
     this.deal();
     this.startNewBettingRound();
@@ -99,6 +105,7 @@ export default class Round extends EventEmitter {
 
     // Still a valid round
     else {
+      console.log('going to next player');
       this.round.currentPlayer = this.nextPlayer();
     }
   }
@@ -162,7 +169,7 @@ export default class Round extends EventEmitter {
         this.round.bettingRound == BettingRound.preFlop ? this.getUTG() : this.getSB();
       this.round.currentPlayer = firstToBet;
       this.round.stoppingPoint = firstToBet;
-
+      console.log(`current player is ${this.round.currentPlayer}`);
       if (this.round.bettingRound !== BettingRound.preFlop) {
         this.draw();
       }

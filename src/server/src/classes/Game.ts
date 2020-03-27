@@ -29,11 +29,12 @@ export default class Game {
   }
 
   start() {
+    console.log(`Game ${this.gameState.id} has started! Enjoy losing all your money :)`);
+    this.gameState.currentDealer = Math.floor(Math.random() * this.gameState.players.length);
     this.gameState.isActive = true;
     this.startRound();
     this.currentRound.on('roundEnded', () => {
       if (this.isValidGame()) {
-        console.log('TESTTTTT', this.gameState.players);
         this.startRound();
       } else {
         this.end();
