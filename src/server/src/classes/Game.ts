@@ -1,6 +1,7 @@
 import IGame from '../interfaces/IGame';
 import Round from './Round';
 import { IPlayer } from '../interfaces/IPlayer';
+import { EventEmitter } from 'events';
 
 interface IParams {
   id: string;
@@ -12,22 +13,22 @@ interface IParams {
  *  - Initializes gameState when players are joining and game is starting
  *  - Manages rounds
  */
-export default class Game {
+export default class Game extends EventEmitter {
   private gameState: IGame;
-  private currentRound: Round;
 
   constructor(params: IParams) {
+    super();
     this.gameState = {
       id: params.id,
       pin: params.pin,
       isActive: false,
       currentDealer: -1,
       players: [],
+      currentRound: new Round({
+        players: [],
+        currentDealer: -1,
+      }),
     };
-    this.currentRound = new Round({
-      players: [],
-      currentDealer: -1,
-    });
   }
 
   start() {
@@ -35,12 +36,16 @@ export default class Game {
     this.gameState.currentDealer = Math.floor(Math.random() * this.gameState.players.length);
     this.gameState.isActive = true;
     this.startRound();
-    this.currentRound.on('roundEnded', () => {
+    this.gameState.currentRound.on('roundEnded', () => {
       if (this.isValidGame()) {
         this.startRound();
       } else {
         this.end();
       }
+    });
+
+    this.gameState.currentRound.on('stateUpdated', () => {
+      this.stateUpdated();
     });
   }
 
@@ -49,7 +54,7 @@ export default class Game {
   }
 
   getRound(): Round {
-    return this.currentRound;
+    return this.gameState.currentRound;
   }
 
   addPlayer(player: IPlayer) {
@@ -74,12 +79,20 @@ export default class Game {
     return this.gameState.pin;
   }
 
+  getGameState() {
+    return this.gameState;
+  }
+
   private startRound(): void {
     console.log('starting new round');
-    this.currentRound = new Round({
+    this.gameState.currentRound = new Round({
       players: this.gameState.players,
       currentDealer: this.gameState.currentDealer,
     });
-    this.currentRound.start();
+    this.gameState.currentRound.start();
+  }
+
+  private stateUpdated(): void {
+    this.emit('stateUpdated');
   }
 }

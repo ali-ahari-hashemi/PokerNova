@@ -1,4 +1,5 @@
 import { IPlayer } from './IPlayer';
+import Round from '../classes/Round';
 
 export default interface IGame {
   id: string;
@@ -6,4 +7,5 @@ export default interface IGame {
   isActive: boolean;
   currentDealer: number;
   players: IPlayer[];
+  currentRound: Round;
 }

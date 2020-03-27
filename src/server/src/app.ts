@@ -45,6 +45,7 @@ io.on('connection', socket => {
         id: seat,
         socketId,
       });
+      socket.join(gameId);
     } else {
       // TODO: some error handling here
     }
@@ -72,7 +73,14 @@ app.get('/game/:id', (req, res) => {
 app.post('/api/game/create', (req, res) => {
   const { pin }: ICreateGameAPI = req.body;
   const id: string = uuid();
-  games.set(id, new Game({ id, pin }));
+  const game = new Game({ id, pin });
+  games.set(id, game);
+
+  // Add listener for game updating and emit the new state to all sockets connected to that game
+  game.on('stateUpdated', () => {
+    io.to(id).emit('stateUpdated', game.getGameState());
+  });
+
   res.status(200).send({
     id,
     url: `localhost:${port}/game/${id}`,
