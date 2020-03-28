@@ -108,6 +108,8 @@ export default class Round extends EventEmitter {
       console.log('going to next player');
       this.round.currentPlayer = this.nextPlayer();
     }
+
+    this.stateUpdated();
   }
 
   performAction(action: IAction): boolean {
@@ -118,6 +120,9 @@ export default class Round extends EventEmitter {
     }).performAction();
   }
 
+  private stateUpdated(): void {
+    this.emit('stateUpdated');
+  }
   // Deals two cards to each player
   private deal(): void {
     this.players.map(player => (player.pocket = []));

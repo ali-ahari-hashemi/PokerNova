@@ -13,3 +13,6 @@ export enum BettingRound {
   turn = 'turn',
   river = 'river',
 }
+
+export type gameId = string;
+export type playerId = string;
