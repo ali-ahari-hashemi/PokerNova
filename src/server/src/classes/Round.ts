@@ -120,6 +120,10 @@ export default class Round extends EventEmitter {
     }).performAction();
   }
 
+  getRound(): IRound {
+    return this.round;
+  }
+
   private stateUpdated(): void {
     this.emit('stateUpdated');
   }

@@ -38,25 +38,25 @@ import http from 'http';
 const socket = io.connect('http://localhost:5000');
 socket.on('connect', () => {
   console.log(socket.id + ' successfully connected');
-  socket.emit('joinGame', { gameId: '3893d910-7066-11ea-974c-374c3e3f3b2f', seat: 0 });
+  socket.emit('joinGame', { gameId: 'aa8a3f90-712f-11ea-9317-df00d0d01634', seat: 0 });
 });
 
 const socket2 = io.connect('http://localhost:5000');
 socket2.on('connect', () => {
   console.log(socket2.id + ' successfully connected');
-  socket2.emit('joinGame', { gameId: '3893d910-7066-11ea-974c-374c3e3f3b2f', seat: 1 });
+  socket2.emit('joinGame', { gameId: 'aa8a3f90-712f-11ea-9317-df00d0d01634', seat: 1 });
 });
 
 const socket3 = io.connect('http://localhost:5000');
 socket3.on('connect', () => {
   console.log(socket3.id + ' successfully connected');
-  socket3.emit('joinGame', { gameId: '3893d910-7066-11ea-974c-374c3e3f3b2f', seat: 2 });
+  socket3.emit('joinGame', { gameId: 'aa8a3f90-712f-11ea-9317-df00d0d01634', seat: 2 });
 });
 
 const socket4 = io.connect('http://localhost:5000');
 socket4.on('connect', () => {
   console.log(socket4.id + ' successfully connected');
-  socket4.emit('joinGame', { gameId: '3893d910-7066-11ea-974c-374c3e3f3b2f', seat: 3 });
+  socket4.emit('joinGame', { gameId: 'aa8a3f90-712f-11ea-9317-df00d0d01634', seat: 3 });
 });
 
 socket.on('stateUpdated', (gameState: any) => console.log('new game state', gameState));

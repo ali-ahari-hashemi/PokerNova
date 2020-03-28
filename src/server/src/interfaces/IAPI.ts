@@ -1,5 +1,6 @@
 import { IAction } from './IAction';
 import { gameId } from '../constants';
+import IGameStateToSend from './IGameStateToSend';
 
 export interface IPerformActionAPI {
   action: IAction;
@@ -19,4 +20,8 @@ export interface IStartGameAPI {
 
 export interface ICreateGameAPI {
   pin: string;
+}
+
+export interface IStateUpdated {
+  gameState: IGameStateToSend;
 }
