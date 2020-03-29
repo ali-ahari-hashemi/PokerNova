@@ -18,3 +18,11 @@ body {
 p {
   margin: 0;
 }
+
+input {
+  border: none;
+}
+
+input:focus {
+  outline: none;
+}

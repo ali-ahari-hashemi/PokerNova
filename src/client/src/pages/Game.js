@@ -156,7 +156,7 @@ class Game extends React.Component {
 
     return playerModules.map((item, index) => {
       return (
-        <div style={seatStyles[index]}>
+        <div key={index} style={seatStyles[index]}>
           <PlayerModule
             player={item.player}
             status={item.status}
