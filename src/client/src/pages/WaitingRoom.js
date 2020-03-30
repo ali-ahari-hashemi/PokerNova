@@ -8,16 +8,18 @@ class WaitingRoom extends React.Component {
     super(props);
 
     this.state = {
-      error: '',
-      seat: 0,
       pin: '',
-      copyLinkText: 'Copy Link',
+      error: '', // TODO: handle when game is full
+      name: '', 
+      linkCopied: false,
+      gameJoined: false // TODO: think about page reload resetting this state - will produce a bug BUG
     }
 
     this.socket = '';
 
     this.handleJoinGameClick = this.handleJoinGameClick.bind(this);
     this.handleStartGameClick = this.handleStartGameClick.bind(this);
+    this.hanldeCopyLink = this.hanldeCopyLink.bind(this);
   }
 
   componentDidMount() {
@@ -28,25 +30,24 @@ class WaitingRoom extends React.Component {
       console.log(this.socket.id + ' successfully connected');
     });
 
+    // TODO: as of now you have to join the game to get the state updates
+    // from a ux perspective you should be able to see the players before joining
     this.socket.on("stateUpdated", data => { console.log('data', data) });
   }
 
   handleJoinGameClick() {
-    const { seat } = this.state;
-    const seatNum = Number(seat);
-    const gameId = this.props.match.params.id;
+    const { name } = this.state;
+    const { gameId, gameJoined } = this.props;
 
-    this.socket.emit('joinGame', { gameId, seat: seatNum });
-
-    this.socket.on("stateUpdated", data => { console.log('data', data) });
-
-    // TODO: indicate game joined to the UI; disable button and text input
+    if (!gameJoined) {
+      this.socket.emit('joinGame', { gameId, name });
+      this.setState({ gameJoined: true });
+    }
   }
 
   handleStartGameClick() {
-    const gameId = this.props.match.params.id;
     const { pin } = this.state;
-    const { setGameActive } = this.props;
+    const { gameId, setGameActive } = this.props;
 
     if (!pin) {
       this.setState({ error: 'Please supply a pin.'})
@@ -64,18 +65,31 @@ class WaitingRoom extends React.Component {
       .then((response) => {
         if (response.ok) {
           setGameActive();
+        } else if (response.status === 404) {
+          this.setState({ error: 'Incorrect pin.' });
         } else {
-          throw new Error('Error starting game.')
+          throw new Error();
         }
       })
       .catch(() => {
-        this.setState({ error: 'Error starting game.' })
+        this.setState({ error: 'Error starting game.' });
       });
   }
 
+  hanldeCopyLink() {
+    const { linkCopied } = this.props;
+    const { gameId } = this.props;
+    const link = `localhost:3000/game/${gameId}`;
+
+    if (!linkCopied) {
+      navigator.clipboard.writeText(link);
+      this.setState({ linkCopied: true })
+    }
+  }
+
   render() {
-    const { copyLinkText } = this.state;
-    const gameId = this.props.match.params.id;
+    const { linkCopied, gameJoined } = this.state;
+    const { gameId } = this.props;
     const link = `localhost:3000/game/${gameId}`;
 
     return (
@@ -83,22 +97,23 @@ class WaitingRoom extends React.Component {
         <h1 className="WaitingRoomTitle">PokerNova</h1>
         <div className="WaitingRoomGameLinkContainer">
           <p className="WaitingRoomGameLinkText">{`${link}`}</p>
-          <div className="WaitingRoomGameLinkCopy"
-            onClick={() => { navigator.clipboard.writeText(link); this.setState({ copyLinkText: 'Copied!'}) }}
-            >{copyLinkText}</div>
+          <div
+            className={`WaitingRoomGameLinkCopy ${linkCopied && 'ButtonAlreadyPressed'}`}
+            onClick={this.hanldeCopyLink}
+          >{`${linkCopied ? 'Copied!': 'Copy Link'}`}</div>
         </div>
         <div className="WaitingRoomInputContainer">
-          <p className="WaitingRoomInputText">Seat Number: </p>
+          <p className="WaitingRoomInputText">Name: </p>
           <input
             className="WaitingRoomInput"
             type="text"
-            value={this.state.seat}
-            onChange={(e) => { this.setState({ seat: e.target.value }) }}
+            value={this.state.name}
+            onChange={(e) => { this.setState({ name: e.target.value }) }}
           />
           <div
-            className="WaitingRoomSubmitButton"
+            className={`WaitingRoomSubmitButton ${gameJoined && 'ButtonAlreadyPressed'}`}
             onClick={this.handleJoinGameClick}
-          >Join Game</div>
+          >{`${gameJoined ? 'Joined!' : 'Join Game'}`}</div>
         </div>
         {this.state.error && <p className="WaitingRoomError">{this.state.error}</p>}
         <div className="WaitingRoomInputContainer">

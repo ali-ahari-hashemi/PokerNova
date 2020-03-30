@@ -5,7 +5,7 @@ function NotFound(props) {
   return (
     <div className="NotFound">
       <h1 className="NotFoundTitle">404</h1>
-      <p className="NotFoundSubTitle">Page Not Found</p>
+      <p className="NotFoundSubTitle">Not Found</p>
     </div>
   );
 }

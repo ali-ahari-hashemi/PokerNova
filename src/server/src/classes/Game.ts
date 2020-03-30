@@ -59,7 +59,8 @@ export default class Game extends EventEmitter {
 
   addPlayer(player: IPlayer) {
     const players = this.gameState.players;
-    players.length < 9 && players.push(player);
+    players.length < 8 && players.push(player);
+    this.emit('stateUpdated');
   }
 
   // Checks if the game has at least 2 players with chips
@@ -81,6 +82,13 @@ export default class Game extends EventEmitter {
 
   getGameState() {
     return this.gameState;
+  }
+
+  getNextAvailableSeat() {
+    const players = this.gameState.players;
+    const maxPlayers = 8;
+
+    return players.length >= maxPlayers ? -1 : players.length;
   }
 
   private startRound(): void {

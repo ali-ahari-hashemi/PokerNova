@@ -6,97 +6,205 @@ import { RANKS, SUITS } from '../utilities/constants';
 import { getSeatStyles } from '../utilities/utilities';
 import './Game.css';
 
+// Maps something like 'Qc' to something like { rank: RANKS.QUEEN, suit: SUITS.CLUB }
+const mapAPICardToUICard = (card) => {
+  const apiRank = card[0];
+  const apiSuit = card[1];
+
+  let uiRank;
+  let uiSuit;
+
+  switch (apiRank) {
+    case 'A':
+      uiRank = RANKS.ACE;
+      break;
+    case '2':
+      uiRank = RANKS.TWO;
+      break;
+    case '3':
+      uiRank = RANKS.THREE;
+      break;
+    case '4':
+      uiRank = RANKS.FOUR;
+      break;
+    case '5':
+      uiRank = RANKS.FIVE;
+      break;
+    case '6':
+      uiRank = RANKS.SIX;
+      break;
+    case '7':
+      uiRank = RANKS.SEVEN;
+      break;
+    case '8':
+      uiRank = RANKS.EIGHT;
+      break;
+    case '9':
+      uiRank = RANKS.NINE;
+      break;
+    case 'T':
+      uiRank = RANKS.TEN;
+      break;
+    case 'J':
+      uiRank = RANKS.JACK;
+      break;
+    case 'Q':
+      uiRank = RANKS.QUEEN;
+      break;
+    case 'K':
+      uiRank = RANKS.KING;
+      break;
+    default:
+      throw new Error('Major mistake with mapAPICardToUICard');
+  }
+
+  switch (apiSuit) {
+    case 'c':
+      uiSuit = SUITS.CLUBS;
+      break;
+    case 'd':
+      uiSuit = SUITS.DIAMONDS;
+      break;
+    case 'h':
+      uiSuit = SUITS.HEARTS;
+      break;
+    case 's':
+      uiSuit = SUITS.SPADES;
+      break;
+    default:
+      throw new Error('Major mistake with mapAPICardToUICard');
+  }
+
+  return {
+    rank: uiRank,
+    suit: uiSuit,
+  }
+}
+
+// TODO: how are we gonna actually get this data?
+// We could hash the ip address and make that the player's id
+// might make testing hard, but cookies would also make testing hard
+const userPlayerID = 0;
+
+const getBettingRoundTextFromData = (bettingRound) => {
+  switch (bettingRound) {
+    case 'preFlop':
+      return 'The Pre-Flop';
+    case 'flop':
+      return 'The Flop';
+    case 'turn':
+      return 'The Turn';
+    case 'river':
+      return 'The River';
+    default:
+      return 'Error';
+  }
+}
+
+const getPlayerModulesFromData = (data) => {
+  const players = data.players;
+
+  return players.filter(item => item.id !== userPlayerID).map(player => {
+    return {
+      player: player.name,
+      status: 'Status TBD',
+      total: player.chipCount,
+      active: player.id === data.currentRound.round.currentPlayer
+    }
+  });
+}
+
+const getUserModuleFromData = (data) => {
+  const players = data.players;
+  const user = players.find(item => item.id === userPlayerID);
+
+  return {
+    player: user.name,
+    status: 'Status TBD',
+    total: user.chipCount,
+    active: user.id === data.currentRound.round.currentPlayer
+  }
+}
+
+const getUserCardsFromData = (data) => {
+  const players = data.players;
+  const user = players.find(item => item.id === userPlayerID);
+  return [
+    mapAPICardToUICard(user.pocket[0]),
+    mapAPICardToUICard(user.pocket[1]),
+  ];
+}
+
+const mapAPIDataToUIState = (data) => {
+  return {
+    statusText: "Status feature is TBD", // TBD
+    timerTimeLeft: 0, // TBD
+    timerTotalTime: 0, // TBD
+    bettingRoundText: getBettingRoundTextFromData(data.currentRound.round.bettingRound),
+    boardCards: [], // TBD, will come from data.currentRound.round.board
+    potTotal: data.currentRound.round.pot,
+    playerModules: getPlayerModulesFromData(data),
+    userModule: getUserModuleFromData(data),
+    userCards: getUserCardsFromData(data)
+  }
+}
+
+// TODO: set up ordering such that the UI order coincides with the order of the round, regardless of which player index is the current user
 class Game extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      statusText: "Alex's turn. The bet is $2.",
-      timerTimeLeft: 14,
-      timerTotalTime: 20,
-      communityCardsText: 'The River',
-      communityCards: [
-        {
-          rank: RANKS.FOUR,
-          suit: SUITS.CLUBS,
-        },
-        {
-          rank: RANKS.QUEEN,
-          suit: SUITS.HEARTS,
-        },
-        {
-          rank: RANKS.ACE,
-          suit: SUITS.SPADES,
-        }
-      ],
-      potTotal: 104,
-      playerModules: [
-        {
-          player: 'Ali',
-          status: 'Current turn',
-          total: 462,
-          active: false,
-        },
-        {
-          player: 'Austin',
-          status: 'Raise $14',
-          total: 23,
-          active: false,
-        },
-        {
-          player: 'Alex',
-          status: 'Current turn',
-          total: 91,
-          active: true,
-        },
-        {
-          player: 'Bob',
-          status: 'Check',
-          total: 46,
-          active: false,
-        },
-        {
-          player: 'Bill',
-          status: 'Raise $14',
-          total: 23,
-          active: false,
-        },
-        {
-          player: 'Tim',
-          status: 'Current turn',
-          total: 91,
-          active: false,
-        },
-        {
-          player: 'Tom',
-          status: 'Check',
-          total: 46,
-          active: false,
-        },
-      ],
+      statusText: "",
+      timerTimeLeft: 0,
+      timerTotalTime: 0,
+      bettingRoundText: '',
+      boardCards: [],
+      potTotal: 0,
+      playerModules: [],
       userModule: {
-        player: 'Jacob',
-        status: 'Coming up',
-        total: 112,
+        player: '',
+        status: '',
+        total: 0,
         active: false,
       },
-      userCards: [
-        {
-          rank: RANKS.THREE,
-          suit: SUITS.SPADES,
-        },
-        {
-          rank: RANKS.KING,
-          suit: SUITS.DIAMONDS,
-        }
-      ]
+      userCards: []
     }
   }
 
-  renderCommunityCards() {
-    const { communityCards } = this.state;
+  componentDidMount() {
+    const { gameId, setErrorPage } = this.props;
 
-    const populatedCards = communityCards.map((card, i) => {
+    fetch(`/api/game/${gameId}`, {
+      method: 'GET',
+      headers: { 'Content-type': 'application/json' }
+    })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else if (response.status === 404) {
+          setErrorPage('There was an error fetching game data :(');
+        } else {
+          throw new Error();
+        }
+      })
+      .then((myJson) => {
+        if (myJson) {
+          const apiGameState = myJson.gameState;
+          console.log(apiGameState);
+          const newUIState = mapAPIDataToUIState(apiGameState);
+          this.setState(newUIState);
+        }
+      })
+      .catch((err) => {
+        setErrorPage('There was an error fetching game data :(');
+      });
+  }
+
+  renderBoardCards() {
+    const { boardCards } = this.state;
+
+    const populatedCards = boardCards.map((card, i) => {
       return (
         <Card
           key={`populated-card-${i}`}
@@ -106,7 +214,7 @@ class Game extends React.Component {
       );
     });
 
-    const numEmptyCards = 5 - communityCards.length;
+    const numEmptyCards = 5 - boardCards.length;
 
     const emptyCards = Array(numEmptyCards).fill().map((item, i) => {
       return (
@@ -162,7 +270,7 @@ class Game extends React.Component {
             status={item.status}
             total={item.total}
             active={item.active}
-            />
+          />
         </div>
       );
     })
@@ -173,7 +281,7 @@ class Game extends React.Component {
       statusText,
       timerTimeLeft,
       timerTotalTime,
-      communityCardsText,
+      bettingRoundText,
       potTotal,
       userModule,
     } = this.state;
@@ -191,12 +299,12 @@ class Game extends React.Component {
               />
             </div>
           </div>
-          <div className="spacer"/>
+          <div className="spacer" />
         </div>
         <div className="GameTable">
-          <p className="CommunityCardsText">{communityCardsText}</p>
-          <div className="CommunityCardsContainer">
-            {this.renderCommunityCards()}
+          <p className="BettingRoundText">{bettingRoundText}</p>
+          <div className="BoardCardsContainer">
+            {this.renderBoardCards()}
           </div>
           <p className="PotTotalText">Total Pot: ${potTotal}</p>
           {this.renderPlayerModules()}

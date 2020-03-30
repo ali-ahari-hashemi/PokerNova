@@ -72,3 +72,12 @@
   font-size: 12px;
   margin-bottom: 20px;
 }
+
+.ButtonAlreadyPressed {
+  background-color: var(--main-white);
+  color: var(--main-color);
+}
+
+.ButtonAlreadyPressed:hover {
+  cursor: default;
+}

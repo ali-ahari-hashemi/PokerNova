@@ -56,14 +56,14 @@
   margin-bottom: 50px;
 }
 
-.CommunityCardsText {
+.BettingRoundText {
   font-size: 14px;
   font-weight: 500;
   margin-top: 10px;
   margin-bottom: 20px;
 }
 
-.CommunityCardsContainer {
+.BoardCardsContainer {
   display: flex;
   flex-direction: row;
 }

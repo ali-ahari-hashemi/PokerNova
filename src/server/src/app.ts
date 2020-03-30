@@ -36,13 +36,16 @@ io.on('connection', socket => {
   console.log(`New connection! socket id: ${socketId}`);
 
   socket.on('joinGame', (data: IJoinGameAPI) => {
-    const { gameId, seat } = data;
+    const { gameId, name } = data;
     const game = games.get(gameId);
     if (game) {
+      const nextAvailableSeat = game.getNextAvailableSeat();
+      if (nextAvailableSeat === -1) return; // Game is full
       playersToGameMapping.set(socketId, gameId);
       game.addPlayer({
         ...cloneDeep(defaultPlayer),
-        id: seat,
+        id: nextAvailableSeat,
+        name,
         socketId,
       });
       socket.join(gameId);
@@ -56,17 +59,16 @@ io.on('connection', socket => {
 
 app.get('/', (req, res) => {
   res.send('PokerNova Coming Soon...');
+  // TODO: send front end code
 });
 
-app.get('/game/:id', (req, res) => {
+app.get('/api/game/:id', (req, res) => {
   const { id } = req.params;
   if (games.has(id)) {
-    // TODO: send game front end code
-    res.send({
-      id,
-    });
+    const game = games.get(id) as Game;
+    res.status(200).send(game);
   } else {
-    res.status(404).send('game does not exist, sorry :(');
+    res.status(404).send({ error: 'game does not exist, sorry :('});
   }
 });
 
