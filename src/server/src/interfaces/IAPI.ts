@@ -15,7 +15,6 @@ export interface IJoinGameAPI {
 
 export interface IStartGameAPI {
   id: gameId;
-  pin: string;
 }
 
 export interface ICreateGameAPI {

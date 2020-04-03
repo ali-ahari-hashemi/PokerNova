@@ -3,7 +3,6 @@ import bodyParser from 'body-parser';
 import http from 'http';
 import socketIO from 'socket.io';
 import Game from './classes/Game';
-import { v1 as uuid } from 'uuid';
 import { defaultPlayer } from './tests/_mockData';
 import cloneDeep from 'lodash.clonedeep';
 import {
@@ -15,6 +14,7 @@ import {
 } from './interfaces/IAPI';
 import { playerId, gameId } from './constants';
 import { filterGameState } from './utils/filterGameState';
+import { getUniqueId } from './utils/getUniqueId';
 
 /**
  * Application:
@@ -82,9 +82,8 @@ app.get('/api/game/:id', (req, res) => {
 });
 
 app.post('/api/game/create', (req, res) => {
-  const { pin }: ICreateGameAPI = req.body;
-  const id: string = uuid();
-  const game = new Game({ id, pin });
+  let id: string = getUniqueId(games);
+  const game = new Game({ id });
   games.set(id, game);
 
   // Add listener for game updating and emit the new state to all sockets connected to that game
@@ -100,17 +99,13 @@ app.post('/api/game/create', (req, res) => {
 });
 
 app.post('/api/game/start', (req, res) => {
-  const { id, pin }: IStartGameAPI = req.body;
+  const { id }: IStartGameAPI = req.body;
   if (games.has(id)) {
     const game = games.get(id) as Game;
-    if (game.getPin() == pin) {
-      game.start();
-      const dataToSend: IStateUpdated = { gameState: filterGameState(game.getGameState()) };
-      io.to(id).emit('stateUpdated', dataToSend);
-      res.status(200).send('Game successfully started!');
-    } else {
-      res.status(404).send('Pin is invalid');
-    }
+    game.start();
+    const dataToSend: IStateUpdated = { gameState: filterGameState(game.getGameState()) };
+    io.to(id).emit('stateUpdated', dataToSend);
+    res.status(200).send('Game successfully started!');
   } else {
     res.status(404).send('Game does not exist, sorry :(');
   }

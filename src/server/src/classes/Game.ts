@@ -5,7 +5,6 @@ import { EventEmitter } from 'events';
 
 interface IParams {
   id: string;
-  pin: string;
 }
 
 /** Game:
@@ -20,7 +19,6 @@ export default class Game extends EventEmitter {
     super();
     this.gameState = {
       id: params.id,
-      pin: params.pin,
       isActive: false,
       currentDealer: -1,
       players: [],
@@ -74,10 +72,6 @@ export default class Game extends EventEmitter {
 
   isActiveGame(): boolean {
     return this.gameState.isActive;
-  }
-
-  getPin(): string {
-    return this.gameState.pin;
   }
 
   getGameState() {
