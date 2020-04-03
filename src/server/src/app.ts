@@ -56,6 +56,8 @@ io.on('connection', socket => {
         socketId,
       });
       socket.join(gameId);
+      const dataToSend: IStateUpdated = { gameState: filterGameState(game.getGameState()) };
+      io.to(gameId).emit('stateUpdated', dataToSend);
     } else {
       // TODO: some error handling here
     }
@@ -75,7 +77,7 @@ app.get('/api/game/:id', (req, res) => {
     const game = games.get(id) as Game;
     res.status(200).send(game);
   } else {
-    res.status(404).send({ error: 'game does not exist, sorry :('});
+    res.status(404).send({ error: 'game does not exist, sorry :(' });
   }
 });
 
@@ -103,6 +105,8 @@ app.post('/api/game/start', (req, res) => {
     const game = games.get(id) as Game;
     if (game.getPin() == pin) {
       game.start();
+      const dataToSend: IStateUpdated = { gameState: filterGameState(game.getGameState()) };
+      io.to(id).emit('stateUpdated', dataToSend);
       res.status(200).send('Game successfully started!');
     } else {
       res.status(404).send('Pin is invalid');
