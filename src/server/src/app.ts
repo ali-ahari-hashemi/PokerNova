@@ -6,8 +6,15 @@ import Game from './classes/Game';
 import { v1 as uuid } from 'uuid';
 import { defaultPlayer } from './tests/_mockData';
 import cloneDeep from 'lodash.clonedeep';
-import { IPerformActionAPI, IJoinGameAPI, IStartGameAPI, ICreateGameAPI } from './interfaces/IAPI';
+import {
+  IPerformActionAPI,
+  IJoinGameAPI,
+  IStartGameAPI,
+  ICreateGameAPI,
+  IStateUpdated,
+} from './interfaces/IAPI';
 import { playerId, gameId } from './constants';
+import { filterGameState } from './utils/filterGameState';
 
 /**
  * Application:
@@ -80,7 +87,8 @@ app.post('/api/game/create', (req, res) => {
 
   // Add listener for game updating and emit the new state to all sockets connected to that game
   game.on('stateUpdated', () => {
-    io.to(id).emit('stateUpdated', game.getGameState());
+    const dataToSend: IStateUpdated = { gameState: filterGameState(game.getGameState()) };
+    io.to(id).emit('stateUpdated', dataToSend);
   });
 
   res.status(200).send({

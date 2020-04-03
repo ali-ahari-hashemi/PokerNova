@@ -1,7 +1,7 @@
 export interface IPlayer {
   id: number;
   socketId?: string;
-  name?: string;
+  name: string;
   currentBet: number;
   chipCount: number;
   isActiveInRound: boolean;
