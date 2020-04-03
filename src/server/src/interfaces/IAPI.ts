@@ -9,7 +9,7 @@ export interface IPerformActionAPI {
 
 export interface IJoinGameAPI {
   gameId: gameId;
-  seat: number;
+  name: string;
 }
 
 export interface IStartGameAPI {
