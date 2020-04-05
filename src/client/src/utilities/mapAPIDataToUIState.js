@@ -1,9 +1,9 @@
 import { RANKS, SUITS } from './constants';
 
 export const mapAPIDataToUIState = (data, userPlayerID) => {
-  console.log('DATA mapping func', data);
+  console.log('in mapping func', data);
   return {
-    statusText: 'Status feature is TBD', // TBD
+    statusText: `Current Heighest Bet: $${data.currentRound.highestBet}`, // TBD
     timerTimeLeft: 0, // TBD
     timerTotalTime: 0, // TBD
     bettingRoundText: getBettingRoundTextFromData(data.currentRound.bettingRound),
@@ -41,7 +41,7 @@ const getPlayerModulesFromData = (data, userPlayerID) => {
 
   return orderedPlayers.map((player) => ({
     player: player.name,
-    status: 'Status TBD',
+    status: player.status,
     total: player.chipCount,
     active: player.id === data.currentRound.currentPlayer,
   }));
@@ -53,7 +53,7 @@ const getUserModuleFromData = (data, userPlayerID) => {
 
   return {
     player: user.name,
-    status: 'Status TBD',
+    status: user.status,
     total: user.chipCount,
     active: user.id === data.currentRound.currentPlayer,
   };

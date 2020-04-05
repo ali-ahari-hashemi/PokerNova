@@ -14,5 +14,14 @@ export enum BettingRound {
   river = 'river',
 }
 
+export enum PlayerStatus {
+  folded = 'Folded',
+  checked = 'Checked',
+  called = 'Called',
+  bet = 'Bet',
+  allIn = 'All In',
+  default = '',
+}
+
 export type gameId = string;
 export type playerId = string;

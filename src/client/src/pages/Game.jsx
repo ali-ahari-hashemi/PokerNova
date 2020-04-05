@@ -4,7 +4,6 @@ import Card from '../components/Card';
 import PlayerModule from '../components/PlayerModule';
 import { getSeatStyles } from '../utilities/utilities';
 import './Game.css';
-import { mapAPIDataToUIState } from '../utilities/mapAPIDataToUIState';
 
 class Game extends React.Component {
   constructor(props) {
@@ -24,8 +23,8 @@ class Game extends React.Component {
     })
       .then((response) => {
         if (response.ok) {
-          console.log('success starting game');
-        } else if (response.status === 404) {
+          console.log('success performing action');
+        } else if (response.status === 404 || response.status === 400) {
           this.setState({ error: 'Something went wrong, try again.' });
         } else {
           throw new Error();

@@ -2,7 +2,7 @@ import { IRound } from '../interfaces/IRound';
 import { IPlayer } from '../interfaces/IPlayer';
 import Deck from './Deck';
 import { Action } from './Action';
-import { BettingRound } from '../constants';
+import { BettingRound, PlayerStatus } from '../constants';
 import { CardHelpers, IHandWinners, IPlayerCards } from '../utilities/CardHelpers';
 import { IAction } from '../interfaces/IAction';
 import { EventEmitter } from 'events';
@@ -44,10 +44,10 @@ export default class Round extends EventEmitter {
     let playerCards: IPlayerCards[] = [];
 
     players
-      .filter(player => {
+      .filter((player) => {
         return player.isActiveInRound;
       })
-      .forEach(activePlayer => {
+      .forEach((activePlayer) => {
         playerCards.push({
           id: activePlayer.id,
           cards: activePlayer.pocket.concat(board),
@@ -59,7 +59,7 @@ export default class Round extends EventEmitter {
 
   start() {
     console.log({
-      players: this.players.map(player => ({
+      players: this.players.map((player) => ({
         id: player.id,
         pocket: player.pocket.toString(),
       })),
@@ -129,9 +129,9 @@ export default class Round extends EventEmitter {
   }
   // Deals two cards to each player
   private deal(): void {
-    this.players.map(player => (player.pocket = []));
+    this.players.map((player) => (player.pocket = []));
     for (let i = 0; i < 2; i++) {
-      this.players.map(player => player.pocket.push(this.round.deck.draw()));
+      this.players.map((player) => player.pocket.push(this.round.deck.draw()));
     }
   }
 
@@ -160,7 +160,7 @@ export default class Round extends EventEmitter {
 
     console.log({
       board: this.round.board,
-      players: this.players.map(player => ({
+      players: this.players.map((player) => ({
         id: player.id,
         pocket: player.pocket.toString(),
       })),
@@ -170,6 +170,7 @@ export default class Round extends EventEmitter {
 
   // Pre-flop, flop, turn, river
   private startNewBettingRound() {
+    this.resetPlayersStatus();
     const didIncrement = this.incrementBettingRound();
     if (didIncrement) {
       console.log(`starting new betting round: ${this.round.bettingRound}`);
@@ -185,6 +186,11 @@ export default class Round extends EventEmitter {
     } else {
       this.finishRound();
     }
+  }
+
+  private resetPlayersStatus() {
+    console.log('reseting players');
+    this.players.map((player) => (player.status = PlayerStatus.default));
   }
 
   // Set betting round to the next stage. Function returns false if betting round is currently the river, true otherwise
@@ -215,7 +221,7 @@ export default class Round extends EventEmitter {
   private payout(winners: IHandWinners): void {
     const winningPlayerIds = winners.ids;
     const potDivided = (1.0 * this.round.pot) / winningPlayerIds.length;
-    winningPlayerIds.map(id => {
+    winningPlayerIds.map((id) => {
       this.players[id].chipCount += potDivided;
     });
   }

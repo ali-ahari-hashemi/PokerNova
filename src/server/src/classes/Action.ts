@@ -1,4 +1,4 @@
-import { ActionType } from '../constants';
+import { ActionType, PlayerStatus } from '../constants';
 import { IAction } from '../interfaces/IAction';
 import { IPlayer } from '../interfaces/IPlayer';
 import { IRound } from '../interfaces/IRound';
@@ -42,12 +42,14 @@ export class Action {
     console.log(`player ${this.player.id} folding`);
     this.round.playersFolded.push(this.player.id);
     this.player.isActiveInRound = false;
+    this.player.status = PlayerStatus.folded;
     return true;
   }
 
   check(): boolean {
     console.log(`player ${this.player.id} checking`);
     const callAmount = this.round.highestBet - this.player.currentBet;
+    this.player.status = PlayerStatus.checked;
     return callAmount == 0;
   }
 
@@ -73,6 +75,7 @@ export class Action {
         return this.call();
       } else {
         console.log(`player ${this.player.id} betting amount: ${betAmount}`);
+        this.player.status = `${PlayerStatus.bet} ${betAmount}`;
         this.placeBet(betAmount);
         return true;
       }
@@ -84,12 +87,14 @@ export class Action {
   private call(): boolean {
     const callAmount = this.round.highestBet - this.player.currentBet;
     console.log(`player ${this.player.id} calling amount: ${callAmount}`);
+    this.player.status = `${PlayerStatus.called} ${callAmount}`;
     this.placeBet(callAmount);
     return true;
   }
 
   private allIn(): boolean {
     console.log(`player ${this.player.id} going all in`);
+    this.player.status = PlayerStatus.allIn;
     this.placeBet(this.player.chipCount);
     this.round.playersAllIn.push(this.player.id);
     return true;

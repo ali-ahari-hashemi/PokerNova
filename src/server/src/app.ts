@@ -5,13 +5,7 @@ import socketIO from 'socket.io';
 import Game from './classes/Game';
 import { defaultPlayer } from './tests/_mockData';
 import cloneDeep from 'lodash.clonedeep';
-import {
-  IPerformActionAPI,
-  IJoinGameAPI,
-  IStartGameAPI,
-  ICreateGameAPI,
-  IStateUpdated,
-} from './interfaces/IAPI';
+import { IPerformActionAPI, IJoinGameAPI, IStartGameAPI, IStateUpdated } from './interfaces/IAPI';
 import { playerId, gameId } from './constants';
 import { filterGameState } from './utils/filterGameState';
 import { getUniqueId } from './utils/getUniqueId';
@@ -116,9 +110,13 @@ app.post('/api/game/performAction', (req, res) => {
   const { gameId, playerId, action }: IPerformActionAPI = req.body;
   const game = games.get(gameId);
   if (game && game.getRound().getCurrentPlayer().id == playerId) {
-    game.getRound().performAction(action);
-    game.getRound().increment();
-    res.status(200).send('Successfully performed action. Now its the next players turn!');
+    const didPerformAction = game.getRound().performAction(action);
+    if (didPerformAction) {
+      game.getRound().increment();
+      res.status(200).send('Successfully performed action. Now its the next players turn!');
+    } else {
+      res.status(400).send('Invalid action');
+    }
   } else {
     res.status(400).send('Error performing action. Please make sure gameId and playerId is valid');
   }

@@ -25,7 +25,7 @@ class WaitingRoom extends React.Component {
   }
 
   handleStartGameClick() {
-    const { gameId, setGameActive } = this.props;
+    const { gameId } = this.props;
 
     fetch('/api/game/start', {
       method: 'POST',
