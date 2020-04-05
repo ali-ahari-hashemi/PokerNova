@@ -1,14 +1,13 @@
-import React from "react";
-import { withRouter } from "react-router-dom";
-import "./Home.css";
+import React from 'react';
+import { withRouter } from 'react-router-dom';
+import './Home.css';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      pinValue: "",
-      error: "",
+      error: '',
     };
 
     this.handleCreateGameClick = this.handleCreateGameClick.bind(this);
@@ -16,18 +15,18 @@ class Home extends React.Component {
 
   handleCreateGameClick() {
     // reset error state if it was fixed since last click
-    this.setState({ error: "" });
+    this.setState({ error: '' });
 
-    fetch("/api/game/create", {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
+    fetch('/api/game/create', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
     })
       .then((response) => response.json())
       .then((myJson) => {
         this.props.history.push(`/game/${myJson.id}`);
       })
       .catch((err) => {
-        this.setState({ error: "Error creating game." });
+        this.setState({ error: 'Error creating game.' });
       });
   }
 

@@ -12,11 +12,7 @@ class GamePath extends React.Component {
       error: '',
       loading: true, // For now, loading component is a blank page since get request is fast
       gameExists: true, // determines whether to render WaitingRoom/Game or NotFound
-      gameActive: false, // determines whether to render WaitingRoom or Game
-    }
-
-    this.setGameActive = this.setGameActive.bind(this);
-    this.setErrorPage = this.setErrorPage.bind(this);
+    };
   }
 
   componentDidMount() {
@@ -24,24 +20,15 @@ class GamePath extends React.Component {
 
     fetch(`/api/game/${gameId}`, {
       method: 'GET',
-      headers: { 'Content-type': 'application/json' }
+      headers: { 'Content-type': 'application/json' },
     })
       .then((response) => {
         if (response.ok) {
-          return response.json();
+          this.setState({ loading: false, gameExists: true });
         } else if (response.status === 404) {
           this.setState({ loading: false, gameExists: false });
         } else {
           throw new Error();
-        }
-      })
-      .then((myJson) => {
-        if (myJson) {
-          if (myJson.gameState.isActive) {
-            this.setState({ loading: false, gameActive: true });
-          } else {
-            this.setState({ loading: false, gameActive: false });
-          }
         }
       })
       .catch((err) => {
@@ -50,36 +37,32 @@ class GamePath extends React.Component {
       });
   }
 
-  setGameActive() {
-    this.setState({
-      gameActive: true,
-    })
-  }
-
   setErrorPage(error) {
     this.setState({
       error,
-    })
+    });
   }
 
   render() {
     const gameId = this.props.match.params.id;
 
-    return !this.state.loading ?
-            !this.state.error ?
-              this.state.gameExists ?
-                this.state.gameActive ?
-                  <Game
-                    gameId={gameId}
-                    setErrorPage={this.setErrorPage}
-                  /> :
-                  <WaitingRoom
-                    gameId={gameId}
-                    setGameActive={this.setGameActive}
-                  /> :
-                  <NotFound /> :
-                  <p>{this.state.error}</p> :
-                  <></>
+    return !this.state.loading ? (
+      !this.state.error ? (
+        this.state.gameExists ? (
+          this.props.gameState && this.props.gameState.isActive ? (
+            <Game gameId={gameId} setErrorPage={() => this.setErrorPage()} />
+          ) : (
+            <WaitingRoom socket={this.props.socket} gameId={gameId} />
+          )
+        ) : (
+          <NotFound />
+        )
+      ) : (
+        <p>{this.state.error}</p>
+      )
+    ) : (
+      <></>
+    );
   }
 }
 
