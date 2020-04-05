@@ -13,12 +13,11 @@ class GamePath extends React.Component {
       loading: true, // For now, loading component is a blank page since get request is fast
       gameExists: true, // determines whether to render WaitingRoom/Game or NotFound
     };
+    this.gameId = props.match.params.id;
   }
 
   componentDidMount() {
-    const gameId = this.props.match.params.id;
-
-    fetch(`/api/game/${gameId}`, {
+    fetch(`/api/game/${this.gameId}`, {
       method: 'GET',
       headers: { 'Content-type': 'application/json' },
     })
@@ -37,22 +36,14 @@ class GamePath extends React.Component {
       });
   }
 
-  setErrorPage(error) {
-    this.setState({
-      error,
-    });
-  }
-
   render() {
-    const gameId = this.props.match.params.id;
-
     return !this.state.loading ? (
       !this.state.error ? (
         this.state.gameExists ? (
           this.props.gameState && this.props.gameState.isActive ? (
-            <Game gameId={gameId} setErrorPage={() => this.setErrorPage()} />
+            <Game seat={this.props.seat} gameState={this.props.gameState} gameId={this.gameId} />
           ) : (
-            <WaitingRoom socket={this.props.socket} gameId={gameId} />
+            <WaitingRoom socket={this.props.socket} gameId={this.gameId} />
           )
         ) : (
           <NotFound />

@@ -38,7 +38,7 @@ app.use(bodyParser.json());
 
 // SOCKET STUFF
 
-io.on('connection', socket => {
+io.on('connection', (socket) => {
   const socketId: playerId = socket.id;
   console.log(`New connection! socket id: ${socketId}`);
 
@@ -56,6 +56,7 @@ io.on('connection', socket => {
         socketId,
       });
       socket.join(gameId);
+      socket.emit('joinGameSuccess', { seat: nextAvailableSeat });
       const dataToSend: IStateUpdated = { gameState: filterGameState(game.getGameState()) };
       io.to(gameId).emit('stateUpdated', dataToSend);
     } else {
