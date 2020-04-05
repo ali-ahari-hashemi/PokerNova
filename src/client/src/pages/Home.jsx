@@ -9,8 +9,6 @@ class Home extends React.Component {
     this.state = {
       error: '',
     };
-
-    this.handleCreateGameClick = this.handleCreateGameClick.bind(this);
   }
 
   handleCreateGameClick() {
@@ -35,7 +33,7 @@ class Home extends React.Component {
       <div className="Home">
         <h1 className="HomeTitle">PokerNova</h1>
         {this.state.error && <p className="HomeError">{this.state.error}</p>}
-        <div className="HomeCreateGameButton" onClick={this.handleCreateGameClick}>
+        <div className="HomeCreateGameButton" onClick={() => this.handleCreateGameClick()}>
           Create Game
         </div>
       </div>

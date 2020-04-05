@@ -9,11 +9,7 @@ import { mapAPIDataToUIState } from '../utilities/mapAPIDataToUIState';
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    this.state = mapAPIDataToUIState(props.gameState, this.props.seat);
-  }
-
-  componentWillReceiveProps(newProps) {
-    this.setState({ ...mapAPIDataToUIState(newProps.gameState, newProps.seat) });
+    this.state = {};
   }
 
   performAction(action) {
@@ -41,7 +37,7 @@ class Game extends React.Component {
   }
 
   renderBoardCards() {
-    const { boardCards } = this.state;
+    const { boardCards } = this.props;
     const numEmptyCards = 5 - boardCards.length;
 
     const populatedCards = boardCards.map((card, i) => {
@@ -57,7 +53,7 @@ class Game extends React.Component {
   }
 
   renderUserCards() {
-    const { userCards } = this.state;
+    const { userCards } = this.props;
     const numEmptyCards = 2 - userCards.length;
 
     const populatedCards = userCards.map((card, i) => {
@@ -74,7 +70,7 @@ class Game extends React.Component {
   }
 
   renderPlayerModules() {
-    const { playerModules } = this.state;
+    const { playerModules } = this.props;
     const seatStyles = getSeatStyles(playerModules.length);
 
     return playerModules.map((item, index) => {
@@ -99,7 +95,7 @@ class Game extends React.Component {
       bettingRoundText,
       potTotal,
       userModule,
-    } = this.state;
+    } = this.props;
 
     return (
       <div className="Game">
@@ -139,22 +135,14 @@ class Game extends React.Component {
                   className="PlayOption BetButton"
                   onClick={() =>
                     this.performAction({
-                      action: 'bet',
-                      betAmount: this.state.betAmount,
+                      actionType: 'bet',
+                      betAmount: parseFloat(this.state.betAmount),
                     })
                   }
                 >
                   BET
                 </div>
-                <div
-                  className="PlayOption BetAmount"
-                  onClick={() =>
-                    this.performAction({
-                      actionType: 'bet',
-                      betAmount: this.state.betAmount,
-                    })
-                  }
-                >
+                <div className="BetAmount">
                   $
                   <input
                     className="WaitingRoomInput"

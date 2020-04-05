@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
@@ -12,19 +12,19 @@ const App = () => {
   const [gameState, setGameState] = useState();
   const [seat, setSeat] = useState(0);
 
-  socket.on('connect', () => {
-    console.log('in app.js ' + socket.id + ' successfully connected');
-  });
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('in app.js ' + socket.id + ' successfully connected');
+    });
 
-  socket.on('stateUpdated', (data) => {
-    console.log('state updated', data);
-    setGameState(data);
-  });
+    socket.on('stateUpdated', (data) => {
+      setGameState({ ...data });
+    });
 
-  socket.on('joinGameSuccess', (data) => {
-    console.log('in app.js join game success', data);
-    setSeat(data.seat);
-  });
+    socket.on('joinGameSuccess', (data) => {
+      setSeat(data.seat);
+    });
+  }, []);
 
   return (
     <BrowserRouter>

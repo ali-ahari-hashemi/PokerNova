@@ -3,6 +3,7 @@ import WaitingRoom from './WaitingRoom';
 import Game from './Game';
 import NotFound from './NotFound';
 import { withRouter } from 'react-router-dom';
+import { mapAPIDataToUIState } from '../utilities/mapAPIDataToUIState';
 
 class GamePath extends React.Component {
   constructor(props) {
@@ -41,7 +42,11 @@ class GamePath extends React.Component {
       !this.state.error ? (
         this.state.gameExists ? (
           this.props.gameState && this.props.gameState.isActive ? (
-            <Game seat={this.props.seat} gameState={this.props.gameState} gameId={this.gameId} />
+            <Game
+              seat={this.props.seat}
+              {...mapAPIDataToUIState(this.props.gameState, this.props.seat)}
+              gameId={this.gameId}
+            />
           ) : (
             <WaitingRoom socket={this.props.socket} gameId={this.gameId} />
           )

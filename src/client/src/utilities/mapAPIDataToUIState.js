@@ -7,7 +7,7 @@ export const mapAPIDataToUIState = (data, userPlayerID) => {
     timerTimeLeft: 0, // TBD
     timerTotalTime: 0, // TBD
     bettingRoundText: getBettingRoundTextFromData(data.currentRound.bettingRound),
-    boardCards: data.currentRound.board,
+    boardCards: data.currentRound.board.map((card) => mapAPICardToUICard(card)),
     potTotal: data.currentRound.pot,
     playerModules: getPlayerModulesFromData(data, userPlayerID),
     userModule: getUserModuleFromData(data, userPlayerID),
