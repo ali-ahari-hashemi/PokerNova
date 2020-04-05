@@ -17,6 +17,7 @@ const App = () => {
   });
 
   socket.on('stateUpdated', (data) => {
+    console.log('state updated', data);
     setGameState(data);
   });
 

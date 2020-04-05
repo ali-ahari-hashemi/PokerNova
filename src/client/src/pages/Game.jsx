@@ -12,6 +12,34 @@ class Game extends React.Component {
     this.state = mapAPIDataToUIState(props.gameState, this.props.seat);
   }
 
+  componentWillReceiveProps(newProps) {
+    this.setState({ ...mapAPIDataToUIState(newProps.gameState, newProps.seat) });
+  }
+
+  performAction(action) {
+    fetch('/api/game/performAction', {
+      method: 'POST',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify({
+        action,
+        gameId: this.props.gameId,
+        playerId: this.props.seat,
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log('success starting game');
+        } else if (response.status === 404) {
+          this.setState({ error: 'Something went wrong, try again.' });
+        } else {
+          throw new Error();
+        }
+      })
+      .catch(() => {
+        this.setState({ error: 'Error starting game.' });
+      });
+  }
+
   renderBoardCards() {
     const { boardCards } = this.state;
     const numEmptyCards = 5 - boardCards.length;
@@ -107,12 +135,58 @@ class Game extends React.Component {
             </div>
             <div className="UserContentOptionsContent">
               <div className="BetContainer">
-                <div className="PlayOption BetButton">BET</div>
-                <div className="PlayOption BetAmount">$2</div>{' '}
+                <div
+                  className="PlayOption BetButton"
+                  onClick={() =>
+                    this.performAction({
+                      action: 'bet',
+                      betAmount: this.state.betAmount,
+                    })
+                  }
+                >
+                  BET
+                </div>
+                <div
+                  className="PlayOption BetAmount"
+                  onClick={() =>
+                    this.performAction({
+                      actionType: 'bet',
+                      betAmount: this.state.betAmount,
+                    })
+                  }
+                >
+                  $
+                  <input
+                    className="WaitingRoomInput"
+                    type="text"
+                    value={this.state.betAmount}
+                    onChange={(e) => {
+                      this.setState({ betAmount: e.target.value });
+                    }}
+                  />
+                </div>{' '}
                 {/* This should be a slider or something */}
               </div>
-              <div className="PlayOption PlayOptionFull CheckButton">CHECK</div>
-              <div className="PlayOption PlayOptionFull FoldButton">FOLD</div>
+              <div
+                className="PlayOption PlayOptionFull CheckButton"
+                onClick={() =>
+                  this.performAction({
+                    actionType: 'check',
+                  })
+                }
+              >
+                CHECK
+              </div>
+              <div
+                className="PlayOption PlayOptionFull FoldButton"
+                onClick={() =>
+                  this.performAction({
+                    actionType: 'fold',
+                  })
+                }
+              >
+                FOLD
+              </div>
             </div>
           </div>
         </div>
