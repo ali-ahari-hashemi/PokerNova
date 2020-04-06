@@ -32,6 +32,15 @@ app.use(bodyParser.json());
 
 // SOCKET STUFF
 
+const sendGameStateToPlayers = (game: Game) => {
+  game.getGameState().players.forEach((player) => {
+    const dataToSend: IStateUpdated = {
+      gameState: filterGameState(game.getGameState(), player.id),
+    };
+    io.to(player.socketId).emit('stateUpdated', dataToSend);
+  });
+};
+
 io.on('connection', (socket) => {
   const socketId: playerId = socket.id;
   console.log(`New connection! socket id: ${socketId}`);
@@ -51,8 +60,7 @@ io.on('connection', (socket) => {
       });
       socket.join(gameId);
       socket.emit('joinGameSuccess', { seat: nextAvailableSeat });
-      const dataToSend: IStateUpdated = { gameState: filterGameState(game.getGameState()) };
-      io.to(gameId).emit('stateUpdated', dataToSend);
+      sendGameStateToPlayers(game);
     } else {
       // TODO: some error handling here
     }
@@ -83,8 +91,7 @@ app.post('/api/game/create', (req, res) => {
 
   // Add listener for game updating and emit the new state to all sockets connected to that game
   game.on('stateUpdated', () => {
-    const dataToSend: IStateUpdated = { gameState: filterGameState(game.getGameState()) };
-    io.to(id).emit('stateUpdated', dataToSend);
+    sendGameStateToPlayers(game);
   });
 
   res.status(200).send({
@@ -98,8 +105,7 @@ app.post('/api/game/start', (req, res) => {
   if (games.has(id)) {
     const game = games.get(id) as Game;
     game.start();
-    const dataToSend: IStateUpdated = { gameState: filterGameState(game.getGameState()) };
-    io.to(id).emit('stateUpdated', dataToSend);
+    sendGameStateToPlayers(game);
     res.status(200).send('Game successfully started!');
   } else {
     res.status(404).send('Game does not exist, sorry :(');
