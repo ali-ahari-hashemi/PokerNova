@@ -1,7 +1,7 @@
 import { IPlayer } from '../interfaces/IPlayer';
 import { IRound } from '../interfaces/IRound';
 import Deck from '../classes/Deck';
-import { BettingRound } from '../constants';
+import { BettingRound, PlayerStatus } from '../constants';
 
 export const defaultPlayer: IPlayer = {
   id: 0,
@@ -11,6 +11,7 @@ export const defaultPlayer: IPlayer = {
   chipCount: 200,
   pocket: [],
   isActiveInRound: true,
+  status: PlayerStatus.default,
 };
 
 export const defaultRound: IRound = {

@@ -6,4 +6,5 @@ export interface IPlayer {
   chipCount: number;
   isActiveInRound: boolean;
   pocket: string[];
+  status: string;
 }
