@@ -5,6 +5,7 @@ import { BettingRound } from '../constants';
 
 export const defaultPlayer: IPlayer = {
   id: 0,
+  socketId: '',
   name: 'name',
   currentBet: 0,
   chipCount: 200,

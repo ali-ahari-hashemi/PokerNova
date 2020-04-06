@@ -1,7 +1,20 @@
 import IGame from '../interfaces/IGame';
 import IGameStateToSend, { IRoundStateToSend } from '../interfaces/IGameStateToSend';
+import { IPlayer } from '../interfaces/IPlayer';
 
-export const filterGameState = (gameState: IGame): IGameStateToSend => {
+// Remove sensitive data from players list sent to client
+function filterPlayers(players: IPlayer[], playerId: number) {
+  return players.map((player) => {
+    return player.id === playerId
+      ? player
+      : {
+          ...player,
+          pocket: [],
+        };
+  });
+}
+
+export const filterGameState = (gameState: IGame, playerId?: number): IGameStateToSend => {
   const currentRound = gameState.currentRound.getRound();
   const currentRoundToSend: IRoundStateToSend = {
     board: currentRound.board,
@@ -18,7 +31,7 @@ export const filterGameState = (gameState: IGame): IGameStateToSend => {
     id: gameState.id,
     isActive: gameState.isActive,
     currentDealer: gameState.currentDealer,
-    players: gameState.players,
+    players: playerId ? filterPlayers(gameState.players, playerId) : gameState.players,
     currentRound: currentRoundToSend,
   };
 
