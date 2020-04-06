@@ -80,6 +80,7 @@ export default class Round extends EventEmitter {
   }
 
   end() {
+    console.log('ending round');
     this.round.isActive = false;
     this.emit('roundEnded');
   }

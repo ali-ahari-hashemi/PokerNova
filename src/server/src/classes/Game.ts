@@ -38,17 +38,6 @@ export default class Game extends EventEmitter {
     this.gameState.currentDealer = Math.floor(Math.random() * this.gameState.players.length);
     this.gameState.isActive = true;
     this.startRound();
-    this.gameState.currentRound.on('roundEnded', () => {
-      if (this.isValidGame()) {
-        this.startRound();
-      } else {
-        this.end();
-      }
-    });
-
-    this.gameState.currentRound.on('stateUpdated', () => {
-      this.stateUpdated();
-    });
   }
 
   end() {
@@ -95,6 +84,17 @@ export default class Game extends EventEmitter {
       players: this.gameState.players,
       currentDealer: this.gameState.currentDealer,
       blinds: { sb: 5, bb: 10 },
+    });
+    this.gameState.currentRound.on('roundEnded', () => {
+      if (this.isValidGame()) {
+        this.startRound();
+      } else {
+        this.end();
+      }
+    });
+
+    this.gameState.currentRound.on('stateUpdated', () => {
+      this.stateUpdated();
     });
     this.gameState.currentRound.start();
   }

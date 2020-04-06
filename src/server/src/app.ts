@@ -119,6 +119,7 @@ app.post('/api/game/performAction', (req, res) => {
     const didPerformAction = game.getRound().performAction(action);
     if (didPerformAction) {
       game.getRound().increment();
+      console.log('successfuly performed action');
       res.status(200).send('Successfully performed action. Now its the next players turn!');
     } else {
       res.status(400).send('Invalid action');
