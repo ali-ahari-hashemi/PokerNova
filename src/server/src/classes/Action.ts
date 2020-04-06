@@ -33,6 +33,8 @@ export class Action {
         return this.check();
       case ActionType.bet:
         return this.bet();
+      case ActionType.blind:
+        return this.blind();
       default:
         return this.fold();
     }
@@ -84,6 +86,12 @@ export class Action {
     }
   }
 
+  blind(): boolean {
+    this.placeBet(this.action.betAmount || 0, true);
+    this.player.status = `${PlayerStatus.blind} ${this.action.betAmount}`;
+    return true;
+  }
+
   private call(): boolean {
     const callAmount = this.round.highestBet - this.player.currentBet;
     console.log(`player ${this.player.id} calling amount: ${callAmount}`);
@@ -100,7 +108,7 @@ export class Action {
     return true;
   }
 
-  private placeBet(betAmount: number): void {
+  private placeBet(betAmount: number, isBlind: boolean = false): void {
     this.round.pot += betAmount;
     this.player.chipCount -= betAmount;
     const playersCurrentTotalBet = this.player.currentBet + betAmount;
@@ -108,7 +116,9 @@ export class Action {
 
     if (playersCurrentTotalBet > this.round.highestBet) {
       this.round.highestBet = playersCurrentTotalBet;
-      this.round.stoppingPoint = this.player.id;
+      if (!isBlind) {
+        this.round.stoppingPoint = this.player.id;
+      }
     }
   }
 }

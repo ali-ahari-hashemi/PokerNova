@@ -75,6 +75,8 @@ export default class Round extends EventEmitter {
     this.round.isActive = true;
     this.deal();
     this.startNewBettingRound();
+    this.postBlinds();
+    this.stateUpdated();
   }
 
   end() {
@@ -176,7 +178,7 @@ export default class Round extends EventEmitter {
     new Action({
       player: sbPlayer,
       action: {
-        actionType: ActionType.bet,
+        actionType: ActionType.blind,
         betAmount: this.blinds.sb,
       },
       round: this.round,
@@ -185,7 +187,7 @@ export default class Round extends EventEmitter {
     new Action({
       player: bbPlayer,
       action: {
-        actionType: ActionType.bet,
+        actionType: ActionType.blind,
         betAmount: this.blinds.bb,
       },
       round: this.round,
@@ -210,7 +212,7 @@ export default class Round extends EventEmitter {
 
   // Pre-flop, flop, turn, river
   private startNewBettingRound() {
-    this.resetPlayersStatus();
+    this.resetPlayers();
     const didIncrement = this.incrementBettingRound();
     if (didIncrement) {
       console.log(`starting new betting round: ${this.round.bettingRound}`);
@@ -219,8 +221,6 @@ export default class Round extends EventEmitter {
         this.round.bettingRound == BettingRound.preFlop ? this.getUTG() : this.getSB();
       this.round.currentPlayer = firstToBet;
       this.round.stoppingPoint = firstToBet;
-
-      this.postBlinds();
 
       console.log(`current player is ${this.round.currentPlayer}`);
       if (this.round.bettingRound !== BettingRound.preFlop) {
@@ -231,9 +231,12 @@ export default class Round extends EventEmitter {
     }
   }
 
-  private resetPlayersStatus() {
+  private resetPlayers() {
     console.log('reseting players');
-    this.players.map((player) => (player.status = PlayerStatus.default));
+    this.players.map((player) => {
+      player.status = PlayerStatus.default;
+      player.currentBet = 0;
+    });
   }
 
   // Set betting round to the next stage. Function returns false if betting round is currently the river, true otherwise
