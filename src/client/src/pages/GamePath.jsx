@@ -48,7 +48,11 @@ class GamePath extends React.Component {
               gameId={this.gameId}
             />
           ) : (
-            <WaitingRoom socket={this.props.socket} gameId={this.gameId} />
+            <WaitingRoom
+              gameState={this.props.gameState}
+              socket={this.props.socket}
+              gameId={this.gameId}
+            />
           )
         ) : (
           <NotFound />
