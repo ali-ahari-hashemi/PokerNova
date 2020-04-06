@@ -25,6 +25,10 @@ export default class Game extends EventEmitter {
       currentRound: new Round({
         players: [],
         currentDealer: -1,
+        blinds: {
+          sb: 5,
+          bb: 10,
+        },
       }),
     };
   }
@@ -34,17 +38,6 @@ export default class Game extends EventEmitter {
     this.gameState.currentDealer = Math.floor(Math.random() * this.gameState.players.length);
     this.gameState.isActive = true;
     this.startRound();
-    this.gameState.currentRound.on('roundEnded', () => {
-      if (this.isValidGame()) {
-        this.startRound();
-      } else {
-        this.end();
-      }
-    });
-
-    this.gameState.currentRound.on('stateUpdated', () => {
-      this.stateUpdated();
-    });
   }
 
   end() {
@@ -64,7 +57,7 @@ export default class Game extends EventEmitter {
   // Checks if the game has at least 2 players with chips
   isValidGame(): boolean {
     let count = 0;
-    this.gameState.players.map(player => {
+    this.gameState.players.map((player) => {
       player.chipCount > 0 && count++;
     });
     return count > 1;
@@ -90,6 +83,18 @@ export default class Game extends EventEmitter {
     this.gameState.currentRound = new Round({
       players: this.gameState.players,
       currentDealer: this.gameState.currentDealer,
+      blinds: { sb: 5, bb: 10 },
+    });
+    this.gameState.currentRound.on('roundEnded', () => {
+      if (this.isValidGame()) {
+        this.startRound();
+      } else {
+        this.end();
+      }
+    });
+
+    this.gameState.currentRound.on('stateUpdated', () => {
+      this.stateUpdated();
     });
     this.gameState.currentRound.start();
   }

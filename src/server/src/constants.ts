@@ -5,6 +5,7 @@ export enum ActionType {
   fold = 'fold',
   check = 'check',
   bet = 'bet',
+  blind = 'blind',
 }
 
 export enum BettingRound {
@@ -20,6 +21,7 @@ export enum PlayerStatus {
   called = 'Called',
   bet = 'Bet',
   allIn = 'All In',
+  blind = 'Blind',
   default = '',
 }
 
