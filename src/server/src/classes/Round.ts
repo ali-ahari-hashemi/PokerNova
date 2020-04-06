@@ -2,14 +2,20 @@ import { IRound } from '../interfaces/IRound';
 import { IPlayer } from '../interfaces/IPlayer';
 import Deck from './Deck';
 import { Action } from './Action';
-import { BettingRound, PlayerStatus } from '../constants';
+import { BettingRound, PlayerStatus, ActionType } from '../constants';
 import { CardHelpers, IHandWinners, IPlayerCards } from '../utilities/CardHelpers';
 import { IAction } from '../interfaces/IAction';
 import { EventEmitter } from 'events';
 
+interface IBlinds {
+  sb: number;
+  bb: number;
+}
+
 interface IParams {
   currentDealer: number;
   players: IPlayer[];
+  blinds: IBlinds;
 }
 
 /**
@@ -22,6 +28,7 @@ export default class Round extends EventEmitter {
   private round: IRound;
   private players: IPlayer[];
   private currentDealer: number;
+  private blinds: IBlinds;
 
   constructor(params: IParams) {
     super();
@@ -38,6 +45,7 @@ export default class Round extends EventEmitter {
     };
     this.players = params.players;
     this.currentDealer = params.currentDealer;
+    this.blinds = params.blinds;
   }
 
   static determineWinners(players: IPlayer[], board: string[]): IHandWinners {
@@ -67,9 +75,12 @@ export default class Round extends EventEmitter {
     this.round.isActive = true;
     this.deal();
     this.startNewBettingRound();
+    this.postBlinds();
+    this.stateUpdated();
   }
 
   end() {
+    console.log('ending round');
     this.round.isActive = false;
     this.emit('roundEnded');
   }
@@ -152,6 +163,38 @@ export default class Round extends EventEmitter {
     }
   }
 
+  // Post blinds for small blind and big blind players
+  private postBlinds(): void {
+    let sbPlayer = this.players.find((player) => player.id === this.getSB());
+    let bbPlayer = this.players.find((player) => player.id === this.getBB());
+    if (sbPlayer === undefined || bbPlayer === undefined) {
+      throw new Error(
+        'Error posting blinds to small blind id: ' +
+          this.getSB() +
+          ' and big blind id: ' +
+          this.getBB()
+      );
+    }
+
+    new Action({
+      player: sbPlayer,
+      action: {
+        actionType: ActionType.blind,
+        betAmount: this.blinds.sb,
+      },
+      round: this.round,
+    }).performAction();
+
+    new Action({
+      player: bbPlayer,
+      action: {
+        actionType: ActionType.blind,
+        betAmount: this.blinds.bb,
+      },
+      round: this.round,
+    }).performAction();
+  }
+
   // Determine winners, carry out payouts, and end the round
   private finishRound() {
     const winners = Round.determineWinners(this.players, this.round.board);
@@ -170,7 +213,7 @@ export default class Round extends EventEmitter {
 
   // Pre-flop, flop, turn, river
   private startNewBettingRound() {
-    this.resetPlayersStatus();
+    this.resetPlayers();
     const didIncrement = this.incrementBettingRound();
     if (didIncrement) {
       console.log(`starting new betting round: ${this.round.bettingRound}`);
@@ -179,6 +222,7 @@ export default class Round extends EventEmitter {
         this.round.bettingRound == BettingRound.preFlop ? this.getUTG() : this.getSB();
       this.round.currentPlayer = firstToBet;
       this.round.stoppingPoint = firstToBet;
+
       console.log(`current player is ${this.round.currentPlayer}`);
       if (this.round.bettingRound !== BettingRound.preFlop) {
         this.draw();
@@ -188,9 +232,12 @@ export default class Round extends EventEmitter {
     }
   }
 
-  private resetPlayersStatus() {
+  private resetPlayers() {
     console.log('reseting players');
-    this.players.map((player) => (player.status = PlayerStatus.default));
+    this.players.map((player) => {
+      player.status = PlayerStatus.default;
+      player.currentBet = 0;
+    });
   }
 
   // Set betting round to the next stage. Function returns false if betting round is currently the river, true otherwise
@@ -226,14 +273,19 @@ export default class Round extends EventEmitter {
     });
   }
 
-  // Gets the Under the Gun player id
-  private getUTG(): number {
-    return (this.currentDealer + 3) % this.players.length;
-  }
-
   // Gets the Small Blind player id
   private getSB(): number {
     return (this.currentDealer + 1) % this.players.length;
+  }
+
+  // Gets the Big Blind player id
+  private getBB(): number {
+    return (this.currentDealer + 2) % this.players.length;
+  }
+
+  // Gets the Under the Gun player id
+  private getUTG(): number {
+    return (this.currentDealer + 3) % this.players.length;
   }
 
   // This function returns true if there are more than 2 players in play and at least one of them is not all in
