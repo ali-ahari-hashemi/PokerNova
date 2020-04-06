@@ -14,7 +14,7 @@ function filterPlayers(players: IPlayer[], playerId: number) {
   });
 }
 
-export const filterGameState = (gameState: IGame, playerId?: number): IGameStateToSend => {
+export const filterGameState = (gameState: IGame, playerId: number = -1): IGameStateToSend => {
   const currentRound = gameState.currentRound.getRound();
   const currentRoundToSend: IRoundStateToSend = {
     board: currentRound.board,
@@ -31,7 +31,7 @@ export const filterGameState = (gameState: IGame, playerId?: number): IGameState
     id: gameState.id,
     isActive: gameState.isActive,
     currentDealer: gameState.currentDealer,
-    players: playerId ? filterPlayers(gameState.players, playerId) : gameState.players,
+    players: filterPlayers(gameState.players, playerId),
     currentRound: currentRoundToSend,
   };
 
