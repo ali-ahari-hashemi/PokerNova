@@ -9,7 +9,7 @@
 
 .PopulatedCard {
   background-color: var(--main-white);
-  box-shadow: 2px 2px 4px 0 rgba(95,94,94,0.50);
+  box-shadow: 2px 2px 4px 0 rgba(95, 94, 94, 0.5);
 }
 
 .EmptyCard {
@@ -48,4 +48,19 @@
 
 .black {
   color: var(--black-card-color);
+}
+
+.FaceDownCard {
+  background-color: var(--card-face-down-background);
+  box-shadow: 2px 2px 4px 0 rgba(95, 94, 94, 0.5);
+  justify-content: center;
+  align-items: center;
+  border: 2px solid;
+}
+
+.CardDesignText {
+  font-size: 30px;
+  height: 28px;
+  margin-right: 4px;
+  margin-bottom: 8px;
 }

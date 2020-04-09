@@ -4,7 +4,7 @@
   --main-white: #ffffff;
   --main-color: #79a6b5;
   --main-highlight-color: #021626;
-  --active-player-border: #ed6a5a;
+  --card-face-down-background: #393e41;
 }
 
 body {
@@ -26,4 +26,15 @@ input {
 
 input:focus {
   outline: none;
+}
+
+html,
+body,
+#reactapp,
+#root,
+.App {
+  height: 100%;
+}
+.App {
+  display: flex;
 }

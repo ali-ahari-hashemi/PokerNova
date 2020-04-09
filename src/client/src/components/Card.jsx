@@ -37,13 +37,11 @@ const getRankText = (rank) => {
     default:
       return '';
   }
-}
+};
 
 const getCardColor = (suit) => {
-  return suit === SUITS.HEARTS || suit === SUITS.DIAMONDS ?
-    'red' :
-    'black';
-}
+  return suit === SUITS.HEARTS || suit === SUITS.DIAMONDS ? 'red' : 'black';
+};
 
 const getSuitImg = (suit) => {
   switch (suit) {
@@ -58,32 +56,26 @@ const getSuitImg = (suit) => {
     default:
       return '';
   }
-}
+};
 
 function Card(props) {
-  const { rank, suit } = props;
+  const { rank, suit, empty } = props;
 
-  if (!RANKS[rank] || !SUITS[suit]) {
-    return (
-      <div className="Card EmptyCard" />
-    );
+  if (empty) {
+    return <div className="Card EmptyCard" />;
+  }
+
+  if (!rank || !suit) {
+    return <div className="Card FaceDownCard"></div>;
   }
 
   return (
     <div className="Card PopulatedCard">
       <div className="CardRankContainer">
-        <p
-          className={`CardRank ${getCardColor(suit)}`}
-        >
-          {getRankText(rank)} 
-        </p>
+        <p className={`CardRank ${getCardColor(suit)}`}>{getRankText(rank)}</p>
       </div>
       <div className="CardSuitContainer">
-        <img
-          className="CardSuit"
-          src={getSuitImg(suit)}
-          alt={suit}
-        />
+        <img className="CardSuit" src={getSuitImg(suit)} alt={suit} />
       </div>
     </div>
   );

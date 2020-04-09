@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%;
+  justify-content: space-between;
 }
 
 .AppLogo {
@@ -38,7 +40,7 @@
 .TimerText {
   font-weight: 400;
   font-size: 25px;
-  margin-bottom: 2px;/* Alignment looked weird, this is an unexpected adjustment */
+  margin-bottom: 2px; /* Alignment looked weird, this is an unexpected adjustment */
   margin-right: 8px;
 }
 

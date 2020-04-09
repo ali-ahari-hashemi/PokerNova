@@ -1,11 +1,19 @@
 import React from 'react';
 import './PlayerModule.css';
+import Card from './Card';
 
 function PlayerModule(props) {
-  const { player, status, total, active } = props;
+  const { player, status, total, active, pocket = [{}, {}], isCurrentPlayer } = props;
 
+  console.log('player', props);
   return (
     <div className="Container">
+      <div className="CardsContainer">
+        {pocket.map((card) => (
+          <Card {...card} />
+        ))}
+      </div>
+
       <div className={`PlayerModule ${active && 'PlayerModuleActive'}`}>
         <div className="PlayerModuleTotalContainer">
           <p className="PlayerModuleTotalText">${total}</p>
@@ -15,9 +23,11 @@ function PlayerModule(props) {
         </div>
       </div>
 
-      <div className="StatusBar">
-        <p className="StatusText">{status}</p>
-      </div>
+      {status && (
+        <div className="StatusBar">
+          <p className="StatusText">{status}</p>
+        </div>
+      )}
     </div>
   );
 }

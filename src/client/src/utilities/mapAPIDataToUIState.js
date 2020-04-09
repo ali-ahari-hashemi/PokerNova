@@ -36,15 +36,21 @@ const getPlayerModulesFromData = (data, userPlayerID) => {
   const orderedPlayers = [];
   for (let i = 0; i < players.length; i++) {
     const index = (i + startIndex) % players.length;
-    players[index].id !== userPlayerID && orderedPlayers.push(players[index]);
+    orderedPlayers.push(players[index]);
   }
 
-  return orderedPlayers.map((player) => ({
-    player: player.name,
-    status: player.status,
-    total: player.chipCount,
-    active: player.id === data.currentRound.currentPlayer,
-  }));
+  return orderedPlayers.map((player) => {
+    const pocket =
+      player.pocket.length > 0 ? player.pocket.map((card) => mapAPICardToUICard(card)) : [{}, {}];
+    return {
+      player: player.name,
+      status: player.status,
+      total: player.chipCount,
+      active: player.id === data.currentRound.currentPlayer,
+      isCurrentPlayer: player.id == userPlayerID,
+      pocket: pocket,
+    };
+  });
 };
 
 const getUserModuleFromData = (data, userPlayerID) => {

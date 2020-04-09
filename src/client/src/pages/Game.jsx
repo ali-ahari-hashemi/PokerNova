@@ -45,7 +45,7 @@ class Game extends React.Component {
     const emptyCards = Array(numEmptyCards)
       .fill()
       .map((item, i) => {
-        return <Card key={`empty-card-${i}`} rank="" suit="" />;
+        return <Card key={`empty-card-${i}`} empty={true} />;
       });
 
     return populatedCards.concat(emptyCards);
@@ -75,12 +75,7 @@ class Game extends React.Component {
     return playerModules.map((item, index) => {
       return (
         <div key={index} style={seatStyles[index]}>
-          <PlayerModule
-            player={item.player}
-            status={item.status}
-            total={item.total}
-            active={item.active}
-          />
+          <PlayerModule {...item} />
         </div>
       );
     });

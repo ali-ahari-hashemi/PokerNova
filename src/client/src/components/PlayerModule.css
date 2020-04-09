@@ -68,3 +68,10 @@
   color: black;
   margin-bottom: 3px;
 }
+
+.CardsContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  position: relative;
+}
