@@ -2,7 +2,6 @@ import React from 'react';
 import PieTimer from '../components/PieTimer';
 import Card from '../components/Card';
 import PlayerModule from '../components/PlayerModule';
-import { getSeatStyles } from '../utilities/utilities';
 import './Game.css';
 
 class Game extends React.Component {
@@ -51,33 +50,21 @@ class Game extends React.Component {
     return populatedCards.concat(emptyCards);
   }
 
-  renderUserCards() {
-    const { userCards } = this.props;
-    const numEmptyCards = 2 - userCards.length;
-
-    const populatedCards = userCards.map((card, i) => {
-      return <Card key={`populated-card-${i}`} rank={card.rank} suit={card.suit} />;
-    });
-
-    const emptyCards = Array(numEmptyCards)
-      .fill()
-      .map((item, i) => {
-        return <Card key={`empty-card-${i}`} rank="" suit="" />;
-      });
-
-    return populatedCards.concat(emptyCards);
-  }
-
-  renderPlayerModules() {
+  renderPlayerModules(playerIds) {
     const { playerModules } = this.props;
-    const seatStyles = getSeatStyles(playerModules.length);
 
     return playerModules.map((item, index) => {
-      return (
-        <div key={index} style={seatStyles[index]}>
-          <PlayerModule {...item} />
-        </div>
-      );
+      if (playerIds.includes(item.id)) {
+        const isOnTopOrBottom = [0, 1, 4, 5].includes(item.id);
+        return (
+          <div
+            key={index}
+            style={isOnTopOrBottom ? { padding: '0px 40px' } : { padding: '20px 0px' }}
+          >
+            <PlayerModule {...item} />
+          </div>
+        );
+      }
     });
   }
 
@@ -103,22 +90,31 @@ class Game extends React.Component {
           </div>
           <div className="spacer" />
         </div>
-        <div className="GameTable">
-          <p className="BettingRoundText">{bettingRoundText}</p>
-          <div className="BoardCardsContainer">{this.renderBoardCards()}</div>
-          <p className="PotTotalText">Total Pot: ${potTotal}</p>
-          {this.renderPlayerModules()}
+        <div className="GameTableContainer">
+          <div id="TopSteats" className="SeatsHotizontal">
+            {this.renderPlayerModules([0, 1])}
+          </div>
+          <div className="Row">
+            <div id="LeftSteats" className="SeatsVertical">
+              {this.renderPlayerModules([6, 7])}
+            </div>
+
+            <div className="GameTable">
+              <p className="BettingRoundText">{bettingRoundText}</p>
+              <div className="BoardCardsContainer">{this.renderBoardCards()}</div>
+              <p className="PotTotalText">Total Pot: ${potTotal}</p>
+            </div>
+
+            <div id="RightSteats" className="SeatsVertical">
+              {this.renderPlayerModules([2, 3])}
+            </div>
+          </div>
+
+          <div id="BottomSteats" className="SeatsHotizontal">
+            {this.renderPlayerModules([4, 5])}
+          </div>
         </div>
         <div className="UserContent">
-          <div className="UserContentStatusContainer">
-            <PlayerModule
-              player={userModule.player}
-              status={userModule.status}
-              total={userModule.total}
-              active={userModule.active}
-            />
-            <div className="UserCardsContainer">{this.renderUserCards()}</div>
-          </div>
           <div className="UserContentOptionsContainer">
             <div className="UserContentOptionsHeader">
               <p className="UserContentOptionsTitle">Options</p>

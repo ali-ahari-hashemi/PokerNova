@@ -43,6 +43,7 @@ const getPlayerModulesFromData = (data, userPlayerID) => {
     const pocket =
       player.pocket.length > 0 ? player.pocket.map((card) => mapAPICardToUICard(card)) : [{}, {}];
     return {
+      id: player.id,
       player: player.name,
       status: player.status,
       total: player.chipCount,
