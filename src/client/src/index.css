@@ -1,9 +1,10 @@
 :root {
-  --black-card-color: #504F56;
-  --red-card-color: #F45151;
-  --main-white: #FFFFFF;
-  --main-color: #79A6B5;
+  --black-card-color: #504f56;
+  --red-card-color: #f45151;
+  --main-white: #ffffff;
+  --main-color: #79a6b5;
   --main-highlight-color: #021626;
+  --active-player-border: #ed6a5a;
 }
 
 body {
