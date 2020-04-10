@@ -43,36 +43,6 @@
   margin-right: 8px;
 }
 
-/* Game table stuff */
-
-.GameTable {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-around;
-  border: 3px solid var(--main-white);
-  border-radius: 200px;
-}
-
-.BettingRoundText {
-  font-size: 14px;
-  font-weight: 500;
-  margin-top: 10px;
-  margin-bottom: 20px;
-}
-
-.BoardCardsContainer {
-  display: flex;
-  flex-direction: row;
-}
-
-.PotTotalText {
-  font-size: 20px;
-  font-weight: 700;
-  margin-top: 20px;
-}
-
 /* User content stuff*/
 
 .UserContent {
@@ -153,7 +123,8 @@
   margin: 20px auto;
   max-width: 1024px;
   width: 100%;
-  max-height: 250px;
+  min-height: 190px;
+  max-height: 300px;
   height: 100%;
 }
 

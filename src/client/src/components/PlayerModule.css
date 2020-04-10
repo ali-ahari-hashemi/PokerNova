@@ -54,6 +54,7 @@
 .StatusBar {
   position: relative;
   top: -25px;
+  margin-bottom: -25px;
   width: 100%;
   height: 50px;
   background-color: var(--red-card-color);

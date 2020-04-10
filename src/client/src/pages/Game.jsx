@@ -3,11 +3,12 @@ import Slider from '@material-ui/core/Slider';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import PieTimer from '../components/PieTimer';
-import Card from '../components/Card';
 import PlayerModule from '../components/PlayerModule';
 import './Game.css';
 import { getLocation } from '../utilities/getLocation';
 import Chips from '../components/Chips';
+import GameTable from '../components/GameTable';
+import PlayerList from '../components/PlayersList';
 
 const muiTheme = createMuiTheme({
   overrides: {
@@ -55,22 +56,6 @@ class Game extends React.Component {
       .catch(() => {
         this.setState({ error: 'Error starting game.' });
       });
-  }
-
-  renderBoardCards() {
-    const { boardCards } = this.props;
-    const numEmptyCards = 5 - boardCards.length;
-
-    const populatedCards = boardCards.map((card, i) => {
-      return <Card key={`populated-card-${i}`} rank={card.rank} suit={card.suit} />;
-    });
-    const emptyCards = Array(numEmptyCards)
-      .fill()
-      .map((item, i) => {
-        return <Card key={`empty-card-${i}`} empty={true} />;
-      });
-
-    return populatedCards.concat(emptyCards);
   }
 
   renderPlayerModules(playerIds) {
@@ -132,28 +117,30 @@ class Game extends React.Component {
           <div className="spacer" />
         </div>
         <div className="GameTableContainer">
-          <div id="TopSteats" className="SeatsHotizontal SeatsTop">
-            {this.renderPlayerModules([0, 1])}
-          </div>
+          <PlayerList location="top" playerIds={[0, 1]} playerModules={this.props.playerModules} />
           <div className="Row">
-            <div id="LeftSteats" className="SeatsVertical SeatsLeft">
-              {this.renderPlayerModules([6, 7])}
-            </div>
+            <PlayerList
+              location="left"
+              playerIds={[6, 7]}
+              playerModules={this.props.playerModules}
+            />
 
-            <div className="GameTable">
-              <p className="BettingRoundText">{bettingRoundText}</p>
-              <div className="BoardCardsContainer">{this.renderBoardCards()}</div>
-              <p className="PotTotalText">Total Pot: ${potTotal}</p>
-            </div>
-
-            <div id="RightSteats" className="SeatsVertical SeatsRight">
-              {this.renderPlayerModules([2, 3])}
-            </div>
+            <GameTable
+              bettingRound={bettingRoundText}
+              potTotal={potTotal}
+              boardCards={this.props.boardCards}
+            />
+            <PlayerList
+              location="right"
+              playerIds={[2, 3]}
+              playerModules={this.props.playerModules}
+            />
           </div>
-
-          <div id="BottomSteats" className="SeatsHotizontal SeatsBottom">
-            {this.renderPlayerModules([4, 5])}
-          </div>
+          <PlayerList
+            location="bottom"
+            playerIds={[4, 5]}
+            playerModules={this.props.playerModules}
+          />
         </div>
         <div className="UserContent">
           <div className="UserContentOptionsContent">
