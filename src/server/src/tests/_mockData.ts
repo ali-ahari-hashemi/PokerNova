@@ -25,4 +25,8 @@ export const defaultRound: IRound = {
   playersAllIn: [],
   bettingRound: BettingRound.preFlop,
   isActive: false,
+  winners: {
+    ids: [],
+    desc: '',
+  },
 };

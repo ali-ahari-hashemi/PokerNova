@@ -24,6 +24,10 @@ const App = () => {
     socket.on('joinGameSuccess', (data) => {
       setSeat(data.seat);
     });
+
+    socket.on('winnersDetermined', (winners) => {
+      console.log('winners determined', winners);
+    });
   }, []);
 
   return (

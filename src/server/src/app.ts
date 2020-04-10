@@ -9,6 +9,7 @@ import { IPerformActionAPI, IJoinGameAPI, IStartGameAPI, IStateUpdated } from '.
 import { playerId, gameId } from './constants';
 import { filterGameState } from './utils/filterGameState';
 import { getUniqueId } from './utils/getUniqueId';
+import { IHandWinners } from './utilities/CardHelpers';
 
 /**
  * Application:

@@ -57,6 +57,7 @@ const getPlayerModulesFromData = (data, userPlayerID) => {
       isCurrentPlayer: player.id == userPlayerID,
       pocket: pocket,
       currentBet: player.currentBet,
+      isWinner: data.currentRound.winners.ids.includes(player.id),
     };
   });
 };

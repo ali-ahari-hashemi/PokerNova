@@ -96,6 +96,7 @@ export default class Game extends EventEmitter {
     this.gameState.currentRound.on('stateUpdated', () => {
       this.stateUpdated();
     });
+
     this.gameState.currentRound.start();
   }
 

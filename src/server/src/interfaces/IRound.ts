@@ -1,5 +1,6 @@
 import Deck from '../classes/Deck';
 import { BettingRound } from '../constants';
+import { IHandWinners } from '../utilities/CardHelpers';
 
 export interface IRound {
   board: string[];
@@ -12,4 +13,5 @@ export interface IRound {
   playersAllIn: number[];
   bettingRound?: BettingRound; // undefined before the first round
   isActive: boolean;
+  winners: IHandWinners;
 }
