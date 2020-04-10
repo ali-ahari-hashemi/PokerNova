@@ -1,14 +1,37 @@
 import React from 'react';
+import Slider from '@material-ui/core/Slider';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 import PieTimer from '../components/PieTimer';
-import Card from '../components/Card';
 import PlayerModule from '../components/PlayerModule';
-import { getSeatStyles } from '../utilities/utilities';
 import './Game.css';
+import { getLocation } from '../utilities/getLocation';
+import Chips from '../components/Chips';
+import GameTable from '../components/GameTable';
+import PlayerList from '../components/PlayersList';
+
+const muiTheme = createMuiTheme({
+  overrides: {
+    MuiSlider: {
+      thumb: {
+        color: 'white',
+      },
+      track: {
+        color: 'white',
+      },
+      rail: {
+        color: 'black',
+      },
+    },
+  },
+});
 
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      betAmount: this.props.callAmount, // Min bet amount
+    };
   }
 
   performAction(action) {
@@ -35,56 +58,40 @@ class Game extends React.Component {
       });
   }
 
-  renderBoardCards() {
-    const { boardCards } = this.props;
-    const numEmptyCards = 5 - boardCards.length;
-
-    const populatedCards = boardCards.map((card, i) => {
-      return <Card key={`populated-card-${i}`} rank={card.rank} suit={card.suit} />;
-    });
-    const emptyCards = Array(numEmptyCards)
-      .fill()
-      .map((item, i) => {
-        return <Card key={`empty-card-${i}`} rank="" suit="" />;
-      });
-
-    return populatedCards.concat(emptyCards);
-  }
-
-  renderUserCards() {
-    const { userCards } = this.props;
-    const numEmptyCards = 2 - userCards.length;
-
-    const populatedCards = userCards.map((card, i) => {
-      return <Card key={`populated-card-${i}`} rank={card.rank} suit={card.suit} />;
-    });
-
-    const emptyCards = Array(numEmptyCards)
-      .fill()
-      .map((item, i) => {
-        return <Card key={`empty-card-${i}`} rank="" suit="" />;
-      });
-
-    return populatedCards.concat(emptyCards);
-  }
-
-  renderPlayerModules() {
+  renderPlayerModules(playerIds) {
     const { playerModules } = this.props;
-    const seatStyles = getSeatStyles(playerModules.length);
 
     return playerModules.map((item, index) => {
-      return (
-        <div key={index} style={seatStyles[index]}>
-          <PlayerModule
-            player={item.player}
-            status={item.status}
-            total={item.total}
-            active={item.active}
-          />
-        </div>
-      );
+      if (playerIds.includes(parseInt(item.id))) {
+        const location = getLocation(item.id);
+        const hasABet = item.currentBet > 0;
+        return (
+          <div
+            key={index}
+            style={
+              location == 'top' || location == 'bottom'
+                ? { padding: '0px 40px' }
+                : { padding: '0px' }
+            }
+          >
+            <div className="ModuleAndChipsHorizontal">
+              {location == 'right' && hasABet && <Chips amount={item.currentBet} />}
+              <div className="ModuleAndChipsVertical">
+                {location == 'bottom' && hasABet && <Chips amount={item.currentBet} />}
+                <PlayerModule {...item} />
+                {location == 'top' && hasABet && <Chips amount={item.currentBet} />}
+              </div>
+              {location == 'left' && hasABet && <Chips amount={item.currentBet} />}
+            </div>
+          </div>
+        );
+      }
     });
   }
+
+  handleSliderChange = (event, newValue) => {
+    this.setState({ betAmount: newValue });
+  };
 
   render() {
     const {
@@ -93,7 +100,8 @@ class Game extends React.Component {
       timerTotalTime,
       bettingRoundText,
       potTotal,
-      userModule,
+      callAmount,
+      allInAmount,
     } = this.props;
 
     return (
@@ -108,54 +116,59 @@ class Game extends React.Component {
           </div>
           <div className="spacer" />
         </div>
-        <div className="GameTable">
-          <p className="BettingRoundText">{bettingRoundText}</p>
-          <div className="BoardCardsContainer">{this.renderBoardCards()}</div>
-          <p className="PotTotalText">Total Pot: ${potTotal}</p>
-          {this.renderPlayerModules()}
+        <div className="GameTableContainer">
+          <PlayerList location="top" playerIds={[0, 1]} playerModules={this.props.playerModules} />
+          <div className="Row">
+            <PlayerList
+              location="left"
+              playerIds={[6, 7]}
+              playerModules={this.props.playerModules}
+            />
+
+            <GameTable
+              bettingRound={bettingRoundText}
+              potTotal={potTotal}
+              boardCards={this.props.boardCards}
+            />
+            <PlayerList
+              location="right"
+              playerIds={[2, 3]}
+              playerModules={this.props.playerModules}
+            />
+          </div>
+          <PlayerList
+            location="bottom"
+            playerIds={[4, 5]}
+            playerModules={this.props.playerModules}
+          />
         </div>
         <div className="UserContent">
-          <div className="UserContentStatusContainer">
-            <PlayerModule
-              player={userModule.player}
-              status={userModule.status}
-              total={userModule.total}
-              active={userModule.active}
-            />
-            <div className="UserCardsContainer">{this.renderUserCards()}</div>
-          </div>
-          <div className="UserContentOptionsContainer">
-            <div className="UserContentOptionsHeader">
-              <p className="UserContentOptionsTitle">Options</p>
+          <div className="UserContentOptionsContent">
+            <div
+              className="PlayOption FoldButton"
+              onClick={() =>
+                this.performAction({
+                  actionType: 'fold',
+                })
+              }
+            >
+              FOLD
             </div>
-            <div className="UserContentOptionsContent">
-              <div className="BetContainer">
-                <div
-                  className="PlayOption BetButton"
-                  onClick={() =>
-                    this.performAction({
-                      actionType: 'bet',
-                      betAmount: parseFloat(this.state.betAmount),
-                    })
-                  }
-                >
-                  BET
-                </div>
-                <div className="BetAmount">
-                  $
-                  <input
-                    className="WaitingRoomInput"
-                    type="text"
-                    value={this.state.betAmount}
-                    onChange={(e) => {
-                      this.setState({ betAmount: e.target.value });
-                    }}
-                  />
-                </div>{' '}
-                {/* This should be a slider or something */}
-              </div>
+            {callAmount > 0 ? (
               <div
-                className="PlayOption PlayOptionFull CheckButton"
+                className="PlayOption BetButton"
+                onClick={() =>
+                  this.performAction({
+                    actionType: 'bet',
+                    betAmount: parseFloat(callAmount),
+                  })
+                }
+              >
+                CALL
+              </div>
+            ) : (
+              <div
+                className="PlayOption CheckButton"
                 onClick={() =>
                   this.performAction({
                     actionType: 'check',
@@ -164,16 +177,42 @@ class Game extends React.Component {
               >
                 CHECK
               </div>
-              <div
-                className="PlayOption PlayOptionFull FoldButton"
-                onClick={() =>
-                  this.performAction({
-                    actionType: 'fold',
-                  })
-                }
-              >
-                FOLD
-              </div>
+            )}
+
+            <div
+              className="PlayOption BetButton"
+              onClick={() =>
+                this.performAction({
+                  actionType: 'bet',
+                  betAmount: parseFloat(allInAmount),
+                })
+              }
+            >
+              ALL IN
+            </div>
+          </div>
+          <div className="BetSlider">
+            <ThemeProvider theme={muiTheme}>
+              <Slider
+                min={callAmount}
+                max={allInAmount}
+                className="Slider"
+                value={typeof this.state.betAmount === 'number' ? this.state.betAmount : 0}
+                onChange={(e, newValue) => this.handleSliderChange(e, newValue)}
+                aria-labelledby="input-slider"
+              />
+            </ThemeProvider>
+            ${this.state.betAmount}
+            <div
+              className="PlayOption BetButton"
+              onClick={() =>
+                this.performAction({
+                  actionType: 'bet',
+                  betAmount: parseFloat(this.state.betAmount),
+                })
+              }
+            >
+              BET
             </div>
           </div>
         </div>

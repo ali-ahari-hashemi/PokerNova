@@ -1,0 +1,74 @@
+.HorizontalPlayerList {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  max-height: 200px;
+
+  .TopPlayerContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px 40px;
+
+    .ChipsContainer {
+      margin: 10px 0px;
+      height: 20px;
+      margin-top: 20px;
+    }
+  }
+
+  .BottomPlayerContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px 40px;
+
+    .ChipsContainer {
+      margin: 10px 0px;
+      height: 20px;
+    }
+  }
+}
+
+.VerticalPlayerList {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .RightPlayerContainer {
+    display: flex;
+    flex-direction: row;
+
+    .ChipsContainer {
+      margin: 0px 10px;
+      width: 20px;
+    }
+  }
+
+  .LeftPlayerContainer {
+    display: flex;
+    flex-direction: row;
+
+    .ChipsContainer {
+      margin: 0px 10px;
+      width: 20px;
+    }
+  }
+}
+
+.Top {
+  align-items: flex-end;
+}
+
+.Bottom {
+  align-items: flex-start;
+  padding-bottom: 10px;
+}
+
+.Left {
+  align-items: flex-start;
+}
+
+.Right {
+  align-items: flex-end;
+}

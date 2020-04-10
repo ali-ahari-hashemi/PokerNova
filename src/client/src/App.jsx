@@ -28,16 +28,14 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <div>
-        <Switch>
-          <Route exact path="/" render={(props) => <Home {...props} socket={socket} />} />
-          <Route
-            path="/game/:id"
-            render={(props) => <GamePath {...props} {...gameState} seat={seat} socket={socket} />}
-          />
-          <Route render={(props) => <NotFound {...props} />} />
-        </Switch>
-      </div>
+      <Switch>
+        <Route exact path="/" render={(props) => <Home {...props} socket={socket} />} />
+        <Route
+          path="/game/:id"
+          render={(props) => <GamePath {...props} {...gameState} seat={seat} socket={socket} />}
+        />
+        <Route render={(props) => <NotFound {...props} />} />
+      </Switch>
     </BrowserRouter>
   );
 };

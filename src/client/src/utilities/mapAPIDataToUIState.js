@@ -1,7 +1,7 @@
 import { RANKS, SUITS } from './constants';
 
 export const mapAPIDataToUIState = (data, userPlayerID) => {
-  console.log('in mapping func', data);
+  console.log('mapping func', data);
   return {
     statusText: `Current Heighest Bet: $${data.currentRound.highestBet}`, // TBD
     timerTimeLeft: 0, // TBD
@@ -10,8 +10,8 @@ export const mapAPIDataToUIState = (data, userPlayerID) => {
     boardCards: data.currentRound.board.map((card) => mapAPICardToUICard(card)),
     potTotal: data.currentRound.pot,
     playerModules: getPlayerModulesFromData(data, userPlayerID),
-    userModule: getUserModuleFromData(data, userPlayerID),
-    userCards: getUserCardsFromData(data, userPlayerID),
+    callAmount: data.currentRound.highestBet - data.players[userPlayerID].currentBet,
+    allInAmount: data.players[userPlayerID].chipCount,
   };
 };
 
@@ -32,19 +32,33 @@ const getBettingRoundTextFromData = (bettingRound) => {
 
 const getPlayerModulesFromData = (data, userPlayerID) => {
   const players = data.players;
-  const startIndex = players.findIndex((item) => item.id === userPlayerID);
-  const orderedPlayers = [];
-  for (let i = 0; i < players.length; i++) {
-    const index = (i + startIndex) % players.length;
-    players[index].id !== userPlayerID && orderedPlayers.push(players[index]);
+
+  if (players.length >= 6) {
+    const temp = players[4];
+    players[4] = players[5];
+    players[5] = temp;
   }
 
-  return orderedPlayers.map((player) => ({
-    player: player.name,
-    status: player.status,
-    total: player.chipCount,
-    active: player.id === data.currentRound.currentPlayer,
-  }));
+  if (players.length >= 8) {
+    const temp = players[6];
+    players[6] = players[7];
+    players[7] = temp;
+  }
+
+  return players.map((player) => {
+    const pocket =
+      player.pocket.length > 0 ? player.pocket.map((card) => mapAPICardToUICard(card)) : [{}, {}];
+    return {
+      id: player.id,
+      player: player.name,
+      status: player.status,
+      total: player.chipCount,
+      active: player.id === data.currentRound.currentPlayer,
+      isCurrentPlayer: player.id == userPlayerID,
+      pocket: pocket,
+      currentBet: player.currentBet,
+    };
+  });
 };
 
 const getUserModuleFromData = (data, userPlayerID) => {

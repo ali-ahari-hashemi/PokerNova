@@ -1,5 +1,6 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
+import get from 'lodash.get';
 import './WaitingRoom.css';
 
 class WaitingRoom extends React.Component {
@@ -63,37 +64,49 @@ class WaitingRoom extends React.Component {
     const { linkCopied, gameJoined } = this.state;
     const { gameId } = this.props;
     const link = `localhost:3000/game/${gameId}`;
+    const players = get(this.props.gameState, 'players', []);
 
     return (
-      <div className="WaitingRoom">
-        <h1 className="WaitingRoomTitle">PokerNova</h1>
-        <div className="WaitingRoomGameLinkContainer">
-          <p className="WaitingRoomGameLinkText">{`${link}`}</p>
-          <div
-            className={`WaitingRoomGameLinkCopy ${linkCopied && 'ButtonAlreadyPressed'}`}
-            onClick={() => this.handleCopyLink()}
-          >{`${linkCopied ? 'Copied!' : 'Copy Link'}`}</div>
-        </div>
-        <div className="WaitingRoomInputContainer">
-          <p className="WaitingRoomInputText">Name: </p>
-          <input
-            className="WaitingRoomInput"
-            type="text"
-            value={this.state.name}
-            onChange={(e) => {
-              this.setState({ name: e.target.value });
-            }}
-          />
-          <div
-            className={`WaitingRoomSubmitButton ${gameJoined && 'ButtonAlreadyPressed'}`}
-            onClick={() => this.handleJoinGameClick()}
-          >{`${gameJoined ? 'Joined!' : 'Join Game'}`}</div>
-        </div>
-        {this.state.error && <p className="WaitingRoomError">{this.state.error}</p>}
-        <div className="WaitingRoomInputContainer">
-          <div className="WaitingRoomSubmitButton" onClick={() => this.handleStartGameClick()}>
-            Start Game
+      <div className="WaitingRoomContainer">
+        <div className="WaitingRoomPlayersListContainer" />
+        <div className="WaitingRoom">
+          <h1 className="WaitingRoomTitle">PokerNova</h1>
+          <div className="WaitingRoomGameLinkContainer">
+            <p className="WaitingRoomGameLinkText">{`${link}`}</p>
+            <div
+              className={`WaitingRoomGameLinkCopy ${linkCopied && 'ButtonAlreadyPressed'}`}
+              onClick={() => this.handleCopyLink()}
+            >{`${linkCopied ? 'Copied!' : 'Copy Link'}`}</div>
           </div>
+          <div className="WaitingRoomInputContainer">
+            <p className="WaitingRoomInputText">Name: </p>
+            <input
+              className="WaitingRoomInput"
+              type="text"
+              value={this.state.name}
+              onChange={(e) => {
+                this.setState({ name: e.target.value });
+              }}
+            />
+            <div
+              className={`WaitingRoomSubmitButton ${gameJoined && 'ButtonAlreadyPressed'}`}
+              onClick={() => this.handleJoinGameClick()}
+            >{`${gameJoined ? 'Joined!' : 'Join Game'}`}</div>
+          </div>
+
+          {this.state.error && <p className="WaitingRoomError">{this.state.error}</p>}
+          <div className="WaitingRoomInputContainer">
+            <div className="WaitingRoomSubmitButton" onClick={() => this.handleStartGameClick()}>
+              Start Game
+            </div>
+          </div>
+        </div>
+
+        <div className="WaitingRoomPlayersListContainer">
+          <h1 className="WaitingRoomPlayersListTitle">Players:</h1>
+          {players.map((player) => (
+            <p className="WaitingRoomPlayersListItem">{player.name}</p>
+          ))}
         </div>
       </div>
     );

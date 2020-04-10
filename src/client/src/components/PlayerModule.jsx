@@ -1,18 +1,33 @@
 import React from 'react';
 import './PlayerModule.css';
+import Card from './Card';
 
 function PlayerModule(props) {
-  const { player, status, total, active } = props;
+  const { player, status, total, active, pocket = [{}, {}], isCurrentPlayer } = props;
 
+  console.log('player', props);
   return (
-    <div className={`PlayerModule ${active && "PlayerModuleActive"}`}>
-      <div className="PlayerModuleTotalContainer">
-        <p className="PlayerModuleTotalText">${total}</p>
+    <div className="Container">
+      <div className="CardsContainer">
+        {pocket.map((card) => (
+          <Card {...card} />
+        ))}
       </div>
-      <div className="PlayerModuleDetailsContainer">
-        <p className="PlayerModulePlayerText OneLine">{player}</p>
-        <p className="PlayerModuleStatusText OneLine">{status}</p>
+
+      <div className={`PlayerModule ${active && 'PlayerModuleActive'}`}>
+        <div className="PlayerModuleTotalContainer">
+          <p className="PlayerModuleTotalText">${total}</p>
+        </div>
+        <div className="PlayerModuleDetailsContainer">
+          <p className="PlayerModulePlayerText OneLine">{player}</p>
+        </div>
       </div>
+
+      {status && (
+        <div className="StatusBar">
+          <p className="StatusText">{status}</p>
+        </div>
+      )}
     </div>
   );
 }

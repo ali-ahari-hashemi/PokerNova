@@ -1,0 +1,27 @@
+.GameTable {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  border: 3px solid var(--main-white);
+  border-radius: 200px;
+}
+
+.BettingRoundText {
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.BoardCardsContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.PotTotalText {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 20px;
+}
