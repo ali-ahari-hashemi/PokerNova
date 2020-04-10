@@ -1,13 +1,34 @@
 import React from 'react';
+import Slider from '@material-ui/core/Slider';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
 import PieTimer from '../components/PieTimer';
 import Card from '../components/Card';
 import PlayerModule from '../components/PlayerModule';
 import './Game.css';
 
+const muiTheme = createMuiTheme({
+  overrides: {
+    MuiSlider: {
+      thumb: {
+        color: 'white',
+      },
+      track: {
+        color: 'white',
+      },
+      rail: {
+        color: 'black',
+      },
+    },
+  },
+});
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      betAmount: 0,
+    };
   }
 
   performAction(action) {
@@ -68,6 +89,10 @@ class Game extends React.Component {
     });
   }
 
+  handleSliderChange = (event, newValue) => {
+    this.setState({ betAmount: newValue });
+  };
+
   render() {
     const {
       statusText,
@@ -115,57 +140,51 @@ class Game extends React.Component {
           </div>
         </div>
         <div className="UserContent">
-          <div className="UserContentOptionsContainer">
-            <div className="UserContentOptionsHeader">
-              <p className="UserContentOptionsTitle">Options</p>
+          <div className="UserContentOptionsContent">
+            <div
+              className="PlayOption CheckButton"
+              onClick={() =>
+                this.performAction({
+                  actionType: 'check',
+                })
+              }
+            >
+              CHECK
             </div>
-            <div className="UserContentOptionsContent">
-              <div className="BetContainer">
-                <div
-                  className="PlayOption BetButton"
-                  onClick={() =>
-                    this.performAction({
-                      actionType: 'bet',
-                      betAmount: parseFloat(this.state.betAmount),
-                    })
-                  }
-                >
-                  BET
-                </div>
-                <div className="BetAmount">
-                  $
-                  <input
-                    className="WaitingRoomInput"
-                    type="text"
-                    value={this.state.betAmount}
-                    onChange={(e) => {
-                      this.setState({ betAmount: e.target.value });
-                    }}
-                  />
-                </div>{' '}
-                {/* This should be a slider or something */}
-              </div>
+            <div
+              className="PlayOption FoldButton"
+              onClick={() =>
+                this.performAction({
+                  actionType: 'fold',
+                })
+              }
+            >
+              FOLD
+            </div>
+            <div className="BetContainer">
               <div
-                className="PlayOption PlayOptionFull CheckButton"
+                className="PlayOption BetButton"
                 onClick={() =>
                   this.performAction({
-                    actionType: 'check',
+                    actionType: 'bet',
+                    betAmount: parseFloat(this.state.betAmount),
                   })
                 }
               >
-                CHECK
-              </div>
-              <div
-                className="PlayOption PlayOptionFull FoldButton"
-                onClick={() =>
-                  this.performAction({
-                    actionType: 'fold',
-                  })
-                }
-              >
-                FOLD
+                BET
               </div>
             </div>
+          </div>
+          <div className="BetSlider">
+            <ThemeProvider theme={muiTheme}>
+              <Slider
+                className="Slider"
+                value={typeof this.state.betAmount === 'number' ? this.state.betAmount : 0}
+                onChange={(e, newValue) => this.handleSliderChange(e, newValue)}
+                aria-labelledby="input-slider"
+              />
+            </ThemeProvider>
+            ${this.state.betAmount}
           </div>
         </div>
       </div>

@@ -77,8 +77,11 @@
 
 .UserContent {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
+  align-self: stretch;
+  justify-content: center;
+  background-color: var(--main-highlight-color-with-opacity);
 }
 
 .UserContentStatusContainer {
@@ -95,25 +98,12 @@
 }
 
 .UserContentOptionsContainer {
-  background-color: var(--main-highlight-color);
   min-width: 220px;
 }
 
-.UserContentOptionsHeader {
-  border-bottom: 4px solid var(--main-color);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 15px 20px;
-}
-
-.UserContentOptionsTitle {
-  font-size: 15px;
-  font-weight: 500;
-}
-
 .UserContentOptionsContent {
-  padding: 20px;
+  padding: 20px 0px 10px;
+  display: flex;
 }
 
 .BetContainer {
@@ -132,6 +122,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 100px;
+  width: 80px;
+  margin: 0px 10px;
 }
 
 .PlayOption:hover {
@@ -140,13 +132,22 @@
   color: var(--main-color);
 }
 
-.PlayOptionFull {
-  margin-top: 12px;
-}
-
 .BetButton {
   flex: 2;
   margin-right: 12px;
+}
+
+.BetSlider {
+  display: flex;
+  flex-direction: row;
+  max-width: 200px;
+  width: 100%;
+  align-items: center;
+  padding: 10px;
+}
+
+.Slider {
+  margin-right: 10px;
 }
 
 .SeatsHotizontal {
@@ -180,6 +181,6 @@
   flex: 1;
   flex-direction: column;
   align-self: stretch;
-  justify-content: center;
   align-items: center;
+  padding-top: 50px;
 }

@@ -32,14 +32,8 @@ const getBettingRoundTextFromData = (bettingRound) => {
 
 const getPlayerModulesFromData = (data, userPlayerID) => {
   const players = data.players;
-  const startIndex = players.findIndex((item) => item.id === userPlayerID);
-  const orderedPlayers = [];
-  for (let i = 0; i < players.length; i++) {
-    const index = (i + startIndex) % players.length;
-    orderedPlayers.push(players[index]);
-  }
 
-  return orderedPlayers.map((player) => {
+  return players.map((player) => {
     const pocket =
       player.pocket.length > 0 ? player.pocket.map((card) => mapAPICardToUICard(card)) : [{}, {}];
     return {
