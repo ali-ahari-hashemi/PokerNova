@@ -77,7 +77,7 @@ export class Action {
         return this.call();
       } else {
         console.log(`player ${this.player.id} betting amount: ${betAmount}`);
-        this.player.status = `${PlayerStatus.bet} ${betAmount}`;
+        this.player.status = this.round.highestBet > 0 ? PlayerStatus.raise : PlayerStatus.bet;
         this.placeBet(betAmount);
         return true;
       }
@@ -88,14 +88,13 @@ export class Action {
 
   blind(): boolean {
     this.placeBet(this.action.betAmount || 0, true);
-    this.player.status = `${PlayerStatus.blind} ${this.action.betAmount}`;
     return true;
   }
 
   private call(): boolean {
     const callAmount = this.round.highestBet - this.player.currentBet;
     console.log(`player ${this.player.id} calling amount: ${callAmount}`);
-    this.player.status = `${PlayerStatus.called} ${callAmount}`;
+    this.player.status = `${PlayerStatus.called}`;
     this.placeBet(callAmount);
     return true;
   }

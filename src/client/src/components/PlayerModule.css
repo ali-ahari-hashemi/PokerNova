@@ -1,15 +1,16 @@
 .PlayerModule {
   width: 130px;
+  height: 10px;
   overflow: hidden;
   background-color: var(--main-highlight-color);
   border-radius: 100px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 10px 20px 10px 15px; /* Need a little extra on the right cuz of rounded borders */
+  padding: 15px 10px 15px 10px;
   position: relative;
   z-index: 1;
-  box-shadow: 2px 2px 4px 4px rgba(95, 94, 94, 0.5);
+  box-shadow: 2px 2px 4px 2px rgba(95, 94, 94, 0.5);
 }
 
 .PlayerModuleActive {

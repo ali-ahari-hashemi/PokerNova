@@ -6,6 +6,8 @@ import PieTimer from '../components/PieTimer';
 import Card from '../components/Card';
 import PlayerModule from '../components/PlayerModule';
 import './Game.css';
+import { getLocation } from '../utilities/getLocation';
+import Chips from '../components/Chips';
 
 const muiTheme = createMuiTheme({
   overrides: {
@@ -75,14 +77,27 @@ class Game extends React.Component {
     const { playerModules } = this.props;
 
     return playerModules.map((item, index) => {
-      if (playerIds.includes(item.id)) {
-        const isOnTopOrBottom = [0, 1, 4, 5].includes(item.id);
+      if (playerIds.includes(parseInt(item.id))) {
+        const location = getLocation(item.id);
+        const hasABet = item.currentBet > 0;
         return (
           <div
             key={index}
-            style={isOnTopOrBottom ? { padding: '0px 40px' } : { padding: '20px 0px' }}
+            style={
+              location == 'top' || location == 'bottom'
+                ? { padding: '0px 40px' }
+                : { padding: '0px' }
+            }
           >
-            <PlayerModule {...item} />
+            <div className="ModuleAndChipsHorizontal">
+              {location == 'right' && hasABet && <Chips amount={item.currentBet} />}
+              <div className="ModuleAndChipsVertical">
+                {location == 'bottom' && hasABet && <Chips amount={item.currentBet} />}
+                <PlayerModule {...item} />
+                {location == 'top' && hasABet && <Chips amount={item.currentBet} />}
+              </div>
+              {location == 'left' && hasABet && <Chips amount={item.currentBet} />}
+            </div>
           </div>
         );
       }
@@ -94,7 +109,6 @@ class Game extends React.Component {
   };
 
   render() {
-    console.log('propies', this.props);
     const {
       statusText,
       timerTimeLeft,
@@ -118,11 +132,11 @@ class Game extends React.Component {
           <div className="spacer" />
         </div>
         <div className="GameTableContainer">
-          <div id="TopSteats" className="SeatsHotizontal">
+          <div id="TopSteats" className="SeatsHotizontal SeatsTop">
             {this.renderPlayerModules([0, 1])}
           </div>
           <div className="Row">
-            <div id="LeftSteats" className="SeatsVertical">
+            <div id="LeftSteats" className="SeatsVertical SeatsLeft">
               {this.renderPlayerModules([6, 7])}
             </div>
 
@@ -132,12 +146,12 @@ class Game extends React.Component {
               <p className="PotTotalText">Total Pot: ${potTotal}</p>
             </div>
 
-            <div id="RightSteats" className="SeatsVertical">
+            <div id="RightSteats" className="SeatsVertical SeatsRight">
               {this.renderPlayerModules([2, 3])}
             </div>
           </div>
 
-          <div id="BottomSteats" className="SeatsHotizontal">
+          <div id="BottomSteats" className="SeatsHotizontal SeatsBottom">
             {this.renderPlayerModules([4, 5])}
           </div>
         </div>

@@ -16,10 +16,11 @@ export enum BettingRound {
 }
 
 export enum PlayerStatus {
-  folded = 'Folded',
-  checked = 'Checked',
-  called = 'Called',
+  folded = 'Fold',
+  checked = 'Check',
+  called = 'Call',
   bet = 'Bet',
+  raise = 'Raise',
   allIn = 'All In',
   blind = 'Blind',
   default = '',

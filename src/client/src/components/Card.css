@@ -56,8 +56,10 @@
   justify-content: center;
   align-items: center;
   border: 1px solid;
-  height: 53.33px;
-  width: 36.66px;
+  /* height: 53.33px;
+  width: 36.66px; */
+  height: 35.33px;
+  width: 24.44px;
 }
 
 .CardDesignText {

@@ -1,7 +1,7 @@
 import { RANKS, SUITS } from './constants';
 
 export const mapAPIDataToUIState = (data, userPlayerID) => {
-  console.log('in mapping func', data);
+  console.log('mapping func', data);
   return {
     statusText: `Current Heighest Bet: $${data.currentRound.highestBet}`, // TBD
     timerTimeLeft: 0, // TBD
@@ -44,6 +44,7 @@ const getPlayerModulesFromData = (data, userPlayerID) => {
       active: player.id === data.currentRound.currentPlayer,
       isCurrentPlayer: player.id == userPlayerID,
       pocket: pocket,
+      currentBet: player.currentBet,
     };
   });
 };

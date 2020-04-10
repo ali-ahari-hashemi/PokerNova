@@ -153,7 +153,7 @@
   margin: 20px auto;
   max-width: 1024px;
   width: 100%;
-  max-height: 300px;
+  max-height: 250px;
   height: 100%;
 }
 
@@ -161,8 +161,24 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-top: -60px;
-  width: 165px;
+  margin-top: -30px;
+  width: 200px;
+}
+
+.SeatsLeft {
+  align-items: flex-end;
+}
+
+.SeatsRight {
+  align-items: flex-end;
+}
+
+.SeatsTop {
+  align-items: flex-start;
+}
+
+.SeatsBottom {
+  align-items: flex-end;
 }
 
 .GameTableContainer {
@@ -172,4 +188,21 @@
   align-self: stretch;
   align-items: center;
   padding-top: 50px;
+}
+
+.ModuleAndChipsVertical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ModuleAndChipsHorizontal {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.Chips {
+  background-color: var(--main-highlight-color-with-opacity);
+  border-radius: 2px;
 }

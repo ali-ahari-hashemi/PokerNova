@@ -1,0 +1,35 @@
+.ChipsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0px 10px;
+}
+
+.Chips {
+  height: 15px;
+  width: 15px;
+  border: 1px solid var(--main-white);
+  margin-bottom: 3px;
+  border-radius: 20px;
+  background-color: var(--main-highlight-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 2px 2px 4px 0px rgba(95, 94, 94, 0.5);
+}
+
+.ChipsBundledContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.ChipsAmountText {
+  font-size: 14px;
+}
+
+.ChipsText {
+  font-size: 10px;
+}
