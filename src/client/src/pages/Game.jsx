@@ -27,7 +27,7 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      betAmount: 0,
+      betAmount: this.props.callAmount, // Min bet amount
     };
   }
 
@@ -94,13 +94,15 @@ class Game extends React.Component {
   };
 
   render() {
+    console.log('propies', this.props);
     const {
       statusText,
       timerTimeLeft,
       timerTotalTime,
       bettingRoundText,
       potTotal,
-      userModule,
+      callAmount,
+      allInAmount,
     } = this.props;
 
     return (
@@ -142,16 +144,6 @@ class Game extends React.Component {
         <div className="UserContent">
           <div className="UserContentOptionsContent">
             <div
-              className="PlayOption CheckButton"
-              onClick={() =>
-                this.performAction({
-                  actionType: 'check',
-                })
-              }
-            >
-              CHECK
-            </div>
-            <div
               className="PlayOption FoldButton"
               onClick={() =>
                 this.performAction({
@@ -161,23 +153,48 @@ class Game extends React.Component {
             >
               FOLD
             </div>
-            <div className="BetContainer">
+            {callAmount > 0 ? (
               <div
                 className="PlayOption BetButton"
                 onClick={() =>
                   this.performAction({
                     actionType: 'bet',
-                    betAmount: parseFloat(this.state.betAmount),
+                    betAmount: parseFloat(callAmount),
                   })
                 }
               >
-                BET
+                CALL
               </div>
+            ) : (
+              <div
+                className="PlayOption CheckButton"
+                onClick={() =>
+                  this.performAction({
+                    actionType: 'check',
+                  })
+                }
+              >
+                CHECK
+              </div>
+            )}
+
+            <div
+              className="PlayOption BetButton"
+              onClick={() =>
+                this.performAction({
+                  actionType: 'bet',
+                  betAmount: parseFloat(allInAmount),
+                })
+              }
+            >
+              ALL IN
             </div>
           </div>
           <div className="BetSlider">
             <ThemeProvider theme={muiTheme}>
               <Slider
+                min={callAmount}
+                max={allInAmount}
                 className="Slider"
                 value={typeof this.state.betAmount === 'number' ? this.state.betAmount : 0}
                 onChange={(e, newValue) => this.handleSliderChange(e, newValue)}
@@ -185,6 +202,17 @@ class Game extends React.Component {
               />
             </ThemeProvider>
             ${this.state.betAmount}
+            <div
+              className="PlayOption BetButton"
+              onClick={() =>
+                this.performAction({
+                  actionType: 'bet',
+                  betAmount: parseFloat(this.state.betAmount),
+                })
+              }
+            >
+              BET
+            </div>
           </div>
         </div>
       </div>

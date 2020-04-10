@@ -10,8 +10,8 @@ export const mapAPIDataToUIState = (data, userPlayerID) => {
     boardCards: data.currentRound.board.map((card) => mapAPICardToUICard(card)),
     potTotal: data.currentRound.pot,
     playerModules: getPlayerModulesFromData(data, userPlayerID),
-    userModule: getUserModuleFromData(data, userPlayerID),
-    userCards: getUserCardsFromData(data, userPlayerID),
+    callAmount: data.currentRound.highestBet - data.players[userPlayerID].currentBet,
+    allInAmount: data.players[userPlayerID].chipCount,
   };
 };
 
