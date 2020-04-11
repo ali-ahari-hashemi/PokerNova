@@ -6,6 +6,7 @@ import { BettingRound, PlayerStatus, ActionType } from '../constants';
 import { CardHelpers, IHandWinners, IPlayerCards } from '../utilities/CardHelpers';
 import { IAction } from '../interfaces/IAction';
 import { EventEmitter } from 'events';
+import Logger from '../utilities/Logger';
 
 interface IBlinds {
   sb: number;
@@ -75,7 +76,7 @@ export default class Round extends EventEmitter {
   }
 
   start() {
-    console.log({
+    Logger.log({
       players: this.players.map((player) => ({
         id: player.id,
         pocket: player.pocket.toString(),
@@ -89,7 +90,7 @@ export default class Round extends EventEmitter {
   }
 
   end() {
-    console.log('ending round');
+    Logger.log('ending round');
     this.round.isActive = false;
     this.emit('roundEnded');
   }
@@ -124,7 +125,7 @@ export default class Round extends EventEmitter {
 
     // Still a valid round
     else {
-      console.log('going to next player');
+      Logger.log('going to next player');
       this.round.currentPlayer = this.nextPlayer();
     }
 
@@ -215,7 +216,7 @@ export default class Round extends EventEmitter {
       this.end();
     }, 1000);
 
-    console.log({
+    Logger.log({
       board: this.round.board,
       players: this.players.map((player) => ({
         id: player.id,
@@ -230,14 +231,14 @@ export default class Round extends EventEmitter {
     this.resetPlayers();
     const didIncrement = this.incrementBettingRound();
     if (didIncrement) {
-      console.log(`starting new betting round: ${this.round.bettingRound}`);
+      Logger.log(`starting new betting round: ${this.round.bettingRound}`);
       this.round.highestBet = 0;
       const firstToBet =
         this.round.bettingRound == BettingRound.preFlop ? this.getUTG() : this.getSB();
       this.round.currentPlayer = firstToBet;
       this.round.stoppingPoint = firstToBet;
 
-      console.log(`current player is ${this.round.currentPlayer}`);
+      Logger.log(`current player is ${this.round.currentPlayer}`);
       if (this.round.bettingRound !== BettingRound.preFlop) {
         this.draw();
       }
