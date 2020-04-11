@@ -80,7 +80,11 @@ describe('Action', () => {
     it('should return false if your bet is less than a call', () => {
       action = { ...action, betAmount: 10 };
       let player = { ...defaultPlayer, chipCount: 100 };
-      let round = { ...defaultRound, pot: 20, highestBet: 20 };
+      let round = {
+        ...defaultRound,
+        pots: [{ isOpen: true, size: 20, eligibleWinners: new Set<number>() }],
+        highestBet: 20,
+      };
       const a = new Action({ action, player, round });
 
       expect(a.performAction()).to.be.false;
@@ -89,18 +93,18 @@ describe('Action', () => {
     it('should update pot when a player goes all-in', () => {
       action = { ...action, betAmount: 10 };
       let player = { ...defaultPlayer, chipCount: 10 };
-      let round = { ...defaultRound, pot: 0 };
+      let round = { ...defaultRound };
       const a = new Action({ action, player, round });
 
       expect(a.performAction()).to.be.true;
       // need to figure out side pot behavior
-      expect(round.pot).to.equal(10);
+      expect(round.pots[0].size).to.equal(10);
     });
 
     it('should update chip count to 0 when a player goes all-in', () => {
       action = { ...action, betAmount: 10 };
       let player = { ...defaultPlayer, chipCount: 10 };
-      let round = { ...defaultRound, pot: 0 };
+      let round = { ...defaultRound };
       const a = new Action({ action, player, round });
 
       expect(a.performAction()).to.be.true;
@@ -111,7 +115,7 @@ describe('Action', () => {
     it('should update playersAllIn when a player goes all-in', () => {
       action = { ...action, betAmount: 10 };
       let player = { ...defaultPlayer, chipCount: 10 };
-      let round = { ...defaultRound, pot: 0 };
+      let round = { ...defaultRound };
       const a = new Action({ action, player, round });
 
       expect(a.performAction()).to.be.true;
@@ -121,17 +125,25 @@ describe('Action', () => {
     it('should update pot when a player calls', () => {
       action = { ...action, betAmount: 10 };
       let player = { ...defaultPlayer, chipCount: 20 };
-      let round = { ...defaultRound, pot: 10, highestBet: 10 };
+      let round = {
+        ...defaultRound,
+        pots: [{ isOpen: true, size: 10, eligibleWinners: new Set<number>() }],
+        highestBet: 10,
+      };
       const a = new Action({ action, player, round });
 
       expect(a.performAction()).to.be.true;
-      expect(round.pot).to.equal(20);
+      expect(round.pots[0].size).to.equal(20);
     });
 
     it('should update chip count when a player calls', () => {
       action = { ...action, betAmount: 10 };
       let player = { ...defaultPlayer, chipCount: 20 };
-      let round = { ...defaultRound, pot: 10, highestBet: 10 };
+      let round = {
+        ...defaultRound,
+        pots: [{ isOpen: true, size: 10, eligibleWinners: new Set<number>() }],
+        highestBet: 10,
+      };
       const a = new Action({ action, player, round });
 
       expect(a.performAction()).to.be.true;
@@ -142,7 +154,11 @@ describe('Action', () => {
     it('should not update highest bet when a player calls', () => {
       action = { ...action, betAmount: 10 };
       let player = { ...defaultPlayer, chipCount: 20 };
-      let round = { ...defaultRound, pot: 10, highestBet: 10 };
+      let round = {
+        ...defaultRound,
+        pots: [{ isOpen: true, size: 10, eligibleWinners: new Set<number>() }],
+        highestBet: 10,
+      };
       const a = new Action({ action, player, round });
 
       expect(a.performAction()).to.be.true;
@@ -152,7 +168,11 @@ describe('Action', () => {
     it('should not update stopping point when a player calls', () => {
       action = { ...action, betAmount: 10 };
       let player = { ...defaultPlayer, chipCount: 20 };
-      let round = { ...defaultRound, pot: 10, highestBet: 10 };
+      let round = {
+        ...defaultRound,
+        pots: [{ isOpen: true, size: 10, eligibleWinners: new Set<number>() }],
+        highestBet: 10,
+      };
       const a = new Action({ action, player, round });
 
       expect(a.performAction()).to.be.true;
@@ -162,17 +182,25 @@ describe('Action', () => {
     it('should update pot when a valid bet is placed', () => {
       action = { ...action, betAmount: 20 };
       let player = { ...defaultPlayer, chipCount: 50 };
-      let round = { ...defaultRound, pot: 10, highestBet: 10 };
+      let round = {
+        ...defaultRound,
+        pots: [{ isOpen: true, size: 10, eligibleWinners: new Set<number>() }],
+        highestBet: 10,
+      };
       const a = new Action({ action, player, round });
 
       expect(a.performAction()).to.be.true;
-      expect(round.pot).to.equal(30);
+      expect(round.pots[0].size).to.equal(30);
     });
 
     it('should update chip count when a valid bet is placed', () => {
       action = { ...action, betAmount: 20 };
       let player = { ...defaultPlayer, chipCount: 50 };
-      let round = { ...defaultRound, pot: 10, highestBet: 10 };
+      let round = {
+        ...defaultRound,
+        pots: [{ isOpen: true, size: 10, eligibleWinners: new Set<number>() }],
+        highestBet: 10,
+      };
       const a = new Action({ action, player, round });
 
       expect(a.performAction()).to.be.true;
@@ -182,7 +210,11 @@ describe('Action', () => {
     it('should update highest bet when a valid bet is placed', () => {
       action = { ...action, betAmount: 20 };
       let player = { ...defaultPlayer, chipCount: 50 };
-      let round = { ...defaultRound, pot: 10, highestBet: 10 };
+      let round = {
+        ...defaultRound,
+        pots: [{ isOpen: true, size: 10, eligibleWinners: new Set<number>() }],
+        highestBet: 10,
+      };
       const a = new Action({ action, player, round });
 
       expect(a.performAction()).to.be.true;
@@ -192,7 +224,11 @@ describe('Action', () => {
     it('should update stopping point when a valid bet is placed', () => {
       action = { ...action, betAmount: 20 };
       let player = { ...defaultPlayer, chipCount: 50 };
-      let round = { ...defaultRound, pot: 10, highestBet: 10 };
+      let round = {
+        ...defaultRound,
+        pots: [{ isOpen: true, size: 10, eligibleWinners: new Set<number>() }],
+        highestBet: 10,
+      };
       const a = new Action({ action, player, round });
 
       expect(a.performAction()).to.be.true;

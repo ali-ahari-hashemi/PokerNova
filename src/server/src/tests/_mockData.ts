@@ -16,7 +16,7 @@ export const defaultPlayer: IPlayer = {
 
 export const defaultRound: IRound = {
   board: [],
-  pot: 0,
+  pots: [{ isOpen: true, size: 0, eligibleWinners: new Set() }],
   highestBet: 0,
   currentPlayer: 0,
   stoppingPoint: 2,
