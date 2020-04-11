@@ -75,13 +75,17 @@ class Game extends React.Component {
             }
           >
             <div className="ModuleAndChipsHorizontal">
-              {location == 'right' && hasABet && <Chips amount={item.currentBet} />}
+              {location == 'right' && hasABet && (
+                <Chips amount={item.currentBet} location="Right" />
+              )}
               <div className="ModuleAndChipsVertical">
-                {location == 'bottom' && hasABet && <Chips amount={item.currentBet} />}
+                {location == 'bottom' && hasABet && (
+                  <Chips amount={item.currentBet} location="Bottom" />
+                )}
                 <PlayerModule {...item} />
-                {location == 'top' && hasABet && <Chips amount={item.currentBet} />}
+                {location == 'top' && hasABet && <Chips amount={item.currentBet} location="Top" />}
               </div>
-              {location == 'left' && hasABet && <Chips amount={item.currentBet} />}
+              {location == 'left' && hasABet && <Chips amount={item.currentBet} location="Left" />}
             </div>
           </div>
         );

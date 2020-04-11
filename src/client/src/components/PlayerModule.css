@@ -81,4 +81,5 @@
   justify-content: center;
   position: relative;
   margin-bottom: -8px;
+  z-index: 1;
 }

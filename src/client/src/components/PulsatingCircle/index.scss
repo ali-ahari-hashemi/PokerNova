@@ -1,0 +1,26 @@
+.PulseContainer {
+  margin-top: -100px;
+  margin-left: -23px;
+  position: absolute;
+}
+
+.Circle {
+  border-radius: 50%;
+  background-color: white;
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  opacity: 0;
+  animation: scaleIn 5s infinite cubic-bezier(0.36, 0.11, 0.89, 0.32);
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.2, 0.2);
+      opacity: 0.5;
+    }
+    to {
+      transform: scale(1, 1);
+      opacity: 0;
+    }
+  }
+}
