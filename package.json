@@ -5,8 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cd src/server && npm start",
-    "build": "cd src/server && npm install && npm run build && cd ../client && npm install && npm run build",
-    "heroku-postbuild": "npm run build"
+    "build": "cd src/server && yarn install && npm run build && cd ../client && yarn install && npm run build"
   },
   "repository": {
     "type": "git",

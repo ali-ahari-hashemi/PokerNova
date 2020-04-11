@@ -58,37 +58,6 @@ class Game extends React.Component {
       });
   }
 
-  renderPlayerModules(playerIds) {
-    const { playerModules } = this.props;
-
-    return playerModules.map((item, index) => {
-      if (playerIds.includes(parseInt(item.id))) {
-        const location = getLocation(item.id);
-        const hasABet = item.currentBet > 0;
-        return (
-          <div
-            key={index}
-            style={
-              location == 'top' || location == 'bottom'
-                ? { padding: '0px 40px' }
-                : { padding: '0px' }
-            }
-          >
-            <div className="ModuleAndChipsHorizontal">
-              {location == 'right' && hasABet && <Chips amount={item.currentBet} />}
-              <div className="ModuleAndChipsVertical">
-                {location == 'bottom' && hasABet && <Chips amount={item.currentBet} />}
-                <PlayerModule {...item} />
-                {location == 'top' && hasABet && <Chips amount={item.currentBet} />}
-              </div>
-              {location == 'left' && hasABet && <Chips amount={item.currentBet} />}
-            </div>
-          </div>
-        );
-      }
-    });
-  }
-
   handleSliderChange = (event, newValue) => {
     this.setState({ betAmount: newValue });
   };
@@ -124,11 +93,11 @@ class Game extends React.Component {
               playerIds={[6, 7]}
               playerModules={this.props.playerModules}
             />
-
             <GameTable
               bettingRound={bettingRoundText}
               potTotal={potTotal}
               boardCards={this.props.boardCards}
+              playerModules={this.props.playerModules}
             />
             <PlayerList
               location="right"

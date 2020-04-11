@@ -12,6 +12,7 @@ export const defaultPlayer: IPlayer = {
   pocket: [],
   isActiveInRound: true,
   status: PlayerStatus.default,
+  uniqueId: '123',
 };
 
 export const defaultRound: IRound = {

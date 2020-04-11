@@ -7,4 +7,5 @@ export interface IPlayer {
   isActiveInRound: boolean;
   pocket: string[];
   status: string;
+  uniqueId: string;
 }
