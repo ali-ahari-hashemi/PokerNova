@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "start": "node dist/app.js",
-    "tsc": "tsc -p .",
+    "tsc": "tsc",
     "dev": "nodemon src/app.ts",
     "build": "npm run tsc",
     "test": "mocha -r ts-node/register src/tests/*.ts",
