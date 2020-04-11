@@ -70,8 +70,12 @@
 
 .Left {
   align-items: flex-start;
+  padding-right: 10px;
+  box-sizing: border-box;
 }
 
 .Right {
-  align-items: flex-end;
+  align-items: flex-start;
+  padding-left: 10px;
+  box-sizing: border-box;
 }
