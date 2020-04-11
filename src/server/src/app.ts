@@ -20,7 +20,7 @@ import path from 'path';
 const app = express();
 const server = new http.Server(app);
 const io = socketIO(server);
-const port = process.env.port || 5000;
+const port = process.env.PORT || 5000;
 const games: Map<string, Game> = new Map();
 const playersToGameMapping: Map<playerId, gameId> = new Map();
 
