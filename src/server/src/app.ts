@@ -11,6 +11,7 @@ import { playerId, gameId } from './constants';
 import { filterGameState } from './utils/filterGameState';
 import { getUniqueId } from './utils/getUniqueId';
 import path from 'path';
+import Logger from './utilities/Logger';
 
 /**
  * Application:

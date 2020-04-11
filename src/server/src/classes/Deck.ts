@@ -1,4 +1,5 @@
 import { ranks, suits } from '../constants';
+import Logger from '../utilities/Logger';
 
 export class Deck {
   private deck: string[] = [];
@@ -9,7 +10,7 @@ export class Deck {
   }
 
   print(): void {
-    console.log(this.deck);
+    Logger.log(this.deck);
   }
 
   // Initialize values in deck

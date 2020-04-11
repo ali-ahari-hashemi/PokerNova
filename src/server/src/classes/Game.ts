@@ -2,6 +2,7 @@ import IGame from '../interfaces/IGame';
 import Round from './Round';
 import { IPlayer } from '../interfaces/IPlayer';
 import { EventEmitter } from 'events';
+import Logger from '../utilities/Logger';
 
 interface IParams {
   id: string;
@@ -34,7 +35,7 @@ export default class Game extends EventEmitter {
   }
 
   start() {
-    console.log(`Game ${this.gameState.id} has started! Enjoy losing all your money :)`);
+    Logger.log(`Game ${this.gameState.id} has started! Enjoy losing all your money :)`);
     this.gameState.currentDealer = Math.floor(Math.random() * this.gameState.players.length);
     this.gameState.isActive = true;
     this.startRound();
@@ -79,7 +80,7 @@ export default class Game extends EventEmitter {
   }
 
   private startRound(): void {
-    console.log('starting new round');
+    Logger.log('starting new round');
     this.gameState.currentRound = new Round({
       players: this.gameState.players,
       currentDealer: this.gameState.currentDealer,
