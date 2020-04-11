@@ -5,7 +5,7 @@ import NotFound from './pages/NotFound';
 import GamePath from './pages/GamePath';
 import io from 'socket.io-client';
 
-const endpoint = 'http://localhost:5000';
+const endpoint = window.location.protocol + '//' + window.location.host;
 const socket = io.connect(endpoint);
 
 const App = () => {
