@@ -1,4 +1,4 @@
-import { IRound } from '../interfaces/IRound';
+import { IRound, IPot } from '../interfaces/IRound';
 import { IPlayer } from '../interfaces/IPlayer';
 import Deck from './Deck';
 import { Action } from './Action';
@@ -32,9 +32,11 @@ export default class Round extends EventEmitter {
 
   constructor(params: IParams) {
     super();
+    this.players = params.players;
     this.round = {
       board: [],
-      pot: 0,
+      // Initialize main pot,
+      pots: [{ isOpen: true, size: 0, eligibleWinners: new Set() }],
       highestBet: 0,
       currentPlayer: -1,
       stoppingPoint: -1,
@@ -47,7 +49,6 @@ export default class Round extends EventEmitter {
         desc: '',
       },
     };
-    this.players = params.players;
     this.currentDealer = params.currentDealer;
     this.blinds = params.blinds;
   }
@@ -95,7 +96,7 @@ export default class Round extends EventEmitter {
 
   // Function to increment one step in the round
   increment() {
-    // First check if the roubnd is still valid
+    // First check if the round is still valid
     if (!this.shouldContinue()) {
       // Draw rest of cards and calculate winner
       while (this.round.board.length < 5) {
@@ -109,7 +110,7 @@ export default class Round extends EventEmitter {
       setTimeout(() => {
         this.startNewBettingRound();
         this.stateUpdated();
-      }, 1000);
+      }, 5000);
     }
 
     // Check if the next player is a valid player (did not flop or go all in yet)
@@ -117,14 +118,18 @@ export default class Round extends EventEmitter {
       this.round.playersFolded.includes(this.nextPlayer()) ||
       this.round.playersAllIn.includes(this.nextPlayer())
     ) {
-      // recursion ;)
+      this.validatePotsState(this.round.pots, this.nextPlayer());
       this.increment();
     }
 
     // Still a valid round
+    // Increment to next player
     else {
       console.log('going to next player');
       this.round.currentPlayer = this.nextPlayer();
+
+      // Validate pot state and close pots if necessary
+      this.validatePotsState(this.round.pots, this.round.currentPlayer);
     }
 
     this.stateUpdated();
@@ -204,9 +209,7 @@ export default class Round extends EventEmitter {
 
   // Determine winners, carry out payouts, and end the round
   private finishRound() {
-    const winners = Round.determineWinners(this.players, this.round.board);
-    this.round.winners = winners;
-    this.payout(winners);
+    this.payoutWinners(this.round.pots, this.players);
     this.stateUpdated();
 
     // Delay to show winner before moving on to the next round
@@ -220,7 +223,6 @@ export default class Round extends EventEmitter {
         id: player.id,
         pocket: player.pocket.toString(),
       })),
-      winners,
     });
   }
 
@@ -278,12 +280,39 @@ export default class Round extends EventEmitter {
     return (this.round.currentPlayer + 1) % this.players.length;
   }
 
-  private payout(winners: IHandWinners): void {
-    const winningPlayerIds = winners.ids;
-    const potDivided = (1.0 * this.round.pot) / winningPlayerIds.length;
-    winningPlayerIds.map((id) => {
-      this.players[id].chipCount += potDivided;
+  private payoutWinners(pots: IPot[], players: IPlayer[]): void {
+    // Determine winners and payout for each pot
+    pots.forEach((pot) => {
+      const eligibleWinnersList = players.filter((player) => player.id in pot.eligibleWinners);
+      const potWinners = Round.determineWinners(eligibleWinnersList, this.round.board);
+      const winningPlayerIds = potWinners.ids;
+      const potDivided = (1.0 * pot.size) / winningPlayerIds.length;
+      winningPlayerIds.map((id) => {
+        players[id].chipCount += potDivided;
+      });
     });
+  }
+
+  // Ensures all pots are in a valid state, and closes pot if we return to the player that went all-in
+  private validatePotsState(pots: IPot[], currentPlayer: number): void {
+    let openFlag: boolean = false;
+    pots.forEach((pot) => {
+      if (pot.isOpen && pot.allInState) {
+        if (pot.allInState.player === currentPlayer) {
+          pot.isOpen = false; // Close pot
+        }
+      } else if (pot.isOpen) {
+        // Once we see an open pot that is not all-in, there cannot be another one
+        if (openFlag) {
+          throw new Error('Invalid pot state: ' + JSON.stringify(pots));
+        }
+        openFlag = true;
+      }
+    });
+    // At least one pot must be open + not all-in
+    if (!openFlag) {
+      throw new Error('Invalid pot state: ' + JSON.stringify(pots));
+    }
   }
 
   // Gets the Small Blind player id

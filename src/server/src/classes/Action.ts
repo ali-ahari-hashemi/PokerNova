@@ -2,6 +2,7 @@ import { ActionType, PlayerStatus } from '../constants';
 import { IAction } from '../interfaces/IAction';
 import { IPlayer } from '../interfaces/IPlayer';
 import { IRound } from '../interfaces/IRound';
+import _ from 'lodash';
 
 interface IParams {
   action: IAction;
@@ -78,8 +79,7 @@ export class Action {
       } else {
         console.log(`player ${this.player.id} betting amount: ${betAmount}`);
         this.player.status = this.round.highestBet > 0 ? PlayerStatus.raise : PlayerStatus.bet;
-        this.placeBet(betAmount);
-        return true;
+        return this.placeBet(betAmount);
       }
     } else {
       return false;
@@ -87,37 +87,117 @@ export class Action {
   }
 
   blind(): boolean {
-    this.placeBet(this.action.betAmount || 0, true);
-    return true;
+    return this.placeBet(this.action.betAmount || 0, true);
   }
 
   private call(): boolean {
     const callAmount = this.round.highestBet - this.player.currentBet;
     console.log(`player ${this.player.id} calling amount: ${callAmount}`);
     this.player.status = `${PlayerStatus.called}`;
-    this.placeBet(callAmount);
-    return true;
+    return this.placeBet(callAmount);
   }
 
   private allIn(): boolean {
     console.log(`player ${this.player.id} going all in`);
     this.player.status = PlayerStatus.allIn;
-    this.placeBet(this.player.chipCount);
     this.round.playersAllIn.push(this.player.id);
+
+    if (!this.placeBet(this.player.chipCount)) return false;
+
+    // Update currently active pot to allIn status
+    const currPot = this.round.pots[this.round.pots.length - 1];
+    currPot.allInState = { amount: this.player.chipCount, player: this.player.id };
+
+    // Create new side pot
+    this.round.pots.push({ isOpen: true, size: 0, eligibleWinners: new Set() });
+
     return true;
   }
 
-  private placeBet(betAmount: number, isBlind: boolean = false): void {
-    this.round.pot += betAmount;
-    this.player.chipCount -= betAmount;
-    const playersCurrentTotalBet = this.player.currentBet + betAmount;
-    this.player.currentBet = playersCurrentTotalBet;
+  /**
+   * Helper function to calculate new betting values for given attempted bet. If any of the values enters and invalid state,
+   * throws an error.
+   * @param potSize current chip count of pot
+   * @param chipCount current chip count of player
+   * @param betRemaining chips remaining from the initial attempted bet
+   * @param subBetAmount the current part of the bet we are attempting to apply
+   */
+  private getNewBetValues(
+    potSize: number,
+    chipCount: number,
+    betRemaining: number,
+    subBetAmount: number
+  ) {
+    potSize += subBetAmount;
+    chipCount -= subBetAmount;
+    betRemaining -= subBetAmount;
+    if (chipCount < 0 || betRemaining < 0) {
+      throw new Error(
+        'Invalid bet attempted: ' + JSON.stringify(this.action) + ' by player ' + this.player.id
+      );
+    }
+    return [potSize, chipCount, betRemaining];
+  }
 
-    if (playersCurrentTotalBet > this.round.highestBet) {
-      this.round.highestBet = playersCurrentTotalBet;
+  private placeBet(betAmount: number, isBlind: boolean = false): boolean {
+    // Temporary values to ensure the bet is valid
+    let _player = _.cloneDeep(this.player);
+    let _round = _.cloneDeep(this.round);
+
+    const playersCurrentTotalBet = this.player.currentBet + betAmount;
+    let betRemaining = betAmount;
+
+    // Loop through pots and assign bets to each open pot
+    _round.pots.forEach((pot) => {
+      // Case: open pot in an all-in state
+      if (pot.isOpen && pot.allInState) {
+        // Case: bet amount is less than is required to match the all in amount of this pot.
+        // If the player betting is all-in, this is allowable and we can just bet betAmount
+        // If the player betting is NOT all-in, this is an invalid bet - return false.
+        if (betRemaining < pot.allInState.amount) {
+          if (_player.status === PlayerStatus.allIn) {
+            [pot.size, _player.chipCount, betRemaining] = this.getNewBetValues(
+              pot.size,
+              _player.chipCount,
+              betRemaining,
+              betRemaining
+            );
+          } else {
+            return false;
+          }
+          // Case: bet amount is >= amount required to match the all in - bet all-in amount
+        } else {
+          [pot.size, _player.chipCount, betRemaining] = this.getNewBetValues(
+            pot.size,
+            _player.chipCount,
+            betRemaining,
+            pot.allInState.amount
+          );
+        }
+
+        // Case: open pot NOT in an all-in state
+      } else if (pot.isOpen) {
+        [pot.size, _player.chipCount, betRemaining] = this.getNewBetValues(
+          pot.size,
+          _player.chipCount,
+          betRemaining,
+          betRemaining
+        );
+      }
+
+      pot.eligibleWinners.add(_player.id); // Current player is eligible to win this (side) pot
+    });
+
+    _player.currentBet += playersCurrentTotalBet;
+    if (playersCurrentTotalBet > _round.highestBet) {
+      _round.highestBet = playersCurrentTotalBet;
       if (!isBlind) {
-        this.round.stoppingPoint = this.player.id;
+        _round.stoppingPoint = _player.id;
       }
     }
+
+    this.round = _.cloneDeep(_round);
+    this.player = _.cloneDeep(_player);
+    return true;
   }
 }
