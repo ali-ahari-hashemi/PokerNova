@@ -9,6 +9,7 @@ import { IPerformActionAPI, IJoinGameAPI, IStartGameAPI, IStateUpdated } from '.
 import { playerId, gameId } from './constants';
 import { filterGameState } from './utils/filterGameState';
 import { getUniqueId } from './utils/getUniqueId';
+import path from 'path';
 
 /**
  * Application:
@@ -19,7 +20,7 @@ import { getUniqueId } from './utils/getUniqueId';
 const app = express();
 const server = new http.Server(app);
 const io = socketIO(server);
-const port = 5000;
+const port = process.env.PORT || 5000;
 const games: Map<string, Game> = new Map();
 const playersToGameMapping: Map<playerId, gameId> = new Map();
 
@@ -29,6 +30,7 @@ app.use(
   })
 );
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, '../../client/build')));
 
 // SOCKET STUFF
 
@@ -68,11 +70,6 @@ io.on('connection', (socket) => {
 });
 
 // API ROUTES
-
-app.get('/', (req, res) => {
-  res.send('PokerNova Coming Soon...');
-  // TODO: send front end code
-});
 
 app.get('/api/game/:id', (req, res) => {
   const { id } = req.params;
@@ -127,6 +124,10 @@ app.post('/api/game/performAction', (req, res) => {
   } else {
     res.status(400).send('Error performing action. Please make sure gameId and playerId is valid');
   }
+});
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../client/build/index.html'));
 });
 
 server.listen(port, () => console.log(`Example app listening on port ${port}!`));

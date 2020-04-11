@@ -42,6 +42,10 @@ export default class Round extends EventEmitter {
       playersFolded: [],
       playersAllIn: [],
       isActive: false,
+      winners: {
+        ids: [],
+        desc: '',
+      },
     };
     this.players = params.players;
     this.currentDealer = params.currentDealer;
@@ -102,7 +106,10 @@ export default class Round extends EventEmitter {
 
     // Stopping point reached
     else if (this.nextPlayer() == this.round.stoppingPoint) {
-      this.startNewBettingRound();
+      setTimeout(() => {
+        this.startNewBettingRound();
+        this.stateUpdated();
+      }, 1000);
     }
 
     // Check if the next player is a valid player (did not flop or go all in yet)
@@ -198,8 +205,14 @@ export default class Round extends EventEmitter {
   // Determine winners, carry out payouts, and end the round
   private finishRound() {
     const winners = Round.determineWinners(this.players, this.round.board);
+    this.round.winners = winners;
     this.payout(winners);
-    this.end();
+    this.stateUpdated();
+
+    // Delay to show winner before moving on to the next round
+    setTimeout(() => {
+      this.end();
+    }, 1000);
 
     console.log({
       board: this.round.board,

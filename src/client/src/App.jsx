@@ -5,7 +5,7 @@ import NotFound from './pages/NotFound';
 import GamePath from './pages/GamePath';
 import io from 'socket.io-client';
 
-const endpoint = 'http://localhost:5000';
+const endpoint = window.location.protocol + '//' + window.location.host;
 const socket = io.connect(endpoint);
 
 const App = () => {
@@ -23,6 +23,10 @@ const App = () => {
 
     socket.on('joinGameSuccess', (data) => {
       setSeat(data.seat);
+    });
+
+    socket.on('winnersDetermined', (winners) => {
+      console.log('winners determined', winners);
     });
   }, []);
 

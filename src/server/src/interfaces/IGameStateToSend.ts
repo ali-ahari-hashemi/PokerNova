@@ -1,5 +1,6 @@
 import { playerId, BettingRound } from '../constants';
 import { IPlayer } from './IPlayer';
+import { IHandWinners } from '../utilities/CardHelpers';
 
 export interface IPlayerState {
   id: number;
@@ -15,6 +16,7 @@ export interface IRoundStateToSend {
   playersAllIn: number[];
   bettingRound?: BettingRound; // undefined before the first round
   isActive: boolean;
+  winners: IHandWinners;
 }
 
 export default interface IGameStateToSend {

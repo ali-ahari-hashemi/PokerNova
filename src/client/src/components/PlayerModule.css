@@ -17,6 +17,10 @@
   border: 2px solid var(--green-color);
 }
 
+.PlayerModuleWinner {
+  background-color: #edb458;
+}
+
 .PlayerModuleTotalContainer {
   background-color: var(--main-white);
   border-radius: 100px;

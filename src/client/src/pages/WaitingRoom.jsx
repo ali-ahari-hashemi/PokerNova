@@ -63,7 +63,7 @@ class WaitingRoom extends React.Component {
   render() {
     const { linkCopied, gameJoined } = this.state;
     const { gameId } = this.props;
-    const link = `localhost:3000/game/${gameId}`;
+    const link = window.location.href;
     const players = get(this.props.gameState, 'players', []);
 
     return (

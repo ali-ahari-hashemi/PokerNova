@@ -25,6 +25,7 @@ export const filterGameState = (gameState: IGame, playerId: number = -1): IGameS
     playersAllIn: currentRound.playersAllIn,
     bettingRound: currentRound.bettingRound, // undefined before the first round
     isActive: currentRound.isActive,
+    winners: currentRound.winners,
   };
 
   const gameStateToSend: IGameStateToSend = {

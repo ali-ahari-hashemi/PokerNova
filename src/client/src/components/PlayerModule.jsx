@@ -3,7 +3,7 @@ import './PlayerModule.css';
 import Card from './Card';
 
 function PlayerModule(props) {
-  const { player, status, total, active, pocket = [{}, {}], isCurrentPlayer } = props;
+  const { player, status, total, active, pocket = [{}, {}], isWinner } = props;
 
   console.log('player', props);
   return (
@@ -14,7 +14,11 @@ function PlayerModule(props) {
         ))}
       </div>
 
-      <div className={`PlayerModule ${active && 'PlayerModuleActive'}`}>
+      <div
+        className={`PlayerModule ${active ? 'PlayerModuleActive' : ''} ${
+          isWinner ? 'PlayerModuleWinner' : ''
+        }`}
+      >
         <div className="PlayerModuleTotalContainer">
           <p className="PlayerModuleTotalText">${total}</p>
         </div>

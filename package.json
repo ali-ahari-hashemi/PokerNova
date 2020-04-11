@@ -1,0 +1,27 @@
+{
+  "name": "pokernova",
+  "version": "1.0.0",
+  "description": "Coming soon...",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd src/server && npm start",
+    "build": "cd src/server && npm install && npm run build && cd ../client && npm install && npm run build",
+    "heroku-postbuild": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/austinberke/PokerNova.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/austinberke/PokerNova/issues"
+  },
+  "homepage": "https://github.com/austinberke/PokerNova#readme",
+  "engines": {
+    "node": "12.15.0"
+  },
+  "dependencies": {
+    "typescript": "^3.8.3"
+  }
+}
