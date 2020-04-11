@@ -51,8 +51,7 @@ class WaitingRoom extends React.Component {
 
   handleCopyLink() {
     const { linkCopied } = this.props;
-    const { gameId } = this.props;
-    const link = `localhost:3000/game/${gameId}`;
+    const link = window.location.href;
 
     if (!linkCopied) {
       navigator.clipboard.writeText(link);
