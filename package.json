@@ -20,6 +20,6 @@
   },
   "homepage": "https://github.com/austinberke/PokerNova#readme",
   "engines": {
-    "node": "8.9.2"
+    "node": "12.15.0"
   }
 }
