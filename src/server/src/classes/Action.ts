@@ -79,8 +79,7 @@ export class Action {
       } else {
         console.log(`player ${this.player.id} betting amount: ${betAmount}`);
         this.player.status = this.round.highestBet > 0 ? PlayerStatus.raise : PlayerStatus.bet;
-        this.placeBet(betAmount);
-        return true;
+        return this.placeBet(betAmount);
       }
     } else {
       return false;
@@ -88,16 +87,14 @@ export class Action {
   }
 
   blind(): boolean {
-    this.placeBet(this.action.betAmount || 0, true);
-    return true;
+    return this.placeBet(this.action.betAmount || 0, true);
   }
 
   private call(): boolean {
     const callAmount = this.round.highestBet - this.player.currentBet;
     console.log(`player ${this.player.id} calling amount: ${callAmount}`);
     this.player.status = `${PlayerStatus.called}`;
-    this.placeBet(callAmount);
-    return true;
+    return this.placeBet(callAmount);
   }
 
   private allIn(): boolean {
@@ -105,7 +102,7 @@ export class Action {
     this.player.status = PlayerStatus.allIn;
     this.round.playersAllIn.push(this.player.id);
 
-    this.placeBet(this.player.chipCount);
+    if (!this.placeBet(this.player.chipCount)) return false;
 
     // Update currently active pot to allIn status
     const currPot = this.round.pots[this.round.pots.length - 1];
