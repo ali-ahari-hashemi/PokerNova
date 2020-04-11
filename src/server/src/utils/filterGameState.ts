@@ -1,16 +1,26 @@
 import IGame from '../interfaces/IGame';
 import IGameStateToSend, { IRoundStateToSend } from '../interfaces/IGameStateToSend';
 import { IPlayer } from '../interfaces/IPlayer';
+import { IHandWinners } from '../utilities/CardHelpers';
 
 // Remove sensitive data from players list sent to client
-function filterPlayers(players: IPlayer[], playerId: number) {
+function filterPlayers(
+  players: IPlayer[],
+  playerId: number,
+  winners: IHandWinners,
+  playersFolded: number[]
+) {
   return players.map((player) => {
-    return player.id === playerId
-      ? player
-      : {
-          ...player,
-          pocket: [],
-        };
+    return {
+      ...player,
+      pocket:
+        player.id === playerId ||
+        (winners.ids.length > 0 &&
+          players.length - playersFolded.length > 1 &&
+          player.isActiveInRound)
+          ? player.pocket
+          : [],
+    };
   });
 }
 
@@ -32,7 +42,12 @@ export const filterGameState = (gameState: IGame, playerId: number = -1): IGameS
     id: gameState.id,
     isActive: gameState.isActive,
     currentDealer: gameState.currentDealer,
-    players: filterPlayers(gameState.players, playerId),
+    players: filterPlayers(
+      gameState.players,
+      playerId,
+      currentRound.winners,
+      gameState.currentRound.getRound().playersFolded
+    ),
     currentRound: currentRoundToSend,
   };
 

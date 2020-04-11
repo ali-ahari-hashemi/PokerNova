@@ -14,7 +14,14 @@ const App = () => {
 
   useEffect(() => {
     socket.on('connect', () => {
-      console.log('in app.js ' + socket.id + ' successfully connected');
+      const currentGameJSONString = sessionStorage.getItem('game');
+
+      if (currentGameJSONString) {
+        const data = JSON.parse(currentGameJSONString);
+        socket.emit('refreshSocket', data);
+      } else {
+        console.log('in app.js ' + socket.id + ' successfully connected');
+      }
     });
 
     socket.on('stateUpdated', (data) => {
@@ -23,10 +30,7 @@ const App = () => {
 
     socket.on('joinGameSuccess', (data) => {
       setSeat(data.seat);
-    });
-
-    socket.on('winnersDetermined', (winners) => {
-      console.log('winners determined', winners);
+      sessionStorage.setItem('game', JSON.stringify(data));
     });
   }, []);
 

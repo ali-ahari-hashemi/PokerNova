@@ -4,18 +4,24 @@ import PlayerModule from '../PlayerModule';
 import Chips from '../Chips';
 
 const renderTop = (playerIds, playerModules) => {
-  return playerModules.map((player, index) => {
+  const playerList = playerModules.map((player, index) => {
     if (playerIds.includes(parseInt(player.id))) {
       const betExists = player.currentBet > 0;
 
       return (
         <div key={index} className="TopPlayerContainer">
           <PlayerModule {...player} />
-          <div className="ChipsContainer">{betExists && <Chips amount={player.currentBet} />}</div>
         </div>
       );
     }
   });
+
+  if (playerList.length == 1) {
+    const empty = () => <div className="TopPlayerContainer"></div>;
+    playerList.concat(empty());
+  }
+
+  return playerList;
 };
 
 const renderBottom = (playerIds, playerModules) => {
@@ -25,7 +31,6 @@ const renderBottom = (playerIds, playerModules) => {
 
       return (
         <div key={index} className="BottomPlayerContainer">
-          <div className="ChipsContainer">{betExists && <Chips amount={player.currentBet} />}</div>
           <PlayerModule {...player} />
         </div>
       );
@@ -40,7 +45,6 @@ const renderRight = (playerIds, playerModules) => {
 
       return (
         <div key={index} className="RightPlayerContainer">
-          <div className="ChipsContainer">{betExists && <Chips amount={player.currentBet} />}</div>
           <PlayerModule {...player} />
         </div>
       );
@@ -56,7 +60,6 @@ const renderLeft = (playerIds, playerModules) => {
       return (
         <div key={index} className="LeftPlayerContainer">
           <PlayerModule {...player} />
-          <div className="ChipsContainer">{betExists && <Chips amount={player.currentBet} />}</div>
         </div>
       );
     }

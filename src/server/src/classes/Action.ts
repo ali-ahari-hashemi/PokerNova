@@ -2,6 +2,7 @@ import { ActionType, PlayerStatus } from '../constants';
 import { IAction } from '../interfaces/IAction';
 import { IPlayer } from '../interfaces/IPlayer';
 import { IRound } from '../interfaces/IRound';
+import Logger from '../utilities/Logger';
 import _ from 'lodash';
 
 interface IParams {
@@ -42,7 +43,7 @@ export class Action {
   }
 
   fold(): boolean {
-    console.log(`player ${this.player.id} folding`);
+    Logger.log(`player ${this.player.id} folding`);
     this.round.playersFolded.push(this.player.id);
     this.player.isActiveInRound = false;
     this.player.status = PlayerStatus.folded;
@@ -50,7 +51,7 @@ export class Action {
   }
 
   check(): boolean {
-    console.log(`player ${this.player.id} checking`);
+    Logger.log(`player ${this.player.id} checking`);
     const callAmount = this.round.highestBet - this.player.currentBet;
     this.player.status = PlayerStatus.checked;
     return callAmount == 0;
@@ -77,7 +78,7 @@ export class Action {
       if (betAmount == callAmount) {
         return this.call();
       } else {
-        console.log(`player ${this.player.id} betting amount: ${betAmount}`);
+        Logger.log(`player ${this.player.id} betting amount: ${betAmount}`);
         this.player.status = this.round.highestBet > 0 ? PlayerStatus.raise : PlayerStatus.bet;
         return this.placeBet(betAmount);
       }
@@ -92,13 +93,13 @@ export class Action {
 
   private call(): boolean {
     const callAmount = this.round.highestBet - this.player.currentBet;
-    console.log(`player ${this.player.id} calling amount: ${callAmount}`);
+    Logger.log(`player ${this.player.id} calling amount: ${callAmount}`);
     this.player.status = `${PlayerStatus.called}`;
     return this.placeBet(callAmount);
   }
 
   private allIn(): boolean {
-    console.log(`player ${this.player.id} going all in`);
+    Logger.log(`player ${this.player.id} going all in`);
     this.player.status = PlayerStatus.allIn;
     this.round.playersAllIn.push(this.player.id);
 

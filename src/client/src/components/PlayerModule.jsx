@@ -1,6 +1,7 @@
 import React from 'react';
 import './PlayerModule.css';
 import Card from './Card';
+import PulsatingCircle from './PulsatingCircle';
 
 function PlayerModule(props) {
   const { player, status, total, active, pocket = [{}, {}], isWinner } = props;
@@ -14,6 +15,7 @@ function PlayerModule(props) {
         ))}
       </div>
 
+      {active && <PulsatingCircle />}
       <div
         className={`PlayerModule ${active ? 'PlayerModuleActive' : ''} ${
           isWinner ? 'PlayerModuleWinner' : ''
@@ -27,10 +29,12 @@ function PlayerModule(props) {
         </div>
       </div>
 
-      {status && (
+      {status ? (
         <div className="StatusBar">
           <p className="StatusText">{status}</p>
         </div>
+      ) : (
+        <div className="StatusBarPlaceHolder" />
       )}
     </div>
   );

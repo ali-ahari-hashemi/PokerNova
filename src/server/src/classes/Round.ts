@@ -6,6 +6,7 @@ import { BettingRound, PlayerStatus, ActionType } from '../constants';
 import { CardHelpers, IHandWinners, IPlayerCards } from '../utilities/CardHelpers';
 import { IAction } from '../interfaces/IAction';
 import { EventEmitter } from 'events';
+import Logger from '../utilities/Logger';
 
 interface IBlinds {
   sb: number;
@@ -54,24 +55,29 @@ export default class Round extends EventEmitter {
   }
 
   static determineWinners(players: IPlayer[], board: string[]): IHandWinners {
-    let playerCards: IPlayerCards[] = [];
+    const activePlayers = players.filter((player) => {
+      return player.isActiveInRound;
+    });
 
-    players
-      .filter((player) => {
-        return player.isActiveInRound;
-      })
-      .forEach((activePlayer) => {
+    if (activePlayers.length == 1) {
+      return { ids: [activePlayers[0].id], desc: '' };
+    } else if (activePlayers.length > 1) {
+      let playerCards: IPlayerCards[] = [];
+      activePlayers.forEach((activePlayer) => {
         playerCards.push({
           id: activePlayer.id,
           cards: activePlayer.pocket.concat(board),
         });
       });
-
-    return CardHelpers.determineWinners(playerCards);
+      return CardHelpers.determineWinners(playerCards);
+    } else {
+      // This should not happen
+      return { ids: [], desc: '' };
+    }
   }
 
   start() {
-    console.log({
+    Logger.log({
       players: this.players.map((player) => ({
         id: player.id,
         pocket: player.pocket.toString(),
@@ -85,7 +91,7 @@ export default class Round extends EventEmitter {
   }
 
   end() {
-    console.log('ending round');
+    Logger.log('ending round');
     this.round.isActive = false;
     this.emit('roundEnded');
   }
@@ -98,10 +104,6 @@ export default class Round extends EventEmitter {
   increment() {
     // First check if the round is still valid
     if (!this.shouldContinue()) {
-      // Draw rest of cards and calculate winner
-      while (this.round.board.length < 5) {
-        this.draw();
-      }
       this.finishRound();
     }
 
@@ -125,7 +127,7 @@ export default class Round extends EventEmitter {
     // Still a valid round
     // Increment to next player
     else {
-      console.log('going to next player');
+      Logger.log('going to next player');
       this.round.currentPlayer = this.nextPlayer();
 
       // Validate pot state and close pots if necessary
@@ -217,7 +219,7 @@ export default class Round extends EventEmitter {
       this.end();
     }, 1000);
 
-    console.log({
+    Logger.log({
       board: this.round.board,
       players: this.players.map((player) => ({
         id: player.id,
@@ -231,14 +233,14 @@ export default class Round extends EventEmitter {
     this.resetPlayers();
     const didIncrement = this.incrementBettingRound();
     if (didIncrement) {
-      console.log(`starting new betting round: ${this.round.bettingRound}`);
+      Logger.log(`starting new betting round: ${this.round.bettingRound}`);
       this.round.highestBet = 0;
       const firstToBet =
         this.round.bettingRound == BettingRound.preFlop ? this.getUTG() : this.getSB();
       this.round.currentPlayer = firstToBet;
       this.round.stoppingPoint = firstToBet;
 
-      console.log(`current player is ${this.round.currentPlayer}`);
+      Logger.log(`current player is ${this.round.currentPlayer}`);
       if (this.round.bettingRound !== BettingRound.preFlop) {
         this.draw();
       }
@@ -248,10 +250,10 @@ export default class Round extends EventEmitter {
   }
 
   private resetPlayers() {
-    console.log('reseting players');
     this.players.map((player) => {
       player.status = PlayerStatus.default;
       player.currentBet = 0;
+      player.isActiveInRound = true;
     });
   }
 

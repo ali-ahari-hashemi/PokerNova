@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import http from 'http';
 import socketIO from 'socket.io';
+import { v1 as uuid } from 'uuid';
 import Game from './classes/Game';
 import { defaultPlayer } from './tests/_mockData';
 import cloneDeep from 'lodash.clonedeep';
@@ -10,6 +11,7 @@ import { playerId, gameId } from './constants';
 import { filterGameState } from './utils/filterGameState';
 import { getUniqueId } from './utils/getUniqueId';
 import path from 'path';
+import Logger from './utilities/Logger';
 
 /**
  * Application:
@@ -46,12 +48,13 @@ const sendGameStateToPlayers = (game: Game) => {
 io.on('connection', (socket) => {
   const socketId: playerId = socket.id;
   console.log(`New connection! socket id: ${socketId}`);
-
   socket.on('joinGame', (data: IJoinGameAPI) => {
     const { gameId, name } = data;
     const game = games.get(gameId);
     if (game) {
       const nextAvailableSeat = game.getNextAvailableSeat();
+      const uniqueId = uuid();
+
       if (nextAvailableSeat === -1) return; // Game is full
       playersToGameMapping.set(socketId, gameId);
       game.addPlayer({
@@ -59,12 +62,27 @@ io.on('connection', (socket) => {
         id: nextAvailableSeat,
         name,
         socketId,
+        uniqueId,
       });
       socket.join(gameId);
-      socket.emit('joinGameSuccess', { seat: nextAvailableSeat });
+
+      socket.emit('joinGameSuccess', { seat: nextAvailableSeat, uniqueId, gameId });
       sendGameStateToPlayers(game);
     } else {
       // TODO: some error handling here
+    }
+  });
+
+  socket.on('refreshSocket', ({ seat, gameId, uniqueId }) => {
+    const game = games.get(gameId);
+    if (game) {
+      const player = game.getGameState().players[seat];
+      if (player.uniqueId == uniqueId) {
+        player.socketId = socket.id;
+        sendGameStateToPlayers(game);
+      }
+    } else {
+      // TODO: error handling
     }
   });
 });

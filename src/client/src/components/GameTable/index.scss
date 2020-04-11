@@ -7,6 +7,7 @@
   border: 3px solid var(--main-white);
   border-radius: 200px;
   background-color: #42858c;
+  z-index: 1;
 }
 
 .BettingRoundText {
@@ -25,4 +26,53 @@
   font-size: 20px;
   font-weight: 700;
   margin-top: 20px;
+}
+
+.GameTableRow {
+  display: flex;
+  flex-direction: row;
+  align-self: stretch;
+  flex: 1;
+}
+
+.GameTableLeft {
+  width: 100px;
+  display: flex;
+  align-content: stretch;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.GameTableRight {
+  width: 100px;
+  display: flex;
+  align-content: stretch;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.GameTableCenter {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+.GameTableTop {
+  height: 20px;
+  padding-top: 10px;
+  align-self: stretch;
+  display: flex;
+  justify-content: space-around;
+}
+
+.GameTableBottom {
+  padding-bottom: 10px;
+  height: 20px;
+  align-self: stretch;
+  display: flex;
+  justify-content: space-around;
 }
