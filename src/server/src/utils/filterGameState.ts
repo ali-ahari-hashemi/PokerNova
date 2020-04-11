@@ -4,14 +4,20 @@ import { IPlayer } from '../interfaces/IPlayer';
 import { IHandWinners } from '../utilities/CardHelpers';
 
 // Remove sensitive data from players list sent to client
-function filterPlayers(players: IPlayer[], playerId: number, winners: IHandWinners) {
+function filterPlayers(
+  players: IPlayer[],
+  playerId: number,
+  winners: IHandWinners,
+  playersFolded: number[]
+) {
   return players.map((player) => {
     return {
       ...player,
       pocket:
         player.id === playerId ||
-        winners.ids.includes(player.id) ||
-        (winners.ids.length > 0 && player.isActiveInRound)
+        (winners.ids.length > 0 &&
+          players.length - playersFolded.length > 1 &&
+          player.isActiveInRound)
           ? player.pocket
           : [],
     };
@@ -36,7 +42,12 @@ export const filterGameState = (gameState: IGame, playerId: number = -1): IGameS
     id: gameState.id,
     isActive: gameState.isActive,
     currentDealer: gameState.currentDealer,
-    players: filterPlayers(gameState.players, playerId, currentRound.winners),
+    players: filterPlayers(
+      gameState.players,
+      playerId,
+      currentRound.winners,
+      gameState.currentRound.getRound().playersFolded
+    ),
     currentRound: currentRoundToSend,
   };
 

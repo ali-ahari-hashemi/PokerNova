@@ -53,20 +53,25 @@ export default class Round extends EventEmitter {
   }
 
   static determineWinners(players: IPlayer[], board: string[]): IHandWinners {
-    let playerCards: IPlayerCards[] = [];
+    const activePlayers = players.filter((player) => {
+      return player.isActiveInRound;
+    });
 
-    players
-      .filter((player) => {
-        return player.isActiveInRound;
-      })
-      .forEach((activePlayer) => {
+    if (activePlayers.length == 1) {
+      return { ids: [activePlayers[0].id], desc: '' };
+    } else if (activePlayers.length > 1) {
+      let playerCards: IPlayerCards[] = [];
+      activePlayers.forEach((activePlayer) => {
         playerCards.push({
           id: activePlayer.id,
           cards: activePlayer.pocket.concat(board),
         });
       });
-
-    return CardHelpers.determineWinners(playerCards);
+      return CardHelpers.determineWinners(playerCards);
+    } else {
+      // This should not happen
+      return { ids: [], desc: '' };
+    }
   }
 
   start() {
@@ -97,10 +102,6 @@ export default class Round extends EventEmitter {
   increment() {
     // First check if the roubnd is still valid
     if (!this.shouldContinue()) {
-      // Draw rest of cards and calculate winner
-      while (this.round.board.length < 5) {
-        this.draw();
-      }
       this.finishRound();
     }
 
@@ -246,10 +247,10 @@ export default class Round extends EventEmitter {
   }
 
   private resetPlayers() {
-    console.log('reseting players');
     this.players.map((player) => {
       player.status = PlayerStatus.default;
       player.currentBet = 0;
+      player.isActiveInRound = true;
     });
   }
 
