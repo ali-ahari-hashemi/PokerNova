@@ -71,10 +71,6 @@ io.on('connection', (socket) => {
 
 // API ROUTES
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../client/build'));
-});
-
 app.get('/api/game/:id', (req, res) => {
   const { id } = req.params;
   if (games.has(id)) {
@@ -128,6 +124,10 @@ app.post('/api/game/performAction', (req, res) => {
   } else {
     res.status(400).send('Error performing action. Please make sure gameId and playerId is valid');
   }
+});
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../client/build'));
 });
 
 server.listen(port, () => console.log(`Example app listening on port ${port}!`));
