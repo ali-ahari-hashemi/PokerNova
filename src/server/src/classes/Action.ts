@@ -2,6 +2,7 @@ import { ActionType, PlayerStatus } from '../constants';
 import { IAction } from '../interfaces/IAction';
 import { IPlayer } from '../interfaces/IPlayer';
 import { IRound } from '../interfaces/IRound';
+import _ from 'lodash';
 
 interface IParams {
   action: IAction;
@@ -102,22 +103,52 @@ export class Action {
   private allIn(): boolean {
     console.log(`player ${this.player.id} going all in`);
     this.player.status = PlayerStatus.allIn;
-    this.placeBet(this.player.chipCount);
     this.round.playersAllIn.push(this.player.id);
+
+    this.placeBet(this.player.chipCount);
+
+    // Update currently active pot to allIn status
+    const currPot = this.round.pots[this.round.pots.length - 1];
+    currPot.allInState = { amount: this.player.chipCount, player: this.player.id };
+
+    // Create new side pot
+    this.round.pots.push({ isOpen: true, size: 0, eligibleWinners: new Set() });
+
     return true;
   }
 
   private placeBet(betAmount: number, isBlind: boolean = false): void {
-    this.round.pot += betAmount;
-    this.player.chipCount -= betAmount;
-    const playersCurrentTotalBet = this.player.currentBet + betAmount;
-    this.player.currentBet = playersCurrentTotalBet;
+    // Temporary values to ensure the bet is valid
+    let _player = _.cloneDeep(this.player);
+    let _round = _.cloneDeep(this.round);
 
-    if (playersCurrentTotalBet > this.round.highestBet) {
-      this.round.highestBet = playersCurrentTotalBet;
+    const playersCurrentTotalBet = this.player.currentBet + betAmount;
+
+    // Loop through pots and assign bets to each open pot
+    _round.pots.forEach((pot) => {
+      if (pot.isOpen && pot.allInState) {
+        pot.size += pot.allInState.amount; // Add to pot
+        _player.chipCount -= pot.allInState.amount; // Subtract from chipCount
+        betAmount -= pot.allInState.amount; // Update remaining betAmount
+      } else if (pot.isOpen) {
+        pot.size += betAmount; // Add to pot
+        _player.chipCount -= betAmount; // Subtract from chipCount
+        betAmount -= betAmount; // Update remaining betAmount to 0
+      }
+      if (betAmount < 0)
+        throw new Error('Invalid pot state: ' + console.log(JSON.stringify(_round.pots)));
+      pot.eligibleWinners.add(_player.id); // Current player is eligible to win this (side) pot
+    });
+
+    _player.currentBet += playersCurrentTotalBet;
+    if (playersCurrentTotalBet > _round.highestBet) {
+      _round.highestBet = playersCurrentTotalBet;
       if (!isBlind) {
-        this.round.stoppingPoint = this.player.id;
+        _round.stoppingPoint = _player.id;
       }
     }
+
+    this.round = _.cloneDeep(_round);
+    this.player = _.cloneDeep(_player);
   }
 }

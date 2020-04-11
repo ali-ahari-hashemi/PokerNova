@@ -7,7 +7,7 @@ export interface IPlayerCards {
 
 export interface IHandWinners {
   ids: number[];
-  desc: any;
+  desc: string;
 }
 
 export class CardHelpers {
@@ -47,8 +47,8 @@ export class CardHelpers {
     // Iterate through each winning hand, match the players' set of cards which contains all the
     // cards in the winning hand - pull out that player's ID
     let winningIds: number[] = [];
-    winningHandsCards.forEach(winningHand => {
-      playerCards.forEach(playerCardSet => {
+    winningHandsCards.forEach((winningHand) => {
+      playerCards.forEach((playerCardSet) => {
         if (
           winningHand.every((card: string) => {
             return playerCardSet.cards.includes(card);
