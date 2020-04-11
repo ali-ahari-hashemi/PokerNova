@@ -20,5 +20,8 @@
   "homepage": "https://github.com/austinberke/PokerNova#readme",
   "engines": {
     "node": "12.15.0"
+  },
+  "dependencies": {
+    "typescript": "^3.8.3"
   }
 }
