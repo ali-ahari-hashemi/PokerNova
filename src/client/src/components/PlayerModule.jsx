@@ -29,10 +29,12 @@ function PlayerModule(props) {
         </div>
       </div>
 
-      {status && (
+      {status ? (
         <div className="StatusBar">
           <p className="StatusText">{status}</p>
         </div>
+      ) : (
+        <div className="StatusBarPlaceHolder" />
       )}
     </div>
   );

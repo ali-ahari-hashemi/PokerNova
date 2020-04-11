@@ -47,7 +47,6 @@ const sendGameStateToPlayers = (game: Game) => {
 io.on('connection', (socket) => {
   const socketId: playerId = socket.id;
   console.log(`New connection! socket id: ${socketId}`);
-
   socket.on('joinGame', (data: IJoinGameAPI) => {
     const { gameId, name } = data;
     const game = games.get(gameId);

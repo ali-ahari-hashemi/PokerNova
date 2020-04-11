@@ -33,7 +33,7 @@
 .VerticalPlayerList {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: space-around;
   min-width: 200px;
 
   .RightPlayerContainer {
@@ -59,10 +59,12 @@
 
 .Top {
   align-items: flex-end;
+  height: 150px;
 }
 
 .Bottom {
-  align-items: flex-start;
+  align-items: flex-end;
+  height: 150px;
   padding-bottom: 10px;
 }
 
