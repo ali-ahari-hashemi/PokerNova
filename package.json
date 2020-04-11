@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/austinberke/PokerNova/issues"
   },
-  "homepage": "https://github.com/austinberke/PokerNova#readme"
+  "homepage": "https://github.com/austinberke/PokerNova#readme",
+  "engines": {
+    "node": "8.9.2"
+  }
 }
