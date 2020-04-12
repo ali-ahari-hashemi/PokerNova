@@ -28,7 +28,9 @@ const PlayerModule = (props) => {
   useEffect(() => {
     setStatusText(status);
     clearTimeout(closeStatusBarTimer);
-    closeStatusBarTimer;
+    closeStatusBarTimer = setTimeout(() => {
+      setStatusText('');
+    }, 5000);
   }, [status]);
 
   return (
