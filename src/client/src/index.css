@@ -4,9 +4,11 @@
   --green-color: #31d843;
   --main-white: #ffffff;
   --main-color: #79a6b5;
+  --secondary-color: #e5ffde;
   --main-highlight-color: #021626;
   --main-highlight-color-with-opacity: rgba(2, 22, 38, 0.5);
   --card-face-down-background: #393e41;
+  --table-color: #42858c;
 }
 
 body {

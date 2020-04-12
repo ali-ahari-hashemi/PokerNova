@@ -88,6 +88,8 @@ export default class Game extends EventEmitter {
     });
     this.gameState.currentRound.on('roundEnded', () => {
       if (this.isValidGame()) {
+        this.gameState.currentDealer =
+          this.gameState.currentDealer + (1 % this.gameState.players.length);
         this.startRound();
       } else {
         this.end();
