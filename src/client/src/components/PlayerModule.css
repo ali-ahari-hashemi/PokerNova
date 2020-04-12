@@ -60,7 +60,7 @@
   position: relative;
   width: 100%;
   height: 50px;
-  background-color: var(--red-card-color);
+  background-color: var(--secondary-color);
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -88,8 +88,10 @@
 }
 
 .StatusText {
-  color: white;
+  color: var(--main-highlight-color);
   margin-bottom: 3px;
+
+  font-weight: 500;
 }
 
 .CardsContainer {
