@@ -1,5 +1,4 @@
 import React from 'react';
-import 'react-slidedown/lib/slidedown.css';
 import './PlayerModule.css';
 import Card from './Card';
 import PulsatingCircle from './PulsatingCircle';
