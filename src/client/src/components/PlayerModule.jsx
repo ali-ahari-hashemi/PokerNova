@@ -1,5 +1,4 @@
 import React from 'react';
-import 'react-slidedown/lib/slidedown.css';
 import './PlayerModule.css';
 import Card from './Card';
 import PulsatingCircle from './PulsatingCircle';
@@ -29,7 +28,9 @@ const PlayerModule = (props) => {
   useEffect(() => {
     setStatusText(status);
     clearTimeout(closeStatusBarTimer);
-    closeStatusBarTimer;
+    closeStatusBarTimer = setTimeout(() => {
+      setStatusText('');
+    }, 5000);
   }, [status]);
 
   return (
