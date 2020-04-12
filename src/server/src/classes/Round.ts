@@ -111,7 +111,7 @@ export default class Round extends EventEmitter {
       setTimeout(() => {
         this.startNewBettingRound();
         this.stateUpdated();
-      }, 1000);
+      }, 2000);
     }
 
     // Check if the next player is a valid player (did not flop or go all in yet)
@@ -142,6 +142,10 @@ export default class Round extends EventEmitter {
 
   getRound(): IRound {
     return this.round;
+  }
+
+  getBlinds(): IBlinds {
+    return this.blinds;
   }
 
   private stateUpdated(): void {
@@ -214,7 +218,7 @@ export default class Round extends EventEmitter {
     // Delay to show winner before moving on to the next round
     setTimeout(() => {
       this.end();
-    }, 1000);
+    }, 3000);
 
     Logger.log({
       board: this.round.board,

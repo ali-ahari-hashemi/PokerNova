@@ -89,6 +89,7 @@ export class Action {
 
   blind(): boolean {
     this.placeBet(this.action.betAmount || 0, true);
+    this.player.status = PlayerStatus.blind;
     return true;
   }
 

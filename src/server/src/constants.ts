@@ -22,7 +22,7 @@ export enum PlayerStatus {
   bet = 'Bet',
   raise = 'Raise',
   allIn = 'All In',
-  blind = 'Blind',
+  blind = 'Post Blind',
   default = '',
 }
 

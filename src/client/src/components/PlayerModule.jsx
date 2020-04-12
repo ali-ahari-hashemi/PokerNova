@@ -1,12 +1,37 @@
 import React from 'react';
+import 'react-slidedown/lib/slidedown.css';
 import './PlayerModule.css';
 import Card from './Card';
 import PulsatingCircle from './PulsatingCircle';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
-function PlayerModule(props) {
+let closeStatusBarTimer = null;
+
+const StatusBar = ({ text }) => {
+  const closed = text === undefined || text === '';
+  return (
+    <div className={`StatusBar ${closed ? 'closed' : ''}`}>
+      <p className="StatusText">{text}</p>
+    </div>
+  );
+};
+
+const PlayerModule = (props) => {
   const { player, status, total, active, pocket = [{}, {}], isWinner } = props;
 
-  console.log('player', props);
+  const [statusText, setStatusText] = useState(status);
+
+  closeStatusBarTimer = setTimeout(() => {
+    setStatusText('');
+  }, 5000);
+
+  useEffect(() => {
+    setStatusText(status);
+    clearTimeout(closeStatusBarTimer);
+    closeStatusBarTimer;
+  }, [status]);
+
   return (
     <div className="Container">
       <div className="CardsContainer">
@@ -29,15 +54,11 @@ function PlayerModule(props) {
         </div>
       </div>
 
-      {status ? (
-        <div className="StatusBar">
-          <p className="StatusText">{status}</p>
-        </div>
-      ) : (
-        <div className="StatusBarPlaceHolder" />
-      )}
+      <div className="StatusBarPlaceHolder">
+        <StatusBar text={statusText} />
+      </div>
     </div>
   );
-}
+};
 
 export default PlayerModule;
