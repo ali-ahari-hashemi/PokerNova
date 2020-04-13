@@ -47,10 +47,11 @@ const GameTable = ({ potTotal, boardCards, playerModules }) => (
               <p className="PotTotalText">Total Pot: ${potTotal}</p>
               <Board cards={boardCards} />
             </div>
-            <div style={{ width: '100%', height: '10%' }}>
+            <div key="chipsBottom" style={{ width: '100%', height: '10%' }}>
               <Grid
                 container
                 xs
+                direction="row-reverse"
                 alignItems="center"
                 justify="space-around"
                 style={{ height: '100%' }}
