@@ -2,13 +2,8 @@ import React from 'react';
 import Slider from '@material-ui/core/Slider';
 import { createMuiTheme } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
-import PieTimer from '../components/PieTimer';
-import PlayerModule from '../components/PlayerModule';
 import './Game.css';
-import { getLocation } from '../utilities/getLocation';
-import Chips from '../components/Chips';
-import GameTable from '../components/GameTable';
-import PlayerList from '../components/PlayersList';
+import GameTableWithPlayers from '../components/GameTableWithPlayers';
 
 const muiTheme = createMuiTheme({
   overrides: {
@@ -67,48 +62,21 @@ class Game extends React.Component {
       statusText,
       timerTimeLeft,
       timerTotalTime,
-      bettingRoundText,
       potTotal,
       callAmount,
       allInAmount,
+      boardCards,
+      playerModules,
     } = this.props;
 
     return (
       <div className="Game">
         <p className="AppLogo">PokerNova&#8482;</p>
-        <div className="Header">
-          <div className="HeaderStatus">
-            <p className="HeaderStatusText">{statusText}</p>
-            <div className="TimerContainer">
-              <PieTimer current={timerTimeLeft} total={timerTotalTime} />
-            </div>
-          </div>
-          <div className="spacer" />
-        </div>
-        <div className="GameTableContainer">
-          <PlayerList location="top" playerIds={[0, 1]} playerModules={this.props.playerModules} />
-          <div className="Row">
-            <PlayerList
-              location="left"
-              playerIds={[6, 7]}
-              playerModules={this.props.playerModules}
-            />
-            <GameTable
-              bettingRound={bettingRoundText}
-              potTotal={potTotal}
-              boardCards={this.props.boardCards}
-              playerModules={this.props.playerModules}
-            />
-            <PlayerList
-              location="right"
-              playerIds={[2, 3]}
-              playerModules={this.props.playerModules}
-            />
-          </div>
-          <PlayerList
-            location="bottom"
-            playerIds={[4, 5]}
-            playerModules={this.props.playerModules}
+        <div className="middleContainer">
+          <GameTableWithPlayers
+            potTotal={potTotal}
+            boardCards={boardCards}
+            playerModules={playerModules}
           />
         </div>
         <div className="UserContent">

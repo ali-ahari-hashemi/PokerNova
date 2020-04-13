@@ -1,50 +1,80 @@
 import React from 'react';
 import './index.scss';
-import Card from '../Card';
 import Chips from '../Chips';
+import { Grid } from '@material-ui/core';
+import Board from '../Board';
 
-const renderBoardCards = (boardCards) => {
-  const numEmptyCards = 5 - boardCards.length;
-
-  const populatedCards = boardCards.map((card, i) => {
-    return <Card key={`populated-card-${i}`} rank={card.rank} suit={card.suit} />;
-  });
-
-  const emptyCards = Array(numEmptyCards)
-    .fill()
-    .map((item, i) => {
-      return <Card key={`empty-card-${i}`} empty={true} />;
-    });
-
-  return populatedCards.concat(emptyCards);
-};
-
-const renderBets = (playerModules, idsToRender) => {
+const renderBets = (playerModules, idsToRender, type) => {
   return idsToRender.map((id) => {
-    if (id < playerModules.length) {
-      if (playerModules[id].currentBet > 0) {
-        return <Chips amount={playerModules[id].currentBet} />;
-      } else {
-        return <div />;
-      }
+    if (id < playerModules.length && playerModules[id].currentBet > 0) {
+      return <Chips amount={10} />;
+    } else {
+      return <div />;
     }
   });
 };
 
-const GameTable = ({ bettingRound, potTotal, boardCards, playerModules }) => (
-  <div className="GameTable">
-    <div className="GameTableRow">
-      <div className="GameTableLeft">{renderBets(playerModules, [6, 7])}</div>
-      <div className="GameTableCenter">
-        <div className="GameTableTop">{renderBets(playerModules, [0, 1])}</div>
-        <p className="BettingRoundText">{bettingRound}</p>
-        <div className="BoardCardsContainer">{renderBoardCards(boardCards)}</div>
-        <p className="PotTotalText">Total Pot: ${potTotal}</p>
-        <div className="GameTableBottom">{renderBets(playerModules, [4, 5])}</div>
-      </div>
-      <div className="GameTableRight">{renderBets(playerModules, [2, 3])}</div>
+const GameTable = ({ potTotal, boardCards, playerModules }) => (
+  <Grid item xs={6} style={{ height: '100%', padding: 16 }}>
+    <div className="GameTable">
+      <Grid container xs={12} style={{ height: '100%' }}>
+        <Grid key="chipsLeft" item xs={1} style={{ height: '100%' }}>
+          <Grid
+            container
+            xs
+            direction="column"
+            justify="space-around"
+            alignItems="center"
+            style={{ height: '100%' }}
+          >
+            {renderBets(playerModules, [6, 7], 'column')}
+          </Grid>
+        </Grid>
+        <Grid key="chipsTopAndBottomAndGameTableContent" item xs={10} style={{ height: '100%' }}>
+          <Grid container xs={12} direction="column" style={{ height: '100% ' }}>
+            <div key="chipsTop" style={{ width: '100%', height: '10%' }}>
+              <Grid
+                container
+                xs
+                alignItems="center"
+                justify="space-around"
+                style={{ height: '100%' }}
+              >
+                {renderBets(playerModules, [0, 1], 'row')}
+              </Grid>
+            </div>
+            <div key="gameTableContent" className="gameTableContent">
+              <p className="PotTotalText">Total Pot: ${potTotal}</p>
+              <Board cards={boardCards} />
+            </div>
+            <div style={{ width: '100%', height: '10%' }}>
+              <Grid
+                container
+                xs
+                alignItems="center"
+                justify="space-around"
+                style={{ height: '100%' }}
+              >
+                {renderBets(playerModules, [4, 5], 'row')}
+              </Grid>
+            </div>
+          </Grid>
+        </Grid>
+        <Grid key="chipsRight" item xs={1} style={{ height: '100%' }}>
+          <Grid
+            container
+            xs
+            direction="column"
+            justify="space-around"
+            alignItems="center"
+            style={{ height: '100%' }}
+          >
+            {renderBets(playerModules, [2, 3], 'column')}
+          </Grid>
+        </Grid>
+      </Grid>
     </div>
-  </div>
+  </Grid>
 );
 
 export default GameTable;

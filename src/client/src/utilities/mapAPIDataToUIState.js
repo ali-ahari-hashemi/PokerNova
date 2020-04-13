@@ -31,21 +31,7 @@ const getBettingRoundTextFromData = (bettingRound) => {
 };
 
 const getPlayerModulesFromData = (data, userPlayerID) => {
-  const players = data.players;
-
-  if (players.length >= 6) {
-    const temp = players[4];
-    players[4] = players[5];
-    players[5] = temp;
-  }
-
-  if (players.length >= 8) {
-    const temp = players[6];
-    players[6] = players[7];
-    players[7] = temp;
-  }
-
-  return players.map((player) => {
+  return data.players.map((player) => {
     const pocket =
       player.pocket.length > 0 ? player.pocket.map((card) => mapAPICardToUICard(card)) : [{}, {}];
     return {
@@ -60,24 +46,6 @@ const getPlayerModulesFromData = (data, userPlayerID) => {
       isWinner: data.currentRound.winners.ids.includes(player.id),
     };
   });
-};
-
-const getUserModuleFromData = (data, userPlayerID) => {
-  const players = data.players;
-  const user = players.find((item) => item.id === userPlayerID);
-
-  return {
-    player: user.name,
-    status: user.status,
-    total: user.chipCount,
-    active: user.id === data.currentRound.currentPlayer,
-  };
-};
-
-const getUserCardsFromData = (data, userPlayerID) => {
-  const players = data.players;
-  const user = players.find((item) => item.id === userPlayerID);
-  return [mapAPICardToUICard(user.pocket[0]), mapAPICardToUICard(user.pocket[1])];
 };
 
 // Maps something like 'Qc' to something like { rank: RANKS.QUEEN, suit: SUITS.CLUB }

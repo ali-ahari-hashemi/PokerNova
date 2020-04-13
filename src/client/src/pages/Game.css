@@ -177,3 +177,9 @@
   background-color: var(--main-highlight-color-with-opacity);
   border-radius: 2px;
 }
+
+.middleContainer {
+  height: 100%;
+  width: 100%;
+  padding-top: 15px;
+}
