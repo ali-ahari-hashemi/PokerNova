@@ -12,6 +12,7 @@
   box-shadow: 2px 2px 4px 2px rgba(95, 94, 94, 0.5);
   border: 2px solid var(--main-highlight-color);
   position: relative;
+  box-sizing: border-box;
 }
 
 .PlayerModuleActive {
@@ -84,17 +85,33 @@
 
 .StatusBarPlaceHolder {
   position: relative;
-  top: -25px;
-  margin-bottom: -25px;
+  top: -40%;
   width: 100%;
-  height: 100%;
+  height: 80%;
 }
 
 .StatusText {
   color: var(--main-highlight-color);
-  margin-bottom: 3px;
 
+  font-size: 10px;
   font-weight: 500;
+
+  @media (min-width: 300px) {
+    font-size: 8px;
+    margin-bottom: 1px;
+  }
+  @media (min-width: 610px) {
+    font-size: 10px;
+    margin-bottom: 1px;
+  }
+  @media (min-width: 1024px) {
+    font-size: 12px;
+    margin-bottom: 1px;
+  }
+  @media (min-width: 1025px) {
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
 }
 
 .CardsContainer {

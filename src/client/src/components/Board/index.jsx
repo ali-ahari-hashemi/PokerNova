@@ -18,7 +18,7 @@ const renderBoardCards = (cards) => {
     .fill()
     .map((item, i) => {
       return (
-        <Grid item xs={2} style={{ height: '100%', margin: 4 }}>
+        <Grid item xs={2} style={{ height: '100%', margin: 2 }}>
           <Card key={`empty-card-${i}`} empty={true} />
         </Grid>
       );
