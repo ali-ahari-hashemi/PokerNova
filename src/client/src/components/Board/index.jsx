@@ -8,7 +8,7 @@ const renderBoardCards = (cards) => {
 
   const populatedCards = cards.map((card, i) => {
     return (
-      <Grid item xs={2} style={{ height: '100%' }}>
+      <Grid item xs={2} style={{ height: '100%', margin: 4 }}>
         <Card key={`populated-card-${i}`} rank={card.rank} suit={card.suit} />
       </Grid>
     );
@@ -18,7 +18,7 @@ const renderBoardCards = (cards) => {
     .fill()
     .map((item, i) => {
       return (
-        <Grid item xs={2} style={{ height: '100%' }}>
+        <Grid item xs={2} style={{ height: '100%', margin: 4 }}>
           <Card key={`empty-card-${i}`} empty={true} />
         </Grid>
       );
@@ -30,7 +30,7 @@ const renderBoardCards = (cards) => {
 const Board = ({ cards }) => {
   return (
     <div className="boardContainer">
-      <Grid container xs={12} justify="center" alignItems="center" spacing={2}>
+      <Grid container xs={12} justify="center" alignItems="center">
         {renderBoardCards(cards)}
       </Grid>
     </div>

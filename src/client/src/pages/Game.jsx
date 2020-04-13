@@ -73,12 +73,17 @@ class Game extends React.Component {
       <div className="Game">
         <p className="AppLogo">PokerNova&#8482;</p>
         <div className="middleContainer">
-          <GameTableWithPlayers
-            potTotal={potTotal}
-            boardCards={boardCards}
-            playerModules={playerModules}
-          />
+          <div className="middleAspectRatio">
+            <div className="fill">
+              <GameTableWithPlayers
+                potTotal={potTotal}
+                boardCards={boardCards}
+                playerModules={playerModules}
+              />
+            </div>
+          </div>
         </div>
+
         <div className="UserContent">
           <div className="UserContentOptionsContent">
             <div
