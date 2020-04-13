@@ -1,0 +1,67 @@
+.UserContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+  justify-content: center;
+  background-color: var(--main-highlight-color-with-opacity);
+  height: 20%;
+}
+
+.UserContentOptionsContent {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.PlayOption {
+  background-color: rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+  font-weight: 500;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  margin: 0px 10px;
+  height: 70%;
+  padding: 0px 5px;
+  min-width: 80px;
+
+  p {
+    font-size: 14px;
+
+    @media (max-width: 600px) {
+      font-size: 10px;
+    }
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .raiseText {
+    min-width: 110px;
+
+    @media (max-width: 600px) {
+      min-width: 80px;
+    }
+  }
+}
+
+.PlayOption:hover {
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.BetSlider {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  max-width: 250px;
+  width: 100%;
+  align-items: center;
+}
+
+.Slider {
+  margin-right: 10px;
+}

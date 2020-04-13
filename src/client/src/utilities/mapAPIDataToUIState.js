@@ -12,6 +12,7 @@ export const mapAPIDataToUIState = (data, userPlayerID) => {
     playerModules: getPlayerModulesFromData(data, userPlayerID),
     callAmount: data.currentRound.highestBet - data.players[userPlayerID].currentBet,
     allInAmount: data.players[userPlayerID].chipCount,
+    highestBet: data.currentRound.highestBet,
   };
 };
 
