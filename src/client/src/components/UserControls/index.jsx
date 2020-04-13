@@ -4,9 +4,10 @@ import Done from '@material-ui/icons/Done';
 import ArrowUp from '@material-ui/icons/ExpandLess';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 import Clear from '@material-ui/icons/Clear';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createMuiTheme, withStyles } from '@material-ui/core/styles';
 import { ThemeProvider } from '@material-ui/styles';
 import './index.scss';
+import { TextField, InputAdornment } from '@material-ui/core';
 
 const muiTheme = createMuiTheme({
   overrides: {
@@ -23,6 +24,16 @@ const muiTheme = createMuiTheme({
     },
   },
 });
+
+const TextFieldStyled = withStyles({
+  root: {
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'rgba(0, 0, 0, 0.1)',
+      borderColor: 'white',
+      height: 30,
+    },
+  },
+})(TextField);
 
 const performAction = (action, gameId, playerId) => {
   fetch('/api/game/performAction', {
@@ -73,9 +84,46 @@ const Button = ({
   );
 };
 
+const handleTextInputChange = (
+  newInput,
+  setBetAmount,
+  setInputError,
+  minRaise,
+  allInAmount,
+  setInput
+) => {
+  const newBet = parseFloat(newInput);
+  if (newBet) {
+    if (newBet < minRaise) {
+      setInputError(true);
+      setInput(newBet);
+    } else if (newBet > allInAmount) {
+      setInputError(true);
+      setInput(allInAmount);
+      setBetAmount(allInAmount);
+    } else {
+      setInputError(false);
+      setInput(newBet);
+      setBetAmount(newBet);
+    }
+  } else if (newInput.length == 0) {
+    setInputError(true);
+    setInput('');
+  } else {
+    setInputError(true);
+  }
+};
+
+const handleSliderChange = (newValue, setBetAmount, setInput) => {
+  setBetAmount(newValue);
+  setInput(newValue);
+};
+
 const UserControls = ({ callAmount, allInAmount, heighestBet, gameId, playerId }) => {
   const minRaise = heighestBet + 1; // This should probably change at some point
   const [betAmount, setBetAmount] = useState(minRaise);
+  const [input, setInput] = useState(minRaise);
+  const [inputError, setInputError] = useState(false);
 
   return (
     <div className="UserContent">
@@ -128,16 +176,50 @@ const UserControls = ({ callAmount, allInAmount, heighestBet, gameId, playerId }
       </div>
 
       <div className="BetSlider">
-        <ThemeProvider theme={muiTheme}>
-          <Slider
-            min={minRaise}
-            max={allInAmount}
-            className="Slider"
-            value={typeof betAmount === 'number' ? betAmount : 0}
-            onChange={(e, newValue) => setBetAmount(newValue)}
-            aria-labelledby="input-slider"
+        <div style={{ width: '65%' }}>
+          <ThemeProvider theme={muiTheme}>
+            <Slider
+              min={minRaise}
+              max={allInAmount}
+              className="Slider"
+              value={typeof betAmount === 'number' ? betAmount : 0}
+              onChange={(e, newValue) => handleSliderChange(newValue, setBetAmount, setInput)}
+              aria-labelledby="input-slider"
+            />
+          </ThemeProvider>
+        </div>
+        <div style={{ width: '30%' }}>
+          <TextFieldStyled
+            error={inputError}
+            defaultValue={betAmount}
+            id="outlined-basic"
+            variant="outlined"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment style={{ color: 'white' }} position="start">
+                  $
+                </InputAdornment>
+              ),
+            }}
+            inputProps={{
+              style: {
+                textAlign: 'right',
+                color: 'white',
+              },
+            }}
+            onChange={(e) =>
+              handleTextInputChange(
+                e.target.value,
+                setBetAmount,
+                setInputError,
+                minRaise,
+                allInAmount,
+                setInput
+              )
+            }
+            value={input}
           />
-        </ThemeProvider>
+        </div>
       </div>
     </div>
   );
