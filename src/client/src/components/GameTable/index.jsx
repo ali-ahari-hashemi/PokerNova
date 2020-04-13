@@ -7,7 +7,7 @@ import Board from '../Board';
 const renderBets = (playerModules, idsToRender, type) => {
   return idsToRender.map((id) => {
     if (id < playerModules.length && playerModules[id].currentBet > 0) {
-      return <Chips amount={10} />;
+      return <Chips amount={playerModules[id].currentBet} />;
     } else {
       return <div />;
     }
