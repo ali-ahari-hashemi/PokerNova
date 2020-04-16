@@ -119,8 +119,10 @@ const handleSliderChange = (newValue, setBetAmount, setInput) => {
   setInput(newValue);
 };
 
-const UserControls = ({ callAmount, allInAmount, heighestBet, gameId, playerId }) => {
+const UserControls = ({ currentBet, callAmount, allInAmount, heighestBet, gameId, playerId }) => {
   const minRaise = heighestBet + 1; // This should probably change at some point
+
+  // min = 3,
   const [betAmount, setBetAmount] = useState(minRaise);
   const [input, setInput] = useState(minRaise);
   const [inputError, setInputError] = useState(false);
@@ -153,7 +155,7 @@ const UserControls = ({ callAmount, allInAmount, heighestBet, gameId, playerId }
           />
         )}
 
-        {betAmount - callAmount === allInAmount ? (
+        {betAmount - currentBet === allInAmount ? (
           <Button
             renderIcon={() => <ArrowDropUp style={{ fill: 'orange', marginRight: 5 }} />}
             text="ALL IN"
@@ -168,7 +170,7 @@ const UserControls = ({ callAmount, allInAmount, heighestBet, gameId, playerId }
             renderIcon={() => <ArrowUp style={{ fill: 'orange', marginRight: 5 }} />}
             text={`RAISE TO $${betAmount}`}
             className="raiseText"
-            action={{ actionType: 'bet', betAmount: parseFloat(betAmount - callAmount) }}
+            action={{ actionType: 'bet', betAmount: parseFloat(betAmount - currentBet) }}
             gameId={gameId}
             playerId={playerId}
           />

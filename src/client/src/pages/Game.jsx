@@ -24,6 +24,7 @@ class Game extends React.Component {
       gameId,
       seat,
       highestBet,
+      currentBet,
     } = this.props;
 
     return (
@@ -42,6 +43,7 @@ class Game extends React.Component {
         </div>
 
         <UserControls
+          currentBet={currentBet}
           callAmount={callAmount}
           allInAmount={allInAmount}
           heighestBet={highestBet}

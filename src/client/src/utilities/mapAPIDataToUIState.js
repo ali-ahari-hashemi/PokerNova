@@ -11,6 +11,7 @@ export const mapAPIDataToUIState = (data, userPlayerID) => {
     potTotal: data.currentRound.pot,
     playerModules: getPlayerModulesFromData(data, userPlayerID),
     callAmount: data.currentRound.highestBet - data.players[userPlayerID].currentBet,
+    currentBet: data.players[userPlayerID].currentBet,
     allInAmount: data.players[userPlayerID].chipCount,
     highestBet: data.currentRound.highestBet,
   };
