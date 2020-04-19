@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Slider from '@material-ui/core/Slider';
 import Done from '@material-ui/icons/Done';
 import ArrowUp from '@material-ui/icons/ExpandLess';
@@ -120,12 +120,17 @@ const handleSliderChange = (newValue, setBetAmount, setInput) => {
 };
 
 const UserControls = ({ currentBet, callAmount, allInAmount, heighestBet, gameId, playerId }) => {
-  const minRaise = heighestBet + 1; // This should probably change at some point
-
-  // min = 3,
+  // let minRaise = callAmount + 1; // This should probably change at some point
+  const [minRaise, setMinRaise] = useState(callAmount + 1);
   const [betAmount, setBetAmount] = useState(minRaise);
   const [input, setInput] = useState(minRaise);
+
   const [inputError, setInputError] = useState(false);
+  useEffect(() => {
+    setMinRaise(callAmount + 1);
+    setInput(callAmount + 1);
+    setBetAmount(callAmount + 1);
+  }, [callAmount]);
 
   return (
     <div className="UserContent">
@@ -140,7 +145,7 @@ const UserControls = ({ currentBet, callAmount, allInAmount, heighestBet, gameId
         {callAmount > 0 ? (
           <Button
             renderIcon={() => <Done style={{ fill: 'green', marginRight: 5 }} />}
-            text="CALL"
+            text={`CALL $${callAmount}`}
             action={{ actionType: 'bet', betAmount: parseFloat(callAmount) }}
             gameId={gameId}
             playerId={playerId}
@@ -155,7 +160,7 @@ const UserControls = ({ currentBet, callAmount, allInAmount, heighestBet, gameId
           />
         )}
 
-        {betAmount - currentBet === allInAmount ? (
+        {betAmount === allInAmount ? (
           <Button
             renderIcon={() => <ArrowDropUp style={{ fill: 'orange', marginRight: 5 }} />}
             text="ALL IN"
@@ -168,9 +173,9 @@ const UserControls = ({ currentBet, callAmount, allInAmount, heighestBet, gameId
             paddingLeft={20}
             paddingRight={20}
             renderIcon={() => <ArrowUp style={{ fill: 'orange', marginRight: 5 }} />}
-            text={`RAISE TO $${betAmount}`}
+            text={`RAISE $${betAmount}`}
             className="raiseText"
-            action={{ actionType: 'bet', betAmount: parseFloat(betAmount - currentBet) }}
+            action={{ actionType: 'bet', betAmount: parseFloat(betAmount) }}
             gameId={gameId}
             playerId={playerId}
           />

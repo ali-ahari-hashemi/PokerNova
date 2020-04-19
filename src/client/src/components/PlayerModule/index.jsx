@@ -37,7 +37,7 @@ const PlayerModule = (props) => {
 
   return (
     <Grid container xs={12} justify={justifyParent} style={{ height: '100%' }}>
-      <Grid item xs={8} sm={6} direction="column" style={{ height: '100%' }}>
+      <Grid item xs={8} sm={6} lg={4} direction="column" style={{ height: '100%' }}>
         <div
           className="playerModuleContainer"
           style={{ justifyContent: justify, alignItems: align }}
