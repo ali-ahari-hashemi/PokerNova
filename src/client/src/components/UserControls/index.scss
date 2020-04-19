@@ -27,7 +27,6 @@
   margin: 0px 10px;
   height: 70%;
   padding: 0px 5px;
-  min-width: 80px;
 
   p {
     font-size: 14px;
@@ -40,7 +39,7 @@
   }
 
   .raiseText {
-    min-width: 110px;
+    min-width: 90px;
 
     @media (max-width: 600px) {
       min-width: 80px;

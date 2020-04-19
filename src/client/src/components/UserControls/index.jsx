@@ -72,8 +72,8 @@ const Button = ({
   return (
     <div
       style={{
-        paddingLeft: paddingLeft ? paddingLeft : 5,
-        paddingRight: paddingRight ? paddingRight : 5,
+        paddingLeft: 20,
+        paddingRight: 20,
       }}
       className="PlayOption"
       onClick={() => performAction(action, gameId, playerId)}
@@ -170,8 +170,6 @@ const UserControls = ({ currentBet, callAmount, allInAmount, heighestBet, gameId
           />
         ) : (
           <Button
-            paddingLeft={20}
-            paddingRight={20}
             renderIcon={() => <ArrowUp style={{ fill: 'orange', marginRight: 5 }} />}
             text={`RAISE $${betAmount}`}
             className="raiseText"
