@@ -65,3 +65,17 @@
 .Slider {
   margin-right: 10px;
 }
+
+.lightButton {
+  width: 80px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--main-white);
+  border-radius: 5px;
+}
+
+.lightButton:hover {
+  cursor: pointer;
+}

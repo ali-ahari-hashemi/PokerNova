@@ -226,6 +226,17 @@ const UserControls = ({ currentBet, callAmount, allInAmount, heighestBet, gameId
           />
         </div>
       </div>
+
+      <div>
+        <div
+          onClick={() =>
+            performAction({ actionType: 'bet', betAmount: allInAmount }, gameId, playerId)
+          }
+          className="lightButton"
+        >
+          ALL IN
+        </div>
+      </div>
     </div>
   );
 };
