@@ -1,10 +1,24 @@
+.cardAspectRatioContainer {
+  height: 0;
+  overflow: hidden;
+  padding-top: 80px / 55px * 100%;
+  position: relative;
+}
+
+.cardAspectRatioInside {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .Card {
-  height: 80px;
-  width: 55px;
   border-radius: 5px;
-  margin: 4px;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  width: 100%;
 }
 
 .PopulatedCard {
@@ -31,13 +45,14 @@
 }
 
 .CardRank {
-  font-size: 30px;
+  font-size: 1.7vw;
   margin-left: 8px;
   margin-top: 2px;
 }
 
 .CardSuit {
-  height: 28px;
+  object-fit: contain;
+  width: 55%;
   margin-right: 4px;
   margin-bottom: 8px;
 }
@@ -56,10 +71,8 @@
   justify-content: center;
   align-items: center;
   border: 1px solid;
-  /* height: 53.33px;
-  width: 36.66px; */
-  height: 35.33px;
-  width: 24.44px;
+  box-sizing: border-box;
+  border-radius: 3px;
 }
 
 .CardDesignText {

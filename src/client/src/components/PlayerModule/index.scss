@@ -1,17 +1,18 @@
 .PlayerModule {
-  width: 130px;
-  height: 10px;
+  width: 100%;
+  height: 50%;
   overflow: hidden;
   background-color: var(--main-highlight-color);
   border-radius: 100px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 15px 10px 15px 10px;
   position: relative;
   z-index: 1;
   box-shadow: 2px 2px 4px 2px rgba(95, 94, 94, 0.5);
   border: 2px solid var(--main-highlight-color);
+  position: relative;
+  box-sizing: border-box;
 }
 
 .PlayerModuleActive {
@@ -25,15 +26,16 @@
 .PlayerModuleTotalContainer {
   background-color: var(--main-white);
   border-radius: 100px;
-  height: 28px;
+  height: 70%;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 0px 10px;
+  padding: 0 3px;
+  margin-left: 5px;
 }
 
 .PlayerModuleTotalText {
-  font-size: 15px;
+  font-size: 1vw;
   font-weight: 600;
   color: var(--main-highlight-color);
 }
@@ -44,7 +46,7 @@
 }
 
 .PlayerModulePlayerText {
-  font-size: 15px;
+  font-size: 1vw;
   font-weight: 500;
 }
 
@@ -59,11 +61,13 @@
 .StatusBar {
   position: relative;
   width: 100%;
-  height: 50px;
+  height: 100%;
   background-color: var(--secondary-color);
   display: flex;
   justify-content: center;
   align-items: flex-end;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
   border-bottom-left-radius: 7px;
   border-bottom-right-radius: 7px;
   box-shadow: 2px 2px 4px 0 rgba(95, 94, 94, 0.5);
@@ -81,17 +85,33 @@
 
 .StatusBarPlaceHolder {
   position: relative;
-  top: -25px;
-  margin-bottom: -25px;
+  top: -40%;
   width: 100%;
-  height: 50px;
+  height: 80%;
 }
 
 .StatusText {
   color: var(--main-highlight-color);
-  margin-bottom: 3px;
 
+  font-size: 10px;
   font-weight: 500;
+
+  @media (min-width: 300px) {
+    font-size: 8px;
+    margin-bottom: 1px;
+  }
+  @media (min-width: 610px) {
+    font-size: 10px;
+    margin-bottom: 1px;
+  }
+  @media (min-width: 1024px) {
+    font-size: 12px;
+    margin-bottom: 1px;
+  }
+  @media (min-width: 1025px) {
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
 }
 
 .CardsContainer {
@@ -101,4 +121,34 @@
   position: relative;
   margin-bottom: -8px;
   z-index: 1;
+}
+
+.playerModuleContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.cardsContainer {
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: -4px;
+  z-index: 1;
+}
+
+.playerContentContainer {
+  height: 40%;
+  width: 100%;
+  z-index: 2;
+}
+
+.cardWrapper {
+  margin: 0px 2px;
 }

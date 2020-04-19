@@ -1,12 +1,10 @@
-import React from 'react';
-import { RANKS, SUITS } from '../utilities/constants';
+import { RANKS, SUITS } from './constants';
 import heart from '../images/heart.png';
 import diamond from '../images/diamond.png';
 import spade from '../images/spade.png';
 import club from '../images/club.png';
-import './Card.css';
 
-const getRankText = (rank) => {
+export const getRankText = (rank) => {
   switch (rank) {
     case RANKS.ACE:
       return 'A';
@@ -39,11 +37,11 @@ const getRankText = (rank) => {
   }
 };
 
-const getCardColor = (suit) => {
+export const getCardColor = (suit) => {
   return suit === SUITS.HEARTS || suit === SUITS.DIAMONDS ? 'red' : 'black';
 };
 
-const getSuitImg = (suit) => {
+export const getSuitImg = (suit) => {
   switch (suit) {
     case SUITS.HEARTS:
       return heart;
@@ -57,28 +55,3 @@ const getSuitImg = (suit) => {
       return '';
   }
 };
-
-function Card(props) {
-  const { rank, suit, empty } = props;
-
-  if (empty) {
-    return <div className="Card EmptyCard" />;
-  }
-
-  if (!rank || !suit) {
-    return <div className="Card FaceDownCard"></div>;
-  }
-
-  return (
-    <div className="Card PopulatedCard">
-      <div className="CardRankContainer">
-        <p className={`CardRank ${getCardColor(suit)}`}>{getRankText(rank)}</p>
-      </div>
-      <div className="CardSuitContainer">
-        <img className="CardSuit" src={getSuitImg(suit)} alt={suit} />
-      </div>
-    </div>
-  );
-}
-
-export default Card;

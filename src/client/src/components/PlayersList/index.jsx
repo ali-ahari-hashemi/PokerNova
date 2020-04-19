@@ -1,85 +1,52 @@
 import React from 'react';
+import { Grid } from '@material-ui/core';
 import './index.scss';
-import PlayerModule from '../PlayerModule';
-import Chips from '../Chips';
+import PlayerModule from '../PlayerModule/index';
+import VacantSeat from '../VacantSeat';
 
-const renderTop = (playerIds, playerModules) => {
-  const playerList = playerModules.map((player, index) => {
-    if (playerIds.includes(parseInt(player.id))) {
-      const betExists = player.currentBet > 0;
+const renderPlayerModule = (playerModules, idToRender, gridOverrides) => (
+  <React.Fragment>
+    {idToRender < playerModules.length ? (
+      <PlayerModule {...playerModules[idToRender]} gridOverrides={gridOverrides} />
+    ) : (
+      <VacantSeat gridOverrides={gridOverrides} />
+    )}
+  </React.Fragment>
+);
 
-      return (
-        <div key={index} className="TopPlayerContainer">
-          <PlayerModule {...player} />
-        </div>
-      );
-    }
-  });
+const renderRow = (playerModules, idsToRender, gridOverrides) => (
+  <React.Fragment>
+    <Grid item xs={3} style={{ height: '100%' }}>
+      {renderPlayerModule(playerModules, idsToRender[0], gridOverrides)}
+    </Grid>
+    <Grid item xs={3} style={{ height: '100%' }}>
+      {renderPlayerModule(playerModules, idsToRender[1], gridOverrides)}
+    </Grid>
+  </React.Fragment>
+);
 
-  if (playerList.length == 1) {
-    const empty = () => <div className="TopPlayerContainer"></div>;
-    playerList.concat(empty());
-  }
+const renderColumn = (playerModules, idsToRender, gridOverrides) => (
+  <Grid
+    container
+    direction={gridOverrides.reverse ? 'column-reverse' : 'column'}
+    xs={3}
+    style={{ height: '100%' }}
+  >
+    <Grid item xs style={{ height: '50%' }}>
+      {renderPlayerModule(playerModules, idsToRender[0], gridOverrides)}
+    </Grid>
+    <Grid item xs style={{ height: '50%' }}>
+      {renderPlayerModule(playerModules, idsToRender[1], gridOverrides)}
+    </Grid>
+  </Grid>
+);
 
-  return playerList;
-};
-
-const renderBottom = (playerIds, playerModules) => {
-  return playerModules.map((player, index) => {
-    if (playerIds.includes(parseInt(player.id))) {
-      const betExists = player.currentBet > 0;
-
-      return (
-        <div key={index} className="BottomPlayerContainer">
-          <PlayerModule {...player} />
-        </div>
-      );
-    }
-  });
-};
-
-const renderRight = (playerIds, playerModules) => {
-  return playerModules.map((player, index) => {
-    if (playerIds.includes(parseInt(player.id))) {
-      const betExists = player.currentBet > 0;
-
-      return (
-        <div key={index} className="RightPlayerContainer">
-          <PlayerModule {...player} />
-        </div>
-      );
-    }
-  });
-};
-
-const renderLeft = (playerIds, playerModules) => {
-  return playerModules.map((player, index) => {
-    if (playerIds.includes(parseInt(player.id))) {
-      const betExists = player.currentBet > 0;
-
-      return (
-        <div key={index} className="LeftPlayerContainer">
-          <PlayerModule {...player} />
-        </div>
-      );
-    }
-  });
-};
-
-const PlayerList = ({ location, playerIds, playerModules }) => {
-  if (location == 'top') {
-    return <div className="HorizontalPlayerList Top">{renderTop(playerIds, playerModules)}</div>;
-  } else if (location == 'bottom') {
-    return (
-      <div className="HorizontalPlayerList Bottom">{renderBottom(playerIds, playerModules)}</div>
-    );
-  } else if (location == 'left') {
-    return <div className="VerticalPlayerList Left">{renderLeft(playerIds, playerModules)}</div>;
-  } else if (location == 'right') {
-    return <div className="VerticalPlayerList Right">{renderRight(playerIds, playerModules)}</div>;
+const PlayersList = ({ type, playerModules, idsToRender, gridOverrides }) => {
+  if (type === 'row') {
+    return renderRow(playerModules, idsToRender, gridOverrides);
   } else {
-    return <div />;
+    return renderColumn(playerModules, idsToRender, gridOverrides);
   }
 };
 
-export default PlayerList;
+export default PlayersList;

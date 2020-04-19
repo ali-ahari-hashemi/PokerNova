@@ -1,0 +1,20 @@
+.vacantSeatContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    font-size: 1vw;
+    margin-top: 3px;
+    text-align: center;
+  }
+
+  svg {
+    width: 2.5vw;
+    height: 2.5vw;
+  }
+}

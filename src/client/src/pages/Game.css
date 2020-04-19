@@ -13,167 +13,27 @@
   left: 40px;
 }
 
-/* Header stuff */
-
-.Header {
+.middleContainer {
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  padding-top: 20px;
-}
-
-.HeaderStatus {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.HeaderStatusText {
-  font-weight: 200;
-}
-
-.TimerContainer {
-  margin-left: 15px;
-}
-
-.TimerText {
-  font-weight: 400;
-  font-size: 25px;
-  margin-bottom: 2px; /* Alignment looked weird, this is an unexpected adjustment */
-  margin-right: 8px;
-}
-
-/* User content stuff*/
-
-.UserContent {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  align-self: stretch;
-  justify-content: center;
-  background-color: var(--main-highlight-color-with-opacity);
-}
-
-.UserContentStatusContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-}
-
-.UserCardsContainer {
-  display: flex;
-  flex-direction: row;
-  margin-top: 20px;
-}
-
-.UserContentOptionsContainer {
-  min-width: 220px;
-}
-
-.UserContentOptionsContent {
-  padding: 20px 0px 10px;
-  display: flex;
-}
-
-.PlayOption {
-  background-color: var(--main-color);
-  padding: 8px 0px;
-  font-size: 12px;
-  font-weight: 500;
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 100px;
-  min-width: 80px;
-  margin: 0px 10px;
-}
-
-.PlayOption:hover {
-  cursor: pointer;
-  background-color: var(--main-white);
-  color: var(--main-color);
-}
-
-.BetSlider {
-  display: flex;
-  flex-direction: row;
-  max-width: 250px;
+  height: 80%;
   width: 100%;
+  justify-content: center;
   align-items: center;
-  padding: 10px;
 }
 
-.Slider {
-  margin-right: 10px;
+.middleAspectRatio {
+  width: 100vw;
+  height: 60vw;
+  max-height: 80vh;
+  max-width: 166.66vh;
+  position: absolute;
 }
 
-.SeatsHotizontal {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.Row {
-  display: flex;
-  flex-direction: row;
-  align-self: stretch;
-  justify-content: center;
-  margin: 10px auto;
-  max-width: 1024px;
+.fill {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
-  min-height: 190px;
-  max-height: 300px;
   height: 100%;
-}
-
-.SeatsVertical {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-top: -30px;
-  width: 200px;
-}
-
-.SeatsLeft {
-  align-items: flex-end;
-}
-
-.SeatsRight {
-  align-items: flex-end;
-}
-
-.SeatsTop {
-  align-items: flex-start;
-}
-
-.SeatsBottom {
-  align-items: flex-end;
-}
-
-.GameTableContainer {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-self: stretch;
-  align-items: center;
-  padding-top: 50px;
-}
-
-.ModuleAndChipsVertical {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.ModuleAndChipsHorizontal {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.Chips {
-  background-color: var(--main-highlight-color-with-opacity);
-  border-radius: 2px;
 }
